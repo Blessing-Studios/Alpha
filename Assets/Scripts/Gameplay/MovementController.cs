@@ -31,6 +31,10 @@ public abstract class MovementController : NetworkBehaviour
 
     // The child Classes give value to currentMovement
     protected Vector3 currentMovement = Vector3.zero;
+
+    // ###################### Teste
+    public Vector3 CurrentMovement;
+    public bool CanMove;
     public CharacterController GetCharacterController()
     {
         return this.characterController;
@@ -64,6 +68,10 @@ public abstract class MovementController : NetworkBehaviour
         // HandleColision();
         // HandlePushBack();
         HandleFacing();
+
+        // Para Testar
+        CurrentMovement = currentMovement;
+        CanMove = canMove;
     }
 
     public virtual void DisableMovement()

@@ -4,6 +4,7 @@
     "com.blessing-studios.core": "https://github.com/Blessing-Studios/Core.git",
     "com.blessing-studios.datapersistence": "https://github.com/Blessing-Studios/Data-Persistence.git",
     "com.blessing-studios.statemachine": "https://github.com/Blessing-Studios/State-Machine.git",
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "2.0.5",
     "com.unity.cinemachine": "3.1.2",
     "com.unity.collab-proxy": "2.5.2",

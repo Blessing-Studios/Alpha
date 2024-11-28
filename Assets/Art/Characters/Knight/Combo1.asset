@@ -28,8 +28,8 @@ MonoBehaviour:
     Impulse: 60
   - Name: Attack2
     Description: Teste
-    AnimationClip: {fileID: 7400000, guid: 05a643f1c8e942c4fba41abcf1997416, type: 2}
-    AnimationParam: LightAttack1
+    AnimationClip: {fileID: 7400000, guid: 1ce11c5e267a91a47ad8973fb2533074, type: 2}
+    AnimationParam: LightAttack2
     Action:
       value: {fileID: 11400000, guid: 3b288b8291134a14b9d62350cee0c014, type: 2}
     Direction:

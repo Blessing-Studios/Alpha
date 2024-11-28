@@ -23,6 +23,8 @@ namespace Blessing.Gameplay.Characters
     }
     public class CharacterStateMachine : StateMachine.StateMachine
     {
+        [field: SerializeField] public bool ShowDebug { get; private set; }
+        public CharacterState CharacterState { get { return CurrentState as CharacterState;} }
         public IdleState IdleState;
         public MoveState MoveState;
         public TakeHitState TakeHitState;
@@ -41,20 +43,28 @@ namespace Blessing.Gameplay.Characters
         // [field: SerializeField] private InputActionList inputActionList;
         // [field: SerializeField] private InputDirectionList inputDirectionList;
 
-        public Character Character;
-        public Animator Animator;
+        public Character Character { get; protected set; }
+        public Animator Animator { get; set; }
+        public CharacterController CharacterController { get; protected set; }
+        public MovementController MovementController { get; protected set; }
 
         [SerializeField] protected Combo[] combos;
-        public MeleeAttackInfo CurrentAttack { get; set; }
 
         protected override void Awake()
         {
             base.Awake();
+
             if (Character == null)
                 Character = GetComponent<Character>();
 
+            if (CharacterController == null)
+                CharacterController = GetComponent<CharacterController>();
+
             if (Animator == null)
                 Animator = GetComponent<Animator>();
+
+            if (MovementController == null)
+                MovementController = GetComponent<MovementController>();
         }
 
         protected override void Start()
@@ -64,16 +74,13 @@ namespace Blessing.Gameplay.Characters
             TakeHitState = new TakeHitState(this);
             DeadState = new DeadState(this);
 
-            // AttackState = new AttackState(this);
-            // RangeAttackState = new RangeAttackState(this);
-            // CombatEntryState = new CombatEntryState(this);
-
             mainStateType = IdleState;
             base.Start();
         }
 
         public void StartCombo(InputActionType action, InputDirectionType direction)
         {
+            Debug.Log(gameObject.name + ": StartCombo");
             CurrentAction = action;
             CurrentDirectionAction = direction;
             

@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace Blessing.Player
 {
+    [RequireComponent(typeof(PlayerInput))]
     public class PlayerMovementController : MovementController
     {
         [field: SerializeField] public bool IsOffline {get; private set;}
@@ -33,6 +34,16 @@ namespace Blessing.Player
             }
         }
 
+        public override void EnableMovement()
+        {
+            base.EnableMovement();
+            HandlePlayerMovement(currentMovementInput);
+        }
+
+        /// <summary>
+        /// OnMove is created to be used with the Component Plater Input
+        /// </summary>
+        /// <param name="context"></param>
         public void OnMove(InputAction.CallbackContext context)
         {
             if (context.performed || context.canceled)

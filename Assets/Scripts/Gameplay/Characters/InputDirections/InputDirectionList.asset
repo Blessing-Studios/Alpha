@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a447703a55878e4e8bac8a8499099f4, type: 3}
   m_Name: InputDirectionList
   m_EditorClassIdentifier: 
-  inputDirectionList:
+  InputDirections:
   - {fileID: 11400000, guid: 014f2a0cadd64d0448dc036ef1e4305d, type: 2}
   - {fileID: 11400000, guid: ce380c11145837945a5091ed736052e9, type: 2}
   - {fileID: 11400000, guid: 7adbd0f02c133f349a3c2570995d3ee1, type: 2}
+  - {fileID: 11400000, guid: eabeadbe06de11f42b551a4d5144a772, type: 2}
+  - {fileID: 11400000, guid: 7a427225f67ac5d4cbf556ef91ce3389, type: 2}

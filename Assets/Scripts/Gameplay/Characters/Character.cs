@@ -9,6 +9,12 @@ namespace Blessing.Gameplay.Characters
     {
         public float AttackPressedTimerWindow = 0.2f;
         protected MovementController movementController;
+        protected CharacterStateMachine characterStateMachine;
+
+        protected virtual void Awake()
+        {
+            characterStateMachine = GetComponent<CharacterStateMachine>();
+        }
         public int GetCurrentHealth()
         {
             return 100;
@@ -18,6 +24,6 @@ namespace Blessing.Gameplay.Characters
         {
             return movementController;
         }
-        public abstract bool CheckIfAttackPressed(string nextComboAction);
+        public abstract bool CheckIfActionTriggered(string actionName);
     }
 }

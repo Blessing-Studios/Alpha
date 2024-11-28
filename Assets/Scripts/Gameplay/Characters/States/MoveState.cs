@@ -8,6 +8,7 @@ namespace Blessing.Gameplay.Characters.States
     {
         protected MovementController movementController;
         protected CharacterController characterController;
+        protected Combo[] combos;
 
         public Move CurrentMove;
         private int moveIndex;
@@ -15,20 +16,24 @@ namespace Blessing.Gameplay.Characters.States
         protected float attackPressedTimer = 0;
         public MoveState(CharacterStateMachine _characterStateMachine) : base(_characterStateMachine)
         {
-            movementController = character.GetMovementController();
-            characterController = movementController.GetCharacterController();
+            movementController = characterStateMachine.MovementController;
+            characterController = characterStateMachine.CharacterController;
+
         }
 
         public override void OnEnter()
         {
             base.OnEnter();
 
+            
+            combos = characterStateMachine.GetAllCombos();
             moveIndex = characterStateMachine.MoveIndex;
             comboIndex = characterStateMachine.ComboIndex;
-            CurrentMove = characterStateMachine.GetAllCombos()[comboIndex].Moves[moveIndex];
+            CurrentMove = combos[comboIndex].Moves[moveIndex];
 
+            Debug.Log("OnEnter Move Name: " + CurrentMove.Name);
 
-            character.GetMovementController().DisableMovement();
+            movementController.DisableMovement();
 
             // Trigger animation
             animator.SetTrigger(CurrentMove.AnimationParam);
@@ -37,62 +42,74 @@ namespace Blessing.Gameplay.Characters.States
             movementController.AttackMovement = Vector3.zero;
 
             duration = CurrentMove.AnimationClip.length;
+
+            shouldCombo = false;
+            attackPressedTimer = 0;
         }
-
-        // public override bool OnTrigger(InputActionsList triggerActionName, InputDirectionsList triggerDirection)
-        // {
-        //     characterStateMachine.CurrentAction = triggerActionName;
-        //     characterStateMachine.CurrentDirectionAction = triggerDirection;
-        //     characterStateMachine.SetNextState(characterStateMachine.CombatEntryState);
-
-        //     return true;
-        // }
 
         public override void OnUpdate()
         {
             base.OnUpdate();
 
-            shouldCombo = false;
             attackPressedTimer -= Time.deltaTime;
 
             // Precias setar na animação a variável AttackMovement
             movementController.HandleAttackMovment();
 
             string nextComboAction = "";
-            if (moveIndex + 1 < characterStateMachine.GetAllCombos()[comboIndex].Moves.Length)
+            if (moveIndex + 1 < combos[comboIndex].Moves.Length)
             {
-                nextComboAction = characterStateMachine.GetAllCombos()[comboIndex].Moves[moveIndex + 1].TriggerAction.ToString();;
+                nextComboAction = combos[comboIndex].Moves[moveIndex + 1].TriggerAction.Name; ;
             }
 
             //  Check if the nextComboAction was pressed
-            if (character.CheckIfAttackPressed(nextComboAction))
+            if (character.CheckIfActionTriggered(nextComboAction))
             {
                 attackPressedTimer = character.AttackPressedTimerWindow;
             }
 
-            // Check if the button was pressed in the attack window
+            // Check if the button was pressed in the attack window            
             if (animator.GetFloat("AttackWindowOpen") > 0.5f && attackPressedTimer >= 0)
             {
+                Debug.Log("WindowOpen and AttackPressedTimer");
                 shouldCombo = true;
             }
-            
+
             // If conditions are match, call next move
             if (time >= duration - CurrentMove.ExitEarlier)
             {
-                if (shouldCombo && (moveIndex + 1 < characterStateMachine.GetAllCombos()[comboIndex].Moves.Length))
+                if (shouldCombo && (moveIndex + 1 < combos[comboIndex].Moves.Length))
                 {
                     characterStateMachine.MoveIndex = moveIndex + 1;
                     characterStateMachine.SetNextState(characterStateMachine.MoveState);
                 }
+            }
+
+            if (time >= duration)
+            {
+                characterStateMachine.SetNextStateToMain();
             }
         }
 
         public override void OnExit()
         {
             base.OnExit();
-            shouldCombo = false;
             movementController.EnableMovement();
-            attackPressedTimer = 0;
         }
+
+        // Trigger other actions
+        // public override bool OnTrigger(HurtBox target, RaycastHit hit)
+        // {
+        //     // Debug.Log("OnTrigger AttackState");
+        //     // checked if target is a character, fazer lógica para atacar alvos não character depois
+        //     if (target.Character == null)
+        //         return false;
+
+        //     if (character.TargetsList.Contains(target.Character.gameObject))
+        //         return false;
+
+        //     character.Attack(target, hit, comboIndex, attackIndex);
+        //     return true;
+        // }
     }
 }
