@@ -1,16 +1,15 @@
-using Blessing.Core;
 using Blessing.Core.ScriptableObjectDropdown;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace Blessing.UI
 {
     public class SideMenu : MonoBehaviour
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
-        [SerializeField] private Button prototypeButton;
-        [ScriptableObjectDropdown(typeof(SceneReference))] public ScriptableObjectReference PrototypeScene;
-        private SceneReference prototypeScene { get { return PrototypeScene.value as SceneReference; } }
+        [SerializeField] private Button singlePlayerButton;
+        [ScriptableObjectDropdown(typeof(SceneReference))] public ScriptableObjectReference SinglePlayerScene;
+        private SceneReference singlePlayerScene { get { return SinglePlayerScene.value as SceneReference; } }
     
         [SerializeField] private Button multiplayerButton;
         [SerializeField] GameObject multiplayerPanel;
@@ -21,10 +20,10 @@ namespace UI
         {
             multiplayerPanel.SetActive(false);
 
-            prototypeButton.onClick.AddListener(() => {
+            singlePlayerButton.onClick.AddListener(() => {
                 if (ShowDebug) Debug.Log("prototypeButton");
-                SceneManager.Singleton.LoadAsync(prototypeScene); 
-                SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
+                Core.SceneManager.Singleton.LoadAsync(singlePlayerScene); 
+                Core.SceneManager.Singleton.Unload(Core.SceneManager.Singleton.CurrentScene);
             });
 
             multiplayerButton.onClick.AddListener(() => {

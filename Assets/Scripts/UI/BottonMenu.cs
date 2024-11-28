@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace Blessing.UI
 {
     public class BottonMenu : MonoBehaviour
     {

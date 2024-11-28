@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 6483174246542211240}
   - component: {fileID: 1736910387813517896}
   - component: {fileID: 8376207516185148171}
+  - component: {fileID: 2259359815306742575}
   - component: {fileID: 1336789277861539600}
   - component: {fileID: 5486276750212474705}
   m_Layer: 0
@@ -171,7 +172,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 43.28, y: -3.266, z: 6}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6931712906820337884}
@@ -191,7 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3936908184
+  GlobalObjectIdHash: 3752516906
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 3
@@ -472,6 +473,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8491ec18e695b94497d7154b043ac31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  OwnerName:
+    m_InternalValue:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0016: 0
+        byte0017: 0
+        byte0018: 0
+        byte0019: 0
+        byte0020: 0
+        byte0021: 0
+        byte0022: 0
+        byte0023: 0
+        byte0024: 0
+        byte0025: 0
+        byte0026: 0
+        byte0027: 0
+        byte0028: 0
+        byte0029: 0
+  IsDisabled:
+    m_InternalValue: 0
+--- !u!114 &2259359815306742575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7666d868e2a9b2b4db5bdbbaac834837, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <CurrentStateName>k__BackingField: 
+  CurrentAction: {fileID: 0}
+  CurrentDirectionAction: {fileID: 0}
+  Character: {fileID: 8376207516185148171}
+  Animator: {fileID: 1646976488681774380}
+  combos:
+  - {fileID: 11400000, guid: f8d096a5c0289fa4ba19f62f4eb3ed78, type: 2}
 --- !u!114 &1336789277861539600
 MonoBehaviour:
   m_ObjectHideFlags: 0

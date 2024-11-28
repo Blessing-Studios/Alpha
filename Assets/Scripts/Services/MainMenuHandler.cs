@@ -8,8 +8,8 @@ namespace Blessing.Services
 {
     class MainMenuHandler : MonoBehaviour
     {
-        [ScriptableObjectDropdown(typeof(SceneReference))] public ScriptableObjectReference PrototypeScene;
-        private SceneReference prototypeScene { get { return PrototypeScene.value as SceneReference; } }
+        [ScriptableObjectDropdown(typeof(SceneReference))] public ScriptableObjectReference MultiplayerScene;
+        private SceneReference multiplayerScene { get { return MultiplayerScene.value as SceneReference; } }
         void Start()
         {
             GameplayEventHandler.OnConnectToSessionCompleted += OnConnectToSessionCompleted;
@@ -29,7 +29,7 @@ namespace Blessing.Services
                 if (GameDataManager.Singleton.IsHost)
                 {
                     // Quando host carregar a cena, todos os clientes carregarão junto.
-                    SceneManager.Singleton.LoadAsync(prototypeScene); 
+                    SceneManager.Singleton.LoadAsync(multiplayerScene); 
                 }
                 
                 // Descarregar a cena presente, que deve ser o menu.
