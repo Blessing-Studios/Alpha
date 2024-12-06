@@ -4,33 +4,54 @@ using Blessing.Gameplay.HealthAndDamage;
 using System;
 using Unity.VisualScripting;
 using System.Collections.Generic;
-using Unity.Services.Vivox;
+using Unity.Netcode.Components;
 
 namespace Blessing.Gameplay.Characters
 {
     [RequireComponent(typeof(CharacterStateMachine))]
     [RequireComponent(typeof(MovementController))]
     [RequireComponent(typeof(CharacterHealth))]
+    [RequireComponent(typeof(CharacterController))]
     public abstract class Character : NetworkBehaviour, IHitter, IHittable
     {
+        protected string characterName;
+        public string CharacterName
+        {
+            get => characterName;
+            protected set => characterName = value;
+        }
+        
+        [field: SerializeField] public bool ShowDebug { get; private set; }
         public float AttackPressedTimerWindow = 0.2f;
         public MovementController MovementController { get; protected set; }
         public CharacterStateMachine CharacterStateMachine { get; protected set; }
         public CharacterHealth Health { get; protected set; }
+        public CharacterController CharacterController { get; protected set; }
         public HitInfo HitInfo { get; protected set; }
         [field: SerializeField] protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(1,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         public int StateIndex { get { return stateIndex.Value;}}
-
         protected List<IHittable> targetList = new();
+        public Vector3 SpawnLocation;
         protected virtual void Awake()
         {
             MovementController = GetComponent<MovementController>();
             CharacterStateMachine = GetComponent<CharacterStateMachine>();
             Health = GetComponent<CharacterHealth>();
+            CharacterController = GetComponent<CharacterController>();
 
             stateIndex.Value = 0;
+        }
+
+        protected virtual void Start()
+        {
+            if (HasAuthority)
+            {
+                CharacterController.enabled = false;
+                CharacterController.transform.position = SpawnLocation;
+                CharacterController.enabled = true;
+            }
         }
 
         public void SetStateIndex(int index)
@@ -41,11 +62,14 @@ namespace Blessing.Gameplay.Characters
 
         public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
+            if (ShowDebug) Debug.Log(gameObject.name + " OnNetworkSpawn");
             stateIndex.OnValueChanged += OnNetworkStateIndexChanged;
         }
 
         protected virtual void OnNetworkStateIndexChanged(int previousValue, int newValue)
         {
+            if (ShowDebug) Debug.Log(gameObject.name + ": OnNetworkStateIndexChanged");
             CharacterStateMachine.SetNextStateByIndex(stateIndex.Value);
         }
 

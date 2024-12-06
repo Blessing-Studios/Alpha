@@ -89,6 +89,7 @@ namespace Blessing.Gameplay.Characters
         {
             if (characterState != null)
             {
+                if (ShowDebug) Debug.Log(gameObject.name + ": SetNextState characterState - " + characterState.ToString());
                 Character.SetStateIndex(characterState.StateIndex);
                 nextState = characterState;
             }
@@ -96,6 +97,7 @@ namespace Blessing.Gameplay.Characters
 
         public void SetNextStateByIndex(int index)
         {
+            if (ShowDebug) Debug.Log(gameObject.name + ": SetNextStateByIndex StateIndex- " + index);
             SetNextState(StateList[index]);
         }
 

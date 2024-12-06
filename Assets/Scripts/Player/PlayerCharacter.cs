@@ -16,6 +16,8 @@ namespace Blessing.Player
     public class PlayerCharacter : Character
     {
         [HideInInspector] public NetworkVariable<FixedString32Bytes> OwnerName = new();
+
+        public string PlayerOwnerName;
         public NetworkVariable<bool> IsDisabled = new();
         // private int deferredDespawnTicks = 4;
 
@@ -26,12 +28,21 @@ namespace Blessing.Player
         private PlayerInput playerInput;
         private Dictionary<string, InputActionType> inputActionsDic = new();
         private Dictionary<string, InputDirectionType> inputDirectionsDic = new();
-        private bool canGiveInputs = false;
+        [SerializeField] private bool canGiveInputs = false;
         public string GetOwnerName()
         {
             return OwnerName.Value.ToString();
         }
 
+        public void SetOwnerName(string name)
+        {
+            OwnerName.Value = new FixedString32Bytes(name);
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+        }
         protected override void Awake()
         {
             base.Awake();
@@ -49,13 +60,24 @@ namespace Blessing.Player
             }
         }
 
-        void Start()
+        protected override void Start()
         {
-            HandleInitialization();
+            base.Start();
+            // HandleInitialization();
+            
+            canGiveInputs = GameDataManager.Singleton.PlayerName == GetOwnerName();
+                
+
+            if (!HasAuthority && !GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetOwnerName()))
+            {
+                GameManager.Singleton.AddPlayerCharacter(GetOwnerName(), this);
+                GameManager.Singleton.PlayerCharacterList.Add(this);
+            }
         }
 
         public void Update()
         {
+            PlayerOwnerName = OwnerName.Value.ToString();
             if (IsDisabled.Value == true && gameObject.activeSelf == true)
             {
                 gameObject.SetActive(false);

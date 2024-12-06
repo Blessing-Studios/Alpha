@@ -10,12 +10,13 @@ namespace Blessing.Player
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerMovementController : MovementController
     {
+        [SerializeField] private bool canGiveInputs = false;
         [field: SerializeField] public bool IsOffline {get; private set;}
         protected PlayerInput playerInput;
         protected InputAction moveAction;
         protected InputActionMap characterControlsMap;
         protected PlayerCharacter playerCharacter;
-        private bool canGiveInputs = false;
+        
 
         // Awake is called earlier than Start
         protected override void Awake()

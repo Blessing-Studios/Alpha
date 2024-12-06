@@ -1,8 +1,10 @@
 using UnityEngine;
 using Blessing.Player;
+using Blessing.Scene;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine.EventSystems;
+using UnityEngine.PlayerLoop;
 
 namespace Blessing
 {
@@ -12,10 +14,11 @@ namespace Blessing
         public Camera MainCamera;
         public CinemachineCamera VirtualCamera;
         public List<PlayerCharacter> PlayerCharacterList;
+        [field: SerializeField] public List<PlayerNetwork> PlayerList { get; private set; }
         public List<Transform> PlayerSpawnLocations;
         private Dictionary<string, PlayerCharacter> playerCharactersDic = new();
-
         public Dictionary<string, PlayerCharacter> PlayerCharactersDic { get { return playerCharactersDic; } }
+        public SceneStarter SceneStarter;
         protected virtual void Awake()
         {
             if (Singleton != null && Singleton != this)
@@ -46,10 +49,36 @@ namespace Blessing
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
         }
-
+        public void AddPlayer(PlayerNetwork player)
+        {
+            PlayerList.Add(player);
+        }
         public void AddPlayerCharacter(string playerName, PlayerCharacter playerCharacter)
         {
             playerCharactersDic.Add(playerName, playerCharacter);
+        }
+
+        public void AddPlayerSpawn(Transform spawn)
+        {
+            PlayerSpawnLocations.Add(spawn);
+        }
+        public Vector3 GetPlayerSpawnPosition()
+        {
+            int index = Random.Range(0, PlayerSpawnLocations.Count);
+            return PlayerSpawnLocations[index].position;
+        }
+
+        public Transform GetPlayerSpawn(int index)
+        {
+            return PlayerSpawnLocations[index];
+        }
+
+        public void InitializePlayers()
+        {
+            foreach (PlayerNetwork player in PlayerList)
+            {
+                player.Initialization();
+            }
         }
     }
 }
