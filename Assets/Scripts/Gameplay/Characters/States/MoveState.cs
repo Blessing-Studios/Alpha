@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Blessing.Gameplay.Characters.States
@@ -9,29 +7,28 @@ namespace Blessing.Gameplay.Characters.States
         protected MovementController movementController;
         protected CharacterController characterController;
         protected Combo[] combos;
-
         public Move CurrentMove;
         private int moveIndex;
         private int comboIndex;
         protected float attackPressedTimer = 0;
-        public MoveState(CharacterStateMachine _characterStateMachine) : base(_characterStateMachine)
+        public MoveState(CharacterStateMachine _characterStateMachine, int _stateIndex) : base(_characterStateMachine, _stateIndex)
         {
             movementController = characterStateMachine.MovementController;
-            characterController = characterStateMachine.CharacterController;
-
         }
 
         public override void OnEnter()
         {
             base.OnEnter();
 
+            character.ClearTargetList();
             
             combos = characterStateMachine.GetAllCombos();
             moveIndex = characterStateMachine.MoveIndex;
             comboIndex = characterStateMachine.ComboIndex;
             CurrentMove = combos[comboIndex].Moves[moveIndex];
 
-            Debug.Log("OnEnter Move Name: " + CurrentMove.Name);
+            // Save move in characterStateMachine
+            characterStateMachine.CurrentMove = CurrentMove;
 
             movementController.DisableMovement();
 
@@ -71,7 +68,6 @@ namespace Blessing.Gameplay.Characters.States
             // Check if the button was pressed in the attack window            
             if (animator.GetFloat("AttackWindowOpen") > 0.5f && attackPressedTimer >= 0)
             {
-                Debug.Log("WindowOpen and AttackPressedTimer");
                 shouldCombo = true;
             }
 

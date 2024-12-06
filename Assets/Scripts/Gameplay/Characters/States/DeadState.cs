@@ -9,7 +9,7 @@ namespace Blessing.Gameplay.Characters.States
     {
         protected MovementController movementController;
 
-        public DeadState(CharacterStateMachine _characterStateMachine) : base(_characterStateMachine)
+        public DeadState(CharacterStateMachine _characterStateMachine, int _stateIndex) : base(_characterStateMachine, _stateIndex)
         {
             movementController = characterStateMachine.gameObject.GetComponent<MovementController>();
         }
@@ -42,12 +42,11 @@ namespace Blessing.Gameplay.Characters.States
         {
             movementController.GetCharacterController().excludeLayers = LayerMask.GetMask("Default");
 
-            var children = character.gameObject.GetComponentsInChildren<Transform>(true);
-            foreach (var child in children)
-            {
-                // Debug.Log("child name: " + child.name);
-                child.gameObject.layer = LayerMask.NameToLayer("Dead");
-            }
+            // var children = character.gameObject.GetComponentsInChildren<Transform>(true);
+            // foreach (var child in children)
+            // {
+            //     child.gameObject.layer = LayerMask.NameToLayer("Dead");
+            // }
         }
     }
 }

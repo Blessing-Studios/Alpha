@@ -1,16 +1,19 @@
 using Blessing.Gameplay.Characters.InputActions;
 using Blessing.Gameplay.Characters.InputDirections;
 using Blessing.StateMachine;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 namespace Blessing.Gameplay.Characters.States
 {
     public abstract class CharacterState : State
     {
+        public int StateIndex { get; protected set; }
         // How long this state should be active for before moving on
         public float duration;
         // Cached animator component
         protected Animator animator;
+        protected NetworkAnimator networkAnimator;
 
         // protected AnimationCrontroller animator;
         // bool to check whether or not the next attack in the sequence should be played or not
@@ -23,16 +26,17 @@ namespace Blessing.Gameplay.Characters.States
         // The Hit Effect to Spawn on the afflicted Enemy
         private GameObject HitEffectPrefab;
 
-        public CharacterState(CharacterStateMachine _characterStateMachine)
+        public CharacterState(CharacterStateMachine _characterStateMachine, int _stateIndex)
         {
             characterStateMachine = _characterStateMachine;
             character = characterStateMachine.Character;
+            StateIndex = _stateIndex;
         }
-
         public override void OnEnter()
         {
             base.OnEnter();
             animator = characterStateMachine.Animator;
+            networkAnimator = characterStateMachine.NetworkAnimator;
         }
 
         public override void OnUpdate()
@@ -48,9 +52,11 @@ namespace Blessing.Gameplay.Characters.States
         {
             return false;
         }
+
+        /**
         public override bool OnTakeDamage(object sender, System.EventArgs eventArgs)
         {
-            int health = character.GetCurrentHealth();
+            int health = character.Health.GetHealth();
             if (health > 0)
                 characterStateMachine.SetNextState(characterStateMachine.TakeHitState);
 
@@ -59,5 +65,6 @@ namespace Blessing.Gameplay.Characters.States
 
             return true;
         }
+        **/
     }
 }

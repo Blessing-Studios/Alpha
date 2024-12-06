@@ -15,6 +15,7 @@ namespace Blessing.Player
         protected InputAction moveAction;
         protected InputActionMap characterControlsMap;
         protected PlayerCharacter playerCharacter;
+        private bool canGiveInputs = false;
 
         // Awake is called earlier than Start
         protected override void Awake()
@@ -22,6 +23,11 @@ namespace Blessing.Player
             base.Awake();
             playerInput = GetComponent<PlayerInput>();
             playerCharacter = GetComponent<PlayerCharacter>();
+        }
+
+        void Start()
+        {
+            canGiveInputs = GameDataManager.Singleton.PlayerName == playerCharacter.GetOwnerName();
         }
 
         // Update is called once per frame
@@ -46,6 +52,8 @@ namespace Blessing.Player
         /// <param name="context"></param>
         public void OnMove(InputAction.CallbackContext context)
         {
+            if (!HasAuthority || !canGiveInputs) return;
+
             if (context.performed || context.canceled)
             {
                 currentMovementInput = context.ReadValue<Vector2>();
@@ -71,7 +79,7 @@ namespace Blessing.Player
 
         protected override void OnOwnershipChanged(ulong previous, ulong current)
         {
-            canMove = GameDataManager.Singleton.PlayerName == playerCharacter.GetOwnerName();
+            canGiveInputs = GameDataManager.Singleton.PlayerName == playerCharacter.GetOwnerName();
         }
     }
 }

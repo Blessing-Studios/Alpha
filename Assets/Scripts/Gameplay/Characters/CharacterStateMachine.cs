@@ -1,26 +1,13 @@
+using System.Collections.Generic;
 using Blessing.Gameplay.Characters.InputActions;
 using Blessing.Gameplay.Characters.InputDirections;
 using Blessing.Gameplay.Characters.States;
+using Blessing.StateMachine;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 namespace Blessing.Gameplay.Characters
 {
-    [System.Serializable]
-    public class MeleeAttackInfo
-    {
-        [SerializeField] public AnimationClip AnimationClip;
-        [SerializeField] public string AnimationParam;
-        [SerializeField] public InputActionList TriggerAction;
-        [SerializeField] public InputDirectionList TriggerDirection;
-        [SerializeField] public float ExitEarlier = 0.1f;
-    }
-    [System.Serializable]
-    public class ComboInfo
-    {
-        [SerializeField] public string Name;
-        [SerializeField] public string Description;
-        [SerializeField] public MeleeAttackInfo[] AttacksList;
-    }
     public class CharacterStateMachine : StateMachine.StateMachine
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
@@ -29,25 +16,23 @@ namespace Blessing.Gameplay.Characters
         public MoveState MoveState;
         public TakeHitState TakeHitState;
         public DeadState DeadState;
-
+        public List<CharacterState> StateList = new();
         // public AttackState AttackState;
         // public RangeAttackState RangeAttackState;
         // public CombatEntryState CombatEntryState;
-
-        public int MoveIndex { get; set; }
-        public int ComboIndex { get; set; }
-
         public InputActionType CurrentAction;
         public InputDirectionType CurrentDirectionAction;
-
         // [field: SerializeField] private InputActionList inputActionList;
         // [field: SerializeField] private InputDirectionList inputDirectionList;
 
         public Character Character { get; protected set; }
-        public Animator Animator { get; set; }
+        public Animator Animator { get; private set; }
+        public NetworkAnimator NetworkAnimator { get; private set; }
         public CharacterController CharacterController { get; protected set; }
         public MovementController MovementController { get; protected set; }
-
+        public int MoveIndex { get; set; }
+        public int ComboIndex { get; set; }
+        public Move CurrentMove { get; set;}
         [SerializeField] protected Combo[] combos;
 
         protected override void Awake()
@@ -63,24 +48,59 @@ namespace Blessing.Gameplay.Characters
             if (Animator == null)
                 Animator = GetComponent<Animator>();
 
+            if (NetworkAnimator == null)
+                NetworkAnimator = GetComponent<NetworkAnimator>();
+
             if (MovementController == null)
                 MovementController = GetComponent<MovementController>();
         }
 
         protected override void Start()
         {
-            IdleState = new IdleState(this);
-            MoveState = new MoveState(this);
-            TakeHitState = new TakeHitState(this);
-            DeadState = new DeadState(this);
+            IdleState = new IdleState(this, 0);
+            MoveState = new MoveState(this, 1);
+            TakeHitState = new TakeHitState(this, 2);
+            DeadState = new DeadState(this, 3);
+
+            // TODO: Automatizar essa parte no futuro
+            StateList.Add(IdleState);
+            StateList.Add(MoveState);
+            StateList.Add(TakeHitState);
+            StateList.Add(DeadState);
 
             mainStateType = IdleState;
+
             base.Start();
+
+            // In case IdleState is not the current one, call current State
+            // Repensar essa parte
+            if (Character.StateIndex != 0)
+            {
+                SetNextStateByIndex(Character.StateIndex);
+            }
+        }
+
+        public new void SetNextStateToMain()
+        {
+            SetNextState(IdleState);
+        }
+
+        public void SetNextState(CharacterState characterState)
+        {
+            if (characterState != null)
+            {
+                Character.SetStateIndex(characterState.StateIndex);
+                nextState = characterState;
+            }
+        }
+
+        public void SetNextStateByIndex(int index)
+        {
+            SetNextState(StateList[index]);
         }
 
         public void StartCombo(InputActionType action, InputDirectionType direction)
         {
-            Debug.Log(gameObject.name + ": StartCombo");
             CurrentAction = action;
             CurrentDirectionAction = direction;
             
@@ -96,7 +116,7 @@ namespace Blessing.Gameplay.Characters
                 {
                     MoveIndex = 0;
                     ComboIndex = comboIndex;
-                    SetNextState(MoveState);
+                    SetNextState((CharacterState) MoveState);
                     return;
                 }
             }
@@ -117,7 +137,6 @@ namespace Blessing.Gameplay.Characters
                     return;
                 }
             }
-
             
             SetNextStateToMain();
         }

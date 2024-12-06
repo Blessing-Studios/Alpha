@@ -8,6 +8,7 @@ using UnityEngine;
 using Unity.Netcode;
 using Unity.Collections;
 using UnityEngine.InputSystem;
+using Blessing.Gameplay.HealthAndDamage;
 
 namespace Blessing.Player
 {
@@ -25,7 +26,7 @@ namespace Blessing.Player
         private PlayerInput playerInput;
         private Dictionary<string, InputActionType> inputActionsDic = new();
         private Dictionary<string, InputDirectionType> inputDirectionsDic = new();
-        private bool hasPlayerInputs = false;
+        private bool canGiveInputs = false;
         public string GetOwnerName()
         {
             return OwnerName.Value.ToString();
@@ -71,8 +72,6 @@ namespace Blessing.Player
 
                 if (GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetOwnerName()))
                 {
-                    Debug.LogWarning("Esse player já tem um Char");
-
                     PlayerCharacter originalCharacter = GameManager.Singleton.PlayerCharactersDic[GetOwnerName()];
 
                     originalCharacter.GetComponent<NetworkObject>().ChangeOwnership(OwnerClientId);
@@ -99,6 +98,8 @@ namespace Blessing.Player
             }
 
             gameObject.name = gameObject.name + "-" + GetOwnerName();
+
+            canGiveInputs = GameDataManager.Singleton.PlayerName == GetOwnerName();
         }
 
         protected override void OnOwnershipChanged(ulong previous, ulong current)
@@ -112,23 +113,23 @@ namespace Blessing.Player
                 GetComponent<NetworkObject>().SetOwnershipLock(false);
             }
 
-            hasPlayerInputs = GameDataManager.Singleton.PlayerName == GetOwnerName();
+            canGiveInputs = GameDataManager.Singleton.PlayerName == GetOwnerName();
         }
 
 
         public void OnAttack(InputAction.CallbackContext context)
         {
-            if (!HasAuthority || !hasPlayerInputs) return;
+            if (!HasAuthority || !canGiveInputs) return;
 
             if (context.performed)
             {
                 TriggerAction = GetAction("Attack");
-                characterStateMachine.CharacterState.OnTrigger(TriggerAction, TriggerDirection);
+                CharacterStateMachine.CharacterState.OnTrigger(TriggerAction, TriggerDirection);
             }
         }
         public void OnMove(InputAction.CallbackContext context)
         {
-            if (!HasAuthority || !hasPlayerInputs) return;
+            if (!HasAuthority || !canGiveInputs) return;
             
             Vector2 currentMovementInput = Vector2.zero;
             if (context.performed || context.canceled)
@@ -158,7 +159,7 @@ namespace Blessing.Player
 
         public override bool CheckIfActionTriggered(string actionName)
         {
-            if (!HasAuthority || !hasPlayerInputs) return false;
+            if (!HasAuthority || !canGiveInputs) return false;
 
             if (actionName != ""
                 && playerInput.currentActionMap.FindAction(actionName) != null

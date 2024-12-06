@@ -11,13 +11,14 @@ GameObject:
   - component: {fileID: 6931712906820337884}
   - component: {fileID: 8989953693601896100}
   - component: {fileID: 7246065932389035199}
+  - component: {fileID: 2698016808825057512}
   m_Layer: 0
   m_Name: HitBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6931712906820337884
 Transform:
   m_ObjectHideFlags: 0
@@ -83,6 +84,26 @@ CapsuleCollider:
   m_Height: 0.68
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2698016808825057512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511698797570248328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c43b6254ed05e1e4a84b01106daf7a9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  <ShowDebug>k__BackingField: 1
+  <OwnerGameObject>k__BackingField: {fileID: 6028631068472643565}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  capsuleCollider: {fileID: 7246065932389035199}
+  thickness: 0.1
 --- !u!1 &1615121728507468792
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,6 +114,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4410562106461084563}
   - component: {fileID: 6431316129197781818}
+  - component: {fileID: 7680487914564740950}
   m_Layer: 8
   m_Name: BodyHurtBox
   m_TagString: Untagged
@@ -136,6 +158,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.3, y: 0.3, z: 0.37}
   m_Center: {x: 0.03, y: -0.06, z: 0}
+--- !u!114 &7680487914564740950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615121728507468792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d52a3807f53b414ab8fb0d0ac583a12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <OwnerGameObject>k__BackingField: {fileID: 6028631068472643565}
+  IsActive: 1
+  <DmgMultiplier>k__BackingField: 0
+  TakeHitEffect: {fileID: 0}
 --- !u!1 &6028631068472643565
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +192,8 @@ GameObject:
   - component: {fileID: 8376207516185148171}
   - component: {fileID: 2259359815306742575}
   - component: {fileID: 1336789277861539600}
-  - component: {fileID: 5486276750212474705}
+  - component: {fileID: 655986913388950610}
+  - component: {fileID: 3296479451506363367}
   m_Layer: 0
   m_Name: Knight
   m_TagString: Player
@@ -264,7 +303,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 16019ed345e4f5641826cd1336f36fe3, type: 3}
+  - {fileID: -876546973899608171, guid: 944d2c6c8d71ac7499d0a96033336ec2, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -507,6 +546,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   AttackPressedTimerWindow: 0.2
+  stateIndex:
+    m_InternalValue: 1
   OwnerName:
     m_InternalValue:
       utf8LengthInBytes: 0
@@ -587,7 +628,30 @@ MonoBehaviour:
   CurrentMovement: {x: 0, y: 0, z: 0}
   CanMove: 0
   <IsOffline>k__BackingField: 0
---- !u!114 &5486276750212474705
+--- !u!114 &655986913388950610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31655ac059842314d833f8712faab4ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  <ShowDebug>k__BackingField: 1
+  health:
+    m_InternalValue: 100
+  maxHealth: 0
+  lifeRegen: 1
+  damageOverTime: 0
+  waitTime: 0.5
+  <MaxWounds>k__BackingField: 0
+  woundHealth: 25
+  wounds: 0
+--- !u!114 &3296479451506363367
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

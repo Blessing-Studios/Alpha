@@ -5,7 +5,7 @@ namespace Blessing.Gameplay.Characters.States
 {
     public class IdleState : CharacterState
     {
-        public IdleState(CharacterStateMachine _characterStateMachine) : base(_characterStateMachine)
+        public IdleState(CharacterStateMachine _characterStateMachine, int _stateIndex) : base(_characterStateMachine, _stateIndex)
         {
 
         }
