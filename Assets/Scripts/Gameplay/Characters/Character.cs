@@ -31,7 +31,7 @@ namespace Blessing.Gameplay.Characters
         [field: SerializeField] protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(1,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-        public int StateIndex { get { return stateIndex.Value;}}
+        public int StateIndex { get { return stateIndex.Value; }}
         protected List<IHittable> targetList = new();
         public Vector3 SpawnLocation;
         protected virtual void Awake()
@@ -44,7 +44,7 @@ namespace Blessing.Gameplay.Characters
             stateIndex.Value = 0;
         }
 
-        protected virtual void Start()
+        protected virtual void Start() 
         {
             if (HasAuthority)
             {
@@ -54,20 +54,20 @@ namespace Blessing.Gameplay.Characters
             }
         }
 
-        public void SetStateIndex(int index)
+        public void SetStateIndex(int index) // mover para CharacterNetwork
         {
             if (HasAuthority)
                 stateIndex.Value = index;
         }
 
-        public override void OnNetworkSpawn()
+        public override void OnNetworkSpawn() // mover para CharacterNetwork
         {
             base.OnNetworkSpawn();
             if (ShowDebug) Debug.Log(gameObject.name + " OnNetworkSpawn");
             stateIndex.OnValueChanged += OnNetworkStateIndexChanged;
         }
 
-        protected virtual void OnNetworkStateIndexChanged(int previousValue, int newValue)
+        protected virtual void OnNetworkStateIndexChanged(int previousValue, int newValue) // mover para CharacterNetwork
         {
             if (ShowDebug) Debug.Log(gameObject.name + ": OnNetworkStateIndexChanged");
             CharacterStateMachine.SetNextStateByIndex(stateIndex.Value);
@@ -80,7 +80,7 @@ namespace Blessing.Gameplay.Characters
         }
 
         [Rpc(SendTo.Everyone)]
-        public void ClearTargetListRpc()
+        public void ClearTargetListRpc() // mover para CharacterNetwork, não usar RPC
         {
             targetList.Clear();
         }

@@ -232,7 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3752516906
+  GlobalObjectIdHash: 3936908184
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 3
@@ -650,6 +650,14 @@ MonoBehaviour:
   wisdom: 0
   charisma: 0
   luck: 0
+  UseBaseStats: 0
+  <BaseStrength>k__BackingField: 5
+  <BaseConstitution>k__BackingField: 5
+  <BaseDexterity>k__BackingField: 5
+  <BaseIntelligence>k__BackingField: 5
+  <BaseWisdom>k__BackingField: 5
+  <BaseCharisma>k__BackingField: 5
+  <BaseLuck>k__BackingField: 5
 --- !u!114 &655986913388950610
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine.EventSystems;
 using UnityEngine.PlayerLoop;
+using Blessing.Gameplay.TradeAndInventory;
+using Unity.VisualScripting;
 
 namespace Blessing
 {
@@ -12,6 +14,7 @@ namespace Blessing
     {
         public static GameManager Singleton { get; private set; }
         public Camera MainCamera;
+        public InventoryController InventoryController { get; private set; }
         public CinemachineCamera VirtualCamera;
         public List<PlayerCharacter> PlayerCharacterList;
         [field: SerializeField] public List<PlayerNetwork> PlayerList { get; private set; }
@@ -30,6 +33,8 @@ namespace Blessing
             {
                 Singleton = this;
             }
+
+            InventoryController = MainCamera.gameObject.GetComponent<InventoryController>();
         }
 
         protected virtual void Start()
