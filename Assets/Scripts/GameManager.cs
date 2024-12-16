@@ -14,14 +14,15 @@ namespace Blessing
     {
         public static GameManager Singleton { get; private set; }
         public Camera MainCamera;
-        public InventoryController InventoryController { get; private set; }
+        
         public CinemachineCamera VirtualCamera;
         public List<PlayerCharacter> PlayerCharacterList;
-        [field: SerializeField] public List<PlayerNetwork> PlayerList { get; private set; }
+        [field: SerializeField] public List<PlayerController> PlayerList { get; private set; }
         public List<Transform> PlayerSpawnLocations;
         private Dictionary<string, PlayerCharacter> playerCharactersDic = new();
         public Dictionary<string, PlayerCharacter> PlayerCharactersDic { get { return playerCharactersDic; } }
         public SceneStarter SceneStarter;
+        public InventoryController InventoryController;
         protected virtual void Awake()
         {
             if (Singleton != null && Singleton != this)
@@ -33,8 +34,6 @@ namespace Blessing
             {
                 Singleton = this;
             }
-
-            InventoryController = MainCamera.gameObject.GetComponent<InventoryController>();
         }
 
         protected virtual void Start()
@@ -54,7 +53,7 @@ namespace Blessing
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
         }
-        public void AddPlayer(PlayerNetwork player)
+        public void AddPlayer(PlayerController player)
         {
             PlayerList.Add(player);
         }
@@ -80,10 +79,20 @@ namespace Blessing
 
         public void InitializePlayers()
         {
-            foreach (PlayerNetwork player in PlayerList)
+            foreach (PlayerController player in PlayerList)
             {
                 player.Initialization();
             }
+        }
+
+        public bool ValidateCharOwnerNO(string playerName)
+        {
+              PlayerCharacter playerCharacter = playerCharactersDic[playerName];
+              if (playerCharacter == null) return false;
+
+              if (playerCharacter.GetOwnerName() == playerName) return true;
+
+              return false;
         }
     }
 }

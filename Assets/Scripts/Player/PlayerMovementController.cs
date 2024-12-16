@@ -28,7 +28,7 @@ namespace Blessing.Player
 
         void Start()
         {
-            canGiveInputs = GameDataManager.Singleton.PlayerName == playerCharacter.GetOwnerName();
+            canGiveInputs = GameDataManager.Singleton.ValidateOwner(playerCharacter.GetOwnerName());
         }
 
         // Update is called once per frame
@@ -80,7 +80,7 @@ namespace Blessing.Player
 
         protected override void OnOwnershipChanged(ulong previous, ulong current)
         {
-            canGiveInputs = GameDataManager.Singleton.PlayerName == playerCharacter.GetOwnerName();
+            canGiveInputs = GameDataManager.Singleton.ValidateOwner(playerCharacter.GetOwnerName());
         }
     }
 }

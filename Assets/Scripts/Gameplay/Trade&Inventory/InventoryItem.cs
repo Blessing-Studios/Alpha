@@ -7,15 +7,15 @@ namespace Blessing.Gameplay.TradeAndInventory
     public class InventoryItem : MonoBehaviour
     {
         public Item Item;
+        public InventoryItemData Data;
         public Vector2Int GridPosition;
-        [SerializeField] private bool rotated = false;
-        public bool Rotated { get { return rotated; } }
+        public bool Rotated { get { return Data.Rotated; } }
         public RectTransform RectTransform { get; private set; }
         public int Width
         {
             get
             {
-                if (!rotated)
+                if (!Data.Rotated)
                     return Item.Width;
                 else
                     return Item.Height;
@@ -25,18 +25,32 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             get
             {
-                if (!rotated)
+                if (!Data.Rotated)
                     return Item.Height;
                 else
                     return Item.Width;
             }
         }
-        internal void Set(Item item)
+
+        private void InitializeItem(Item item)
         {
             Item = item;
             GetComponent<Image>().sprite = item.Sprite;
 
-            RectTransform.sizeDelta = new(item.Width * ItemGrid.TileSizeWidth, item.Height * ItemGrid.TileSizeHeight);
+            gameObject.name = item.name;
+
+            RectTransform.sizeDelta = new(item.Width * InventoryGrid.TileSizeWidth, item.Height * InventoryGrid.TileSizeHeight);
+        }
+        public void Set(Item item)
+        {
+            InitializeItem(item);
+            SetData(Guid.NewGuid(), item.Id, Vector2Int.zero, false);
+        }
+
+        public void Set(Item item, InventoryItemData  data)
+        {
+            InitializeItem(item);
+            SetData(data);
         }
 
         void Awake()
@@ -45,12 +59,27 @@ namespace Blessing.Gameplay.TradeAndInventory
         }
         public void Rotate()
         {
-            rotated = !rotated;
+            Data.Rotated = !Data.Rotated;
 
-            float rotation = rotated == true ? -90f : 0;
+            float rotation = Data.Rotated == true ? -90f : 0;
             RectTransform.rotation = Quaternion.Euler(0, 0, rotation);
         }
 
+        public InventoryItemData GetData()
+        {
+            return Data; 
+        }
+        public void SetData(InventoryItemData data)
+        {
+            Data = data;
+        }
+        public void SetData(Guid id, int itemId, Vector2Int position, bool Rotated)
+        {
+            Data.Id = id;
+            Data.ItemId = itemId;
+            Data.Position = position;
+            Data.Rotated = Rotated;
+        }
     }
 }
 

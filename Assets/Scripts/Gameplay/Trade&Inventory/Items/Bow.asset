@@ -15,3 +15,4 @@ MonoBehaviour:
   Width: 3
   Height: 2
   Sprite: {fileID: 21300000, guid: ef1c8779a7318c1499256d2fc2b9e5b1, type: 3}
+  Id: 1

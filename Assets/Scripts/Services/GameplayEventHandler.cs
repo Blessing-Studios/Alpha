@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Blessing.Services
 {
+    // Não está sendo usado, estudar se deve ser deletado
     static class GameplayEventHandler
     {
         internal static event Action<NetworkObject> OnNetworkObjectDespawned;

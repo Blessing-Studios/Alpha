@@ -14,7 +14,6 @@ namespace Blessing.UI
         [SerializeField] private TMP_InputField sessionNameField;
         void Awake() 
         {
-
             startButton.onClick.AddListener(() => {
                 if (ShowDebug) Debug.Log("startButton");
                 string playerName = playerNameField.text;

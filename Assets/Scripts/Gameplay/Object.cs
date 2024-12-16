@@ -21,7 +21,6 @@ namespace Blessing.Gameplay
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            Debug.Log(gameObject.name + " Object OnNetworkSpawn()");
             gameObject.name = $"[NetworkObjectId-{NetworkObjectId}]{name}";
             m_OriginalPosition = transform.position;
             m_OriginalRotation = transform.rotation;

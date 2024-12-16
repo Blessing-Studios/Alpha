@@ -3,31 +3,30 @@ using UnityEngine.EventSystems;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    [RequireComponent(typeof(ItemGrid))]
+    [RequireComponent(typeof(InventoryGrid))]
     public class GridInteract : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         private InventoryController inventoryController;
-        private ItemGrid itemGrid;
+        private InventoryGrid inventoryGrid;
 
         void Awake()
         {
-            itemGrid = GetComponent<ItemGrid>();
+            inventoryGrid = GetComponent<InventoryGrid>();
         }
         void Start()
         {
             inventoryController = GameManager.Singleton.InventoryController;
-            
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            GameManager.Singleton.InventoryController.SelectedItemGrid = itemGrid;
+            GameManager.Singleton.InventoryController.SelectedInventoryGrid = inventoryGrid;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            itemGrid.ExitGrid();
-            GameManager.Singleton.InventoryController.SelectedItemGrid = null;
+            inventoryGrid.ExitGrid();
+            GameManager.Singleton.InventoryController.SelectedInventoryGrid = null;
         }
     }
 }

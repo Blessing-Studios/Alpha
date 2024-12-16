@@ -1,12 +1,13 @@
 using System;
 using Blessing.GameData;
+using Blessing.Gameplay.TradeAndInventory;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace Blessing.Player
 {
-    public class PlayerNetwork : NetworkBehaviour
+    public class PlayerController : NetworkBehaviour
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public NetworkObject CharacterToSpawn;
@@ -47,29 +48,20 @@ namespace Blessing.Player
 
                 if (GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetPlayerName()))
                 {
-                    PlayerCharacter PlayerCharacter = GameManager.Singleton.PlayerCharactersDic[GetPlayerName()];
-
-                    PlayerCharacter.GetComponent<NetworkObject>().ChangeOwnership(OwnerClientId);
-
-                    GameManager.Singleton.VirtualCamera.LookAt = PlayerCharacter.transform;
-                    GameManager.Singleton.VirtualCamera.Target.TrackingTarget = PlayerCharacter.transform;
+                    FindPlayerCharacter();
                 }
                 else // This player doesn't have a Char in this session, Spawn a new Char
                 {
                     SpawnPlayerCharacter();
                 }
+
+                SetPlayer();
             }
-
-            // if (!HasAuthority && !GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetOwnerName()))
-            // {
-            //     GameManager.Singleton.AddPlayerCharacter(GetOwnerName(), PlayerCharacter);
-            //     GameManager.Singleton.PlayerCharacterList.Add(PlayerCharacter);
-            // }
         }
-
-        public bool ValidateOwner()
+        private void FindPlayerCharacter()
         {
-            return GameDataManager.Singleton.PlayerName == GetPlayerName();
+            PlayerCharacter = GameManager.Singleton.PlayerCharactersDic[GetPlayerName()];
+            PlayerCharacter.GetComponent<NetworkObject>().ChangeOwnership(OwnerClientId);
         }
 
         private void SpawnPlayerCharacter()
@@ -79,19 +71,26 @@ namespace Blessing.Player
             if (SpawnLocation == null)
                 Debug.LogError(gameObject.name + " SpawnLocation is missing.");
 
-            Debug.Log(gameObject.name + " SpawnLocation: " + SpawnLocation);    
-
             var spawnedNetworkObject = CharacterToSpawn.InstantiateAndSpawn(NetworkManager, ownerClientId: OwnerClientId);
 
+            spawnedNetworkObject.name = "Char-" + GetPlayerName();
             PlayerCharacter = spawnedNetworkObject.GetComponent<PlayerCharacter>();
             PlayerCharacter.SpawnLocation = SpawnLocation;
             PlayerCharacter.SetOwnerName(GetPlayerName());
 
             GameManager.Singleton.AddPlayerCharacter(GetPlayerName(), PlayerCharacter);
             GameManager.Singleton.PlayerCharacterList.Add(PlayerCharacter);
+        }
 
+        private void SetPlayer()
+        {
             GameManager.Singleton.VirtualCamera.LookAt = PlayerCharacter.transform;
             GameManager.Singleton.VirtualCamera.Target.TrackingTarget = PlayerCharacter.transform;
+        }
+
+        public bool ValidateOwner()
+        {
+            return GameDataManager.Singleton.ValidateOwner(GetPlayerName());
         }
     }
 }

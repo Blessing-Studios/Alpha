@@ -71,9 +71,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  <ShowDebug>k__BackingField: 1
+  <ShowDebug>k__BackingField: 0
   CharacterToSpawn: {fileID: 5369011401359272698, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-  SpawnLocation: {fileID: 0}
+  SpawnLocation: {x: 0, y: 0, z: 0}
   <PlayerCharacter>k__BackingField: {fileID: 0}
   PlayerName:
     m_InternalValue:

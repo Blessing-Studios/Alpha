@@ -12,7 +12,7 @@ namespace Blessing.Gameplay.Characters
     [RequireComponent(typeof(MovementController))]
     [RequireComponent(typeof(CharacterHealth))]
     [RequireComponent(typeof(CharacterController))]
-    public abstract class Character : NetworkBehaviour, IHitter, IHittable
+    public abstract class Character : MonoBehaviour, IHitter, IHittable
     {
         protected string characterName;
         public string CharacterName
@@ -26,14 +26,47 @@ namespace Blessing.Gameplay.Characters
         public MovementController MovementController { get; protected set; }
         public CharacterStateMachine CharacterStateMachine { get; protected set; }
         public CharacterHealth Health { get; protected set; }
+        [field: SerializeField] public List<IHittable> TargetList { get; private set; }
         public CharacterController CharacterController { get; protected set; }
+        public CharacterNetwork CharacterNetwork { get; protected set; }
         public HitInfo HitInfo { get; protected set; }
-        [field: SerializeField] protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(1,
-            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        // [field: SerializeField] protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(1,
+        //     NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner); // Mover para CharacterNetwork
 
-        public int StateIndex { get { return stateIndex.Value; }}
-        protected List<IHittable> targetList = new();
+        // public int StateIndex { get { return stateIndex.Value; }}
+
+        public int StateIndex 
+        { 
+            get 
+            {
+                if (CharacterNetwork != null)
+                    return CharacterNetwork.StateIndex;
+                else
+                    return stateIndex;
+            }
+        }
+        public void SetStateIndex(int stateIndex) // Gambiarra para funcionar tanto online quanto offline
+        {
+            if (CharacterNetwork != null) 
+                CharacterNetwork.SetStateIndex(stateIndex);
+            else
+                this.stateIndex = stateIndex;
+        }
+
+        private int stateIndex; // Offline StateIndex
         public Vector3 SpawnLocation;
+
+        public bool HasAuthority 
+        { 
+            get 
+            {
+                if (CharacterNetwork != null)
+                    return CharacterNetwork.HasAuthority;
+                else
+                    return true;
+            } 
+        }
+
         protected virtual void Awake()
         {
             MovementController = GetComponent<MovementController>();
@@ -41,7 +74,11 @@ namespace Blessing.Gameplay.Characters
             Health = GetComponent<CharacterHealth>();
             CharacterController = GetComponent<CharacterController>();
 
-            stateIndex.Value = 0;
+            CharacterNetwork = GetComponent<CharacterNetwork>();
+
+            TargetList = new List<IHittable>();
+
+            // stateIndex.Value = 0;
         }
 
         protected virtual void Start() 
@@ -54,52 +91,53 @@ namespace Blessing.Gameplay.Characters
             }
         }
 
-        public void SetStateIndex(int index) // mover para CharacterNetwork
-        {
-            if (HasAuthority)
-                stateIndex.Value = index;
-        }
+        // public void SetStateIndex(int index) // mover para CharacterNetwork
+        // {
+        //     if (HasAuthority)
+        //         stateIndex.Value = index;
+        // }
 
-        public override void OnNetworkSpawn() // mover para CharacterNetwork
-        {
-            base.OnNetworkSpawn();
-            if (ShowDebug) Debug.Log(gameObject.name + " OnNetworkSpawn");
-            stateIndex.OnValueChanged += OnNetworkStateIndexChanged;
-        }
+        // public override void OnNetworkSpawn() // mover para CharacterNetwork
+        // {
+        //     base.OnNetworkSpawn();
+        //     if (ShowDebug) Debug.Log(gameObject.name + " OnNetworkSpawn");
+        //     stateIndex.OnValueChanged += OnNetworkStateIndexChanged;
+        // }
 
-        protected virtual void OnNetworkStateIndexChanged(int previousValue, int newValue) // mover para CharacterNetwork
-        {
-            if (ShowDebug) Debug.Log(gameObject.name + ": OnNetworkStateIndexChanged");
-            CharacterStateMachine.SetNextStateByIndex(stateIndex.Value);
-        }
+        // protected virtual void OnNetworkStateIndexChanged(int previousValue, int newValue) // mover para CharacterNetwork
+        // {
+        //     if (ShowDebug) Debug.Log(gameObject.name + ": OnNetworkStateIndexChanged");
+        //     CharacterStateMachine.SetNextStateByIndex(stateIndex.Value);
+        // }
 
         public void ClearTargetList()
         {
-            if (HasAuthority)
-                ClearTargetListRpc();
+            // if (!HasAuthority) return;
+            
+            TargetList.Clear();
         }
 
-        [Rpc(SendTo.Everyone)]
-        public void ClearTargetListRpc() // mover para CharacterNetwork, não usar RPC
-        {
-            targetList.Clear();
-        }
+        // [Rpc(SendTo.Everyone)]
+        // public void ClearTargetListRpc() // mover para CharacterNetwork, não usar RPC
+        // {
+        //     TargetList.Clear();
+        // }
 
         /// <summary>
         /// Add target to target list
         /// </summary>
         /// <param name="target"></param>
-        /// <returns>false if failed already hit, true if added to targetList</returns>
+        /// <returns>false if failed already hit, true if added to TargetList</returns>
         public virtual bool Hit(IHittable target)
         {
-            if (targetList.Contains(target))
+            if (TargetList.Contains(target))
             {
                 // hit failed, target was already hit;
                 return false;
             }
 
             HitInfo = new HitInfo(CharacterStateMachine.CurrentMove.Damage);
-            targetList.Add(target);
+            TargetList.Add(target);
 
             return true;
         }

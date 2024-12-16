@@ -240,7 +240,7 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   singlePlayerButton: {fileID: 1005815133}
   SinglePlayerScene:
-    value: {fileID: 11400000, guid: 01f2068417f7df045ac0c49a36f73c6f, type: 2}
+    value: {fileID: 11400000, guid: d232e363982622d43a59616d48ba905a, type: 2}
   multiplayerButton: {fileID: 1589634251}
   multiplayerPanel: {fileID: 1028802672}
   optionsButton: {fileID: 546308407}
@@ -3829,7 +3829,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1005815134}
   m_OnClick:
     m_PersistentCalls:

@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -8,22 +11,18 @@ using UnityEngine.UIElements;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    public class ItemGrid : MonoBehaviour
+    public class InventoryGrid : MonoBehaviour
     {
+        public Inventory Inventory;
+        public List<InventoryItem> GridItems;
         public const float TileSizeWidth = 32;
         public const float TileSizeHeight = 32;
         private RectTransform rectTransform;
         [SerializeField] private int gridSizeWidth = 20;
         [SerializeField] private int gridSizeHeight = 10;
-
-        InventoryItem[,] inventoryItemSlot;
-
         [SerializeField] GameObject inventoryItemPrefab;
         [field: SerializeField] public RectTransform ItemHighlight { get; protected set; }
         [field: SerializeField] public Vector2Int? HighlightPosition { get; protected set; } 
-        
-
-
         private Vector2 positionOnTheGrid = new();
         private Vector2Int tileGridPosition = new();
 
@@ -32,18 +31,68 @@ namespace Blessing.Gameplay.TradeAndInventory
             rectTransform = GetComponent<RectTransform>();
         }
 
-        void Start()
-        {
-            InitializeGrid(gridSizeWidth, gridSizeHeight);
-        }
-
-        public void InitializeGrid(int width, int height)
+        public void InitializeGrid()
         {   
-            inventoryItemSlot = new InventoryItem[width, height];
-            rectTransform.sizeDelta = new Vector2(width * TileSizeWidth, height * TileSizeHeight);
+            bool activated = false;
+            if (!gameObject.activeSelf)
+            {
+                activated = true;
+                gameObject.SetActive(true);
+            }
+
+
+            gameObject.SetActive(true);
+
+            if (Inventory == null)
+            {
+                Debug.LogError(gameObject.name + " Inventory is missing");
+            }
+
+            gridSizeWidth = Inventory.Width;
+            gridSizeHeight = Inventory.Height;
+
+            rectTransform.sizeDelta = new Vector2(gridSizeWidth * TileSizeWidth, gridSizeHeight * TileSizeHeight);
             ItemHighlight.SetParent(rectTransform);
             RemoveHighlight();
 
+            UpdateFromInventory();
+
+            if (activated)
+                gameObject.SetActive(false);
+        }
+
+        public void UpdateFromInventory()
+        {
+            if (Inventory == null) 
+            {
+                Debug.LogError(gameObject.name + " Inventory is missing");
+                return;
+            }
+            
+            CleanInventoryGrid();
+
+            // Refazer Lógica
+            // Pega os itens do inventário e coloca no inventoryGrid
+            foreach(InventoryItem item in Inventory.ItemList)
+            {
+                PlaceItemOnGrid(item, item.Data.Position);
+            }
+        }
+
+        public void CleanInventoryGrid()
+        {
+            foreach (InventoryItem item in GridItems)
+            {
+                item.gameObject.SetActive(false);
+            }
+
+            GridItems.Clear();
+        }
+
+        public void RemoveItemFromGrid(InventoryItem item)
+        {
+            GridItems.Remove(item);
+            item.gameObject.SetActive(false); // Temporário 
         }
 
         public void ExitGrid()
@@ -65,42 +114,74 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (!PositionCheck(position)) return null;
 
-            return inventoryItemSlot[position.x, position.y];
+            return Inventory.ItemSlot[position.x, position.y];
         }
         public bool PlaceItem(InventoryItem inventoryItem, Vector2Int position)
         {
-            int width = inventoryItem.Width;
-            int height = inventoryItem.Height;
-
-            if (!CheckAvailableSpace(position, width, height)) return false;
-
-            inventoryItem.RectTransform.SetParent(this.rectTransform);
-            inventoryItem.RectTransform.SetAsLastSibling();
-
-            for (int x = 0; x < width; x++)
+            if (!CheckAvailableSpace(position, inventoryItem.Width, inventoryItem.Height))
             {
-                for (int y = 0; y < height; y++)
-                {
-                    // Criar um id ou hash no lugar de salvar o inventoryItem ref
-                    inventoryItemSlot[position.x + x, position.y + y] = inventoryItem;
-                }
+                return false;
+            }
+            // Move the item in the right position on the InventoryGrid
+            if (!PlaceItemOnGrid(inventoryItem, position))
+            {
+                return false;
             }
 
-            inventoryItem.GridPosition = position;
-            inventoryItem.RectTransform.localPosition = CalculatePosition(position, width, height);
+            // Add Item checking if it is already in Inventory
+            if (!Inventory.AddItem(inventoryItem, position))
+            {
+                return false;
+            }
 
             return true;
         }
 
+        public bool PlaceItemOnGrid(InventoryItem inventoryItem, Vector2Int position)
+        {
+            inventoryItem.RectTransform.SetParent(this.rectTransform);
+            inventoryItem.RectTransform.SetAsLastSibling();
+
+            inventoryItem.Data.Position = position;
+            inventoryItem.RectTransform.localPosition = CalculatePosition(position, inventoryItem.Width, inventoryItem.Height);
+
+            GridItems.Add(inventoryItem);
+
+            inventoryItem.gameObject.SetActive(true);
+
+            return true;
+        }
+
+        public bool DeleteItem(InventoryItem inventoryItem)
+        {
+            RemoveItemFromGrid(inventoryItem);
+
+            bool isRemoved = Inventory.RemoveItem(inventoryItem);
+            if (isRemoved)
+            {
+                return true;
+            }
+
+            Debug.LogWarning(gameObject.name + " RemoveItem failed");
+            return false;
+        }
+
         private bool CheckAvailableSpace(Vector2Int position, int width, int height)
         {
-            if (!BoundaryCheck(position, width, height)) return false;
+            
+            if (!BoundaryCheck(position, width, height)) 
+            {
+                return false;
+            }
 
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    if (inventoryItemSlot[position.x + x, position.y + y] != null) return false;
+                    if (Inventory.ItemSlot[position.x + x, position.y + y] != null)
+                    {
+                        return false;
+                    }
                 }
             }
 
@@ -120,7 +201,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         internal InventoryItem PickUpItem(Vector2Int position)
         {
-            InventoryItem inventoryItem = inventoryItemSlot[position.x, position.y];
+            InventoryItem inventoryItem = Inventory.ItemSlot[position.x, position.y];
 
             if (inventoryItem == null) return null;
 
@@ -128,20 +209,32 @@ namespace Blessing.Gameplay.TradeAndInventory
             {
                 for (int y = 0; y < inventoryItem.Height; y++)
                 {
-                    inventoryItemSlot[inventoryItem.GridPosition.x + x, inventoryItem.GridPosition.y + y] = null;
+                    Inventory.ItemSlot[inventoryItem.Data.Position.x + x, inventoryItem.Data.Position.y + y] = null;
                 }
             }
+
+            Inventory.RemoveItem(inventoryItem);
+
+            GridItems.Remove(inventoryItem);
 
             return inventoryItem;
         }
         private bool BoundaryCheck(Vector2Int position, int width, int height)
         {
-            if (!PositionCheck(position)) return false;
+            if (!PositionCheck(position))
+            {
+                Debug.Log(gameObject.name + " Position Check 1 failed");
+                return false;
+            }
 
             position.x += width - 1;
             position.y += height - 1;
 
-            if (!PositionCheck(position)) return false;
+            if (!PositionCheck(position))
+            { 
+                Debug.Log(gameObject.name + " Position Check 2 failed");
+                return false;
+            }
 
             return true;
         }
@@ -164,13 +257,13 @@ namespace Blessing.Gameplay.TradeAndInventory
             // Set Highlight size
             ItemHighlight.sizeDelta = new Vector2() 
             {
-                x = width * ItemGrid.TileSizeWidth,
-                y = height * ItemGrid.TileSizeHeight
+                x = width * InventoryGrid.TileSizeWidth,
+                y = height * InventoryGrid.TileSizeHeight
             };
 
             // Set Highlight position
-            HighlightPosition = inventoryItem.GridPosition;
-            ItemHighlight.localPosition = CalculatePosition(inventoryItem.GridPosition, width, height);
+            HighlightPosition = inventoryItem.Data.Position;
+            ItemHighlight.localPosition = CalculatePosition(inventoryItem.Data.Position, width, height);
         }
 
         public void SetHighlight(InventoryItem inventoryItem, Vector2Int position)
@@ -183,8 +276,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             // Set Highlight size
             ItemHighlight.sizeDelta = new Vector2() 
             {
-                x = width * ItemGrid.TileSizeWidth,
-                y = height * ItemGrid.TileSizeHeight
+                x = width * InventoryGrid.TileSizeWidth,
+                y = height * InventoryGrid.TileSizeHeight
             };
             
             // Set Highlight position
@@ -221,6 +314,20 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
 
             return null;
+        }
+
+        public void ToggleInventoryGrid()
+        {
+            gameObject.SetActive(!gameObject.activeSelf);
+            
+            if (gameObject.activeSelf)
+            {
+                InitializeGrid();
+            }
+            else
+            {
+                CleanInventoryGrid();
+            }
         }
     }
 }

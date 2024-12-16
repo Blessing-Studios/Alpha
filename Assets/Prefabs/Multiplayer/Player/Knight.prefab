@@ -191,10 +191,12 @@ GameObject:
   - component: {fileID: 1736910387813517896}
   - component: {fileID: 6483174246542211240}
   - component: {fileID: 8376207516185148171}
+  - component: {fileID: 4936700350840750799}
   - component: {fileID: 1336789277861539600}
   - component: {fileID: 2620648292840096135}
   - component: {fileID: 655986913388950610}
   - component: {fileID: 2259359815306742575}
+  - component: {fileID: 4065250881899869995}
   m_Layer: 0
   m_Name: Knight
   m_TagString: Player
@@ -560,12 +562,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8491ec18e695b94497d7154b043ac31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   <ShowDebug>k__BackingField: 1
   AttackPressedTimerWindow: 0.2
+  SpawnLocation: {x: 0, y: 0, z: 0}
+  <Network>k__BackingField: {fileID: 0}
+  actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
+  directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
+  canGiveInputs: 0
+--- !u!114 &4936700350840750799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 559101bb5db528c46b4b6569213f679b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  <ShowDebug>k__BackingField: 0
   stateIndex:
     m_InternalValue: 1
-  SpawnLocation: {x: 0, y: 0, z: 0}
   OwnerName:
     m_InternalValue:
       utf8LengthInBytes: 0
@@ -601,12 +620,8 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
-  PlayerOwnerName: 
   IsDisabled:
     m_InternalValue: 0
-  actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
-  directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
-  canGiveInputs: 0
 --- !u!114 &1336789277861539600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -699,6 +714,25 @@ MonoBehaviour:
   CurrentDirectionAction: {fileID: 0}
   combos:
   - {fileID: 11400000, guid: f8d096a5c0289fa4ba19f62f4eb3ed78, type: 2}
+--- !u!114 &4065250881899869995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce370b78f1603df4ab7742db0364c7a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  Width: 20
+  Height: 10
+  InventoryGrid: {fileID: 0}
+  ItemList: []
+  OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
+  OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
 --- !u!1 &8756473815224977827
 GameObject:
   m_ObjectHideFlags: 0

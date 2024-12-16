@@ -30,5 +30,9 @@ namespace Blessing.GameData
             IsHost =  false;
         }
 
+        public bool ValidateOwner(string playerName)
+        {
+            return PlayerName == playerName;
+        }
     }
 }
