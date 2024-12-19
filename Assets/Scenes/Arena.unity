@@ -27560,7 +27560,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  m_NetworkObjectToSpawn: {fileID: 5154455550137319215, guid: c3dd68c423ce632459b559c847cb9542, type: 3}
+  m_NetworkObjectToSpawn: {fileID: 3549866743602787485, guid: 49875a8fa0353bf4c9b34d424c4c58fe, type: 3}
 --- !u!114 &962183276
 MonoBehaviour:
   m_ObjectHideFlags: 0

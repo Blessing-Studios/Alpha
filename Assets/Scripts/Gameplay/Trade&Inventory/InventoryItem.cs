@@ -8,8 +8,9 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public Item Item;
         public InventoryItemData Data;
-        public Vector2Int GridPosition;
+        public Vector2Int GridPosition { get { return Data.Position; } }
         public bool Rotated { get { return Data.Rotated; } }
+        public int Value { get { return Item.Value; } }
         public RectTransform RectTransform { get; private set; }
         public int Width
         {
@@ -72,6 +73,10 @@ namespace Blessing.Gameplay.TradeAndInventory
         public void SetData(InventoryItemData data)
         {
             Data = data;
+
+            // Deal with Rotation
+            Data.Rotated = !Data.Rotated;
+            Rotate();
         }
         public void SetData(Guid id, int itemId, Vector2Int position, bool Rotated)
         {

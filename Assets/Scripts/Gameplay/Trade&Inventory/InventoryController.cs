@@ -35,8 +35,6 @@ namespace Blessing.Gameplay.TradeAndInventory
                 Debug.LogError(gameObject.name + " PlayerInventoryGrid is missing");
                 // Find Canvas if PlayerInventoryGrid is null
             }
-            
-            PlayerInventoryGrid.gameObject.SetActive(false);
         }
         
         void Update()
@@ -50,11 +48,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (Input.GetKeyDown(KeyCode.I))
             {
                 ToggleInventoryGrid(PlayerInventoryGrid);
-            }
-
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                ToggleInventoryGrid(OtherInventoryGrid);
             }
 
             if (Input.GetKeyDown(KeyCode.Q))
@@ -167,6 +160,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public InventoryItem CreateItem (InventoryItemData data)
         {
             InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+            inventoryItem.gameObject.SetActive(false);
             inventoryItem.RectTransform.SetParent(canvasTransform);
 
             foreach(Item item in itemList)
@@ -181,8 +175,10 @@ namespace Blessing.Gameplay.TradeAndInventory
             return null;
         }
 
-        public void CreateRandomItem()
+        public void CreateRandomItem() // Função temporário para teste
         {
+            if (SelectedInventoryGrid == null) return;
+
             if (selectedItem != null) return;
             
             InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
@@ -225,10 +221,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (selectedItem == null) return;
             if (SelectedInventoryGrid == null) return;
 
-            Vector2Int? position = SelectedInventoryGrid.FindEmptyPosition(selectedItem.Width, selectedItem.Height);
-
-            if (position != null) 
-                PlaceItem((Vector2Int) position);
+            if (SelectedInventoryGrid.PlaceItem(selectedItem))
+                selectedItem = null;
         }
         private void PlaceItem(Vector2Int position)
         {

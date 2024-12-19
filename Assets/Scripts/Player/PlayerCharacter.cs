@@ -9,11 +9,12 @@ using Unity.Netcode;
 using Unity.Collections;
 using UnityEngine.InputSystem;
 using Blessing.Gameplay.HealthAndDamage;
+using Blessing.Gameplay.Interation;
 
 namespace Blessing.Player
 {
     [RequireComponent(typeof(PlayerInput))]
-    [RequireComponent(typeof(PlayerInventory))]
+    [RequireComponent(typeof(Interactor))]
     public class PlayerCharacter : Character
     {
         // [HideInInspector] public NetworkVariable<FixedString32Bytes> OwnerName = new(); // Mover para o PlayerCharacterNetwork
@@ -33,6 +34,7 @@ namespace Blessing.Player
         public InputActionType TriggerAction { get; private set; }
         public InputDirectionType TriggerDirection { get; private set; }
         private PlayerInput playerInput;
+        public Interactor Interactor { get; private set; }
         private Dictionary<string, InputActionType> inputActionsDic = new();
         private Dictionary<string, InputDirectionType> inputDirectionsDic = new();
         [SerializeField] private bool canGiveInputs = false;
@@ -70,6 +72,8 @@ namespace Blessing.Player
             base.Awake();
 
             playerInput = GetComponent<PlayerInput>();
+
+            Interactor = GetComponent<Interactor>();
 
             Network = GetComponent<PlayerCharacterNetwork>();
 
@@ -185,6 +189,16 @@ namespace Blessing.Player
                 Vector2 v when v.y < -0.6f => GetDirection("Down"),
                 _ => GetDirection("Any"),
             };
+        }
+
+        public void OnInteract(InputAction.CallbackContext context)
+        {
+            if (!HasAuthority || !canGiveInputs) return;
+
+            if (context.performed)
+            {
+                Interactor.HandleInteraction();
+            }
         }
 
         public InputActionType GetAction(string name)

@@ -8,17 +8,18 @@ namespace Blessing.Player
     {
         protected override void Start()
         {
-            
-            InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
-            InventoryGrid.Inventory = this;
-
             if (GameManager.Singleton.InventoryController == null)
             {
                 Debug.LogError(gameObject.name + " InventoryController is missing");
             }
 
-            GameManager.Singleton.InventoryController.PlayerInventoryGrid.InitializeGrid();
-
+            if (HasAuthority)
+            {
+                InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
+                InventoryGrid.Inventory = this;
+                GameManager.Singleton.InventoryController.PlayerInventoryGrid.InitializeGrid();
+            }
+            
             base.Start();
         }
     }

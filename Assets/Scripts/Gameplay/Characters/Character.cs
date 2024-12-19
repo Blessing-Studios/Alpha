@@ -12,6 +12,7 @@ namespace Blessing.Gameplay.Characters
     [RequireComponent(typeof(MovementController))]
     [RequireComponent(typeof(CharacterHealth))]
     [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(CharacterInventory))]
     public abstract class Character : MonoBehaviour, IHitter, IHittable
     {
         protected string characterName;
@@ -26,6 +27,7 @@ namespace Blessing.Gameplay.Characters
         public MovementController MovementController { get; protected set; }
         public CharacterStateMachine CharacterStateMachine { get; protected set; }
         public CharacterHealth Health { get; protected set; }
+        public CharacterInventory Inventory { get; protected set; }
         [field: SerializeField] public List<IHittable> TargetList { get; private set; }
         public CharacterController CharacterController { get; protected set; }
         public CharacterNetwork CharacterNetwork { get; protected set; }
@@ -72,6 +74,7 @@ namespace Blessing.Gameplay.Characters
             MovementController = GetComponent<MovementController>();
             CharacterStateMachine = GetComponent<CharacterStateMachine>();
             Health = GetComponent<CharacterHealth>();
+            Inventory = GetComponent<CharacterInventory>();
             CharacterController = GetComponent<CharacterController>();
 
             CharacterNetwork = GetComponent<CharacterNetwork>();

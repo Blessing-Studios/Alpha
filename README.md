@@ -2,9 +2,8 @@
 
 ### Atual prioridade
     Fazer o sistema de status e equipamento
-    Fazer sistema de inventário, sincronizar os inventários online, criar lógica para pegar itens na classe inventário e colocar no InventoryGrid
 
-    Quando o segundo player entra, ele pega o PlayerInventoryGrid de todo mundo
+    !!Quando recarrega, o player reconectando pode pegar Autoridade de outros player characters
 
 ### Mudanças nas configurações
     Project Settings

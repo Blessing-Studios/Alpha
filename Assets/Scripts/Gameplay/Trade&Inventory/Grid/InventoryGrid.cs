@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using TMPro;
 using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -14,6 +15,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     public class InventoryGrid : MonoBehaviour
     {
         public Inventory Inventory;
+        public TextMeshProUGUI NameText;
         public List<InventoryItem> GridItems;
         public const float TileSizeWidth = 32;
         public const float TileSizeHeight = 32;
@@ -25,10 +27,18 @@ namespace Blessing.Gameplay.TradeAndInventory
         [field: SerializeField] public Vector2Int? HighlightPosition { get; protected set; } 
         private Vector2 positionOnTheGrid = new();
         private Vector2Int tileGridPosition = new();
+        [field: SerializeField] public bool IsOpen { get; protected set; }
 
         void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
+
+            gameObject.SetActive(false);
+        }
+
+        void Star()
+        {
+            CloseGrid();
         }
 
         public void InitializeGrid()
@@ -40,6 +50,8 @@ namespace Blessing.Gameplay.TradeAndInventory
                 gameObject.SetActive(true);
             }
 
+            if (NameText != null)
+                NameText.text = Inventory.Name;
 
             gameObject.SetActive(true);
 
@@ -116,8 +128,18 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             return Inventory.ItemSlot[position.x, position.y];
         }
+        public bool PlaceItem(InventoryItem item)
+        {
+            Vector2Int? position = FindEmptyPosition(item.Width, item.Height);
+
+            if (position == null) return false;
+
+            return PlaceItem(item, (Vector2Int) position);
+        }
         public bool PlaceItem(InventoryItem inventoryItem, Vector2Int position)
         {
+            Inventory.GetOwnership();
+
             if (!CheckAvailableSpace(position, inventoryItem.Width, inventoryItem.Height))
             {
                 return false;
@@ -142,7 +164,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             inventoryItem.RectTransform.SetParent(this.rectTransform);
             inventoryItem.RectTransform.SetAsLastSibling();
 
-            inventoryItem.Data.Position = position;
+            // inventoryItem.Data.Position = position;
             inventoryItem.RectTransform.localPosition = CalculatePosition(position, inventoryItem.Width, inventoryItem.Height);
 
             GridItems.Add(inventoryItem);
@@ -199,19 +221,13 @@ namespace Blessing.Gameplay.TradeAndInventory
             return localPosition;
         }
 
-        internal InventoryItem PickUpItem(Vector2Int position)
+        public InventoryItem PickUpItem(Vector2Int position)
         {
+            Inventory.GetOwnership();
+
             InventoryItem inventoryItem = Inventory.ItemSlot[position.x, position.y];
 
             if (inventoryItem == null) return null;
-
-            for (int x = 0; x < inventoryItem.Width; x++)
-            {
-                for (int y = 0; y < inventoryItem.Height; y++)
-                {
-                    Inventory.ItemSlot[inventoryItem.Data.Position.x + x, inventoryItem.Data.Position.y + y] = null;
-                }
-            }
 
             Inventory.RemoveItem(inventoryItem);
 
@@ -223,7 +239,6 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (!PositionCheck(position))
             {
-                Debug.Log(gameObject.name + " Position Check 1 failed");
                 return false;
             }
 
@@ -232,7 +247,6 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (!PositionCheck(position))
             { 
-                Debug.Log(gameObject.name + " Position Check 2 failed");
                 return false;
             }
 
@@ -317,18 +331,29 @@ namespace Blessing.Gameplay.TradeAndInventory
         }
 
         public void ToggleInventoryGrid()
+        {   
+            if (IsOpen)
+            {
+                CloseGrid();
+            }
+            else if (!IsOpen)
+            {
+                OpenGrid();
+            }
+        }
+
+        private void OpenGrid()
         {
-            gameObject.SetActive(!gameObject.activeSelf);
-            
-            if (gameObject.activeSelf)
-            {
-                InitializeGrid();
-            }
-            else
-            {
-                CleanInventoryGrid();
-            }
+            IsOpen = true;
+            gameObject.SetActive(true);
+            InitializeGrid();
+        }
+
+        private void CloseGrid()
+        {
+            IsOpen = false;
+            gameObject.SetActive(false);
+            CleanInventoryGrid();
         }
     }
 }
-

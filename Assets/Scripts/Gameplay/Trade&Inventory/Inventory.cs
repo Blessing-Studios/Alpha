@@ -27,6 +27,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     }
     public class Inventory : NetworkBehaviour
     {
+        [field: SerializeField] public string Name { get; private set; }
         public int Width = 20;
         public int Height = 10;
         public InventoryGrid InventoryGrid;
@@ -53,12 +54,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         }
         protected virtual void Start()
         {
-            if (InventoryGrid == null)
-            {
-                {
-                    Debug.LogError(gameObject.name + ": InventoryGrid is missing");
-                }
-            }
+            
         }
 
         protected virtual void InitializeItems()
@@ -76,13 +72,46 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             InventoryNetworkList.OnListChanged += OnInventoryNetworkListChanged;
         }
-
         private void OnInventoryNetworkListChanged(NetworkListEvent<InventoryItemData> changeEvent)
         {
-            
+            // Link com mais informações em como usar o NetworkListEvent 
+            // https://discussions.unity.com/t/how-to-use-networklist/947471/2
 
+            if(!UpdateLocalItemList()) return;
+
+            if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Add)
+            {
+                InventoryItem itemCreated = GameManager.Singleton.InventoryController.CreateItem(changeEvent.Value);
+                AddInventoryItem(itemCreated, itemCreated.Data.Position);
+                // PlaceItemOnGrid(itemCreated, itemCreated.Data.Position);
+                UpdateFromInventory();
+            }
+
+            if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Remove)
+            {
+                for (int i = 0; i < ItemList.Count; i++)
+                {
+                    InventoryItem item = ItemList[i];
+                    if (item.Data.Id == changeEvent.Value.Id)
+                    {
+                        RemoveInventoryItem(item);
+                        // RemoveItemFromGrid(item);
+                        UpdateFromInventory();
+                        break;
+                    }
+                }
+            }
+        }
+
+        private InventoryItem CreateItem( InventoryItemData data)
+        {
+            return GameManager.Singleton.InventoryController.CreateItem(data);
+        }
+
+        private bool UpdateLocalItemList()
+        {
             List<InventoryItemData> tempList = new();
-            foreach(InventoryItemData data in InventoryNetworkList)
+            foreach (InventoryItemData data in InventoryNetworkList)
             {
                 tempList.Add(data);
             }
@@ -98,7 +127,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
             else
             {
-                for(int i = 0; i < networkListCount; i++)
+                for (int i = 0; i < networkListCount; i++)
                 {
                     if (!tempList[i].Equals(InventoryLocalList[i]))
                     {
@@ -106,47 +135,22 @@ namespace Blessing.Gameplay.TradeAndInventory
                     }
                 }
             }
-            
+
             // If there was no change in the data, do nothing
             if (isEqual)
             {
-                return;
+                return false;
             }
 
             // Update InventoryLocalList
             InventoryLocalList.Clear();
             InventoryLocalList = tempList;
-            
 
-            // ############
-
-            if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Add)
-            {
-                InventoryItem itemCreated = GameManager.Singleton.InventoryController.CreateItem(changeEvent.Value);
-                AddInventoryItem(itemCreated, itemCreated.Data.Position);
-                InventoryGrid.PlaceItemOnGrid(itemCreated, itemCreated.Data.Position);
-            }
-
-            if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Remove)
-            {
-
-                // Search the removed Item so it can be removed from local
-                foreach (InventoryItem item in ItemList)
-                {
-                    if (item.Data.Id == changeEvent.Value.Id)
-                    {
-                        RemoveInventoryItem(item);
-                        InventoryGrid.RemoveItemFromGrid(item);
-                    }
-                }
-            }
-
-            //InventoryGrid.UpdateFromInventory();
+            return true;
         }
 
         public bool AddItem(InventoryItem inventoryItem, Vector2Int position)
         {
-            
             if (!AddInventoryItem(inventoryItem, position)) return false;
 
             // InventoryNetworkList has to be changed after InventoryLocalList
@@ -179,11 +183,11 @@ namespace Blessing.Gameplay.TradeAndInventory
                 }
             }
 
-            int id = inventoryItem.Item.Id;
+            inventoryItem.Data.Position = position;
 
             ItemList.Add(inventoryItem);
 
-            OnAddItem.Raise(this, id);
+            OnAddItem.Raise(this, inventoryItem);
 
             return true;
         }
@@ -192,7 +196,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             // IF item is not in the inventory, return false
             if (!RemoveInventoryItem(inventoryItem)) return false;
-            
+
             // InventoryNetworkList has to be changed after InventoryLocalList
             InventoryLocalList.Remove(inventoryItem.GetData());
             InventoryNetworkList.Remove(inventoryItem.GetData());
@@ -207,13 +211,48 @@ namespace Blessing.Gameplay.TradeAndInventory
             // IF item is not in the inventory, return false
             if (!ItemList.Contains(inventoryItem)) return false;
 
-            int id = inventoryItem.Item.Id;
+            for (int x = 0; x < inventoryItem.Width; x++)
+            {
+                for (int y = 0; y < inventoryItem.Height; y++)
+                {
+                    ItemSlot[inventoryItem.Data.Position.x + x, inventoryItem.Data.Position.y + y] = null;
+                }
+            }
 
             ItemList.Remove(inventoryItem);
 
-            OnRemoveItem.Raise(this, id);
+            OnRemoveItem.Raise(this, inventoryItem);
 
             return true;
+        }
+        private void PlaceItemOnGrid(InventoryItem inventoryItem, Vector2Int position)
+        {
+            if (InventoryGrid != null && HasAuthority)
+                InventoryGrid.PlaceItemOnGrid(inventoryItem, position);
+        }
+
+        private void RemoveItemFromGrid(InventoryItem item)
+        {
+            if (InventoryGrid != null && HasAuthority)
+                InventoryGrid.RemoveItemFromGrid(item);
+        }
+
+        private void UpdateFromInventory()
+        {
+            if (InventoryGrid != null)
+                InventoryGrid.UpdateFromInventory();
+        }
+
+        public void GetOwnership()
+        {
+            ulong LocalClientId = NetworkManager.Singleton.LocalClientId;
+            if (LocalClientId != OwnerClientId)
+                ChangeOwnership(LocalClientId);
+        }
+
+        public void ChangeOwnership(ulong id)
+        {
+            GetComponent<NetworkObject>().ChangeOwnership(id);
         }
     }
 }
