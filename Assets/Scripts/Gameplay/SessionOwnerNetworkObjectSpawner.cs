@@ -7,11 +7,10 @@ namespace Blessing.Gameplay
     class SessionOwnerNetworkObjectSpawner : NetworkBehaviour
     {
         [SerializeField]
-        NetworkObject m_NetworkObjectToSpawn;
+        protected NetworkObject m_NetworkObjectToSpawn;
+        protected NetworkVariable<bool> m_IsRespawning = new NetworkVariable<bool>();
 
-        NetworkVariable<bool> m_IsRespawning = new NetworkVariable<bool>();
-
-        NetworkVariable<int> m_TickToRespawn = new NetworkVariable<int>();
+        protected NetworkVariable<int> m_TickToRespawn = new NetworkVariable<int>();
 
         public override void OnNetworkSpawn()
         {
@@ -26,7 +25,7 @@ namespace Blessing.Gameplay
             StopAllCoroutines();
         }
 
-        void Spawn()
+        public virtual void Spawn()
         {
             var spawnedNetworkObject = m_NetworkObjectToSpawn.InstantiateAndSpawn(NetworkManager, position: transform.position, rotation: transform.rotation);
             var spawnable = spawnedNetworkObject.GetComponent<ISpawnable>();

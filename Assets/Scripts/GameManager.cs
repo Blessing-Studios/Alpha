@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.PlayerLoop;
 using Blessing.Gameplay.TradeAndInventory;
 using Unity.VisualScripting;
+using Unity.Netcode;
 
 namespace Blessing
 {
@@ -23,6 +24,8 @@ namespace Blessing
         public Dictionary<string, PlayerCharacter> PlayerCharactersDic { get { return playerCharactersDic; } }
         public SceneStarter SceneStarter;
         public InventoryController InventoryController;
+        [field: SerializeField] public GameObject InventoryItemPrefab { get; private set; }
+        [field: SerializeField] public NetworkObject LooseItemPrefab { get; private set; }
         protected virtual void Awake()
         {
             if (Singleton != null && Singleton != this)
@@ -93,6 +96,13 @@ namespace Blessing
               if (playerCharacter.GetOwnerName() == playerName) return true;
 
               return false;
+        }
+
+        public void GetOwnership(NetworkObject networkObject)
+        {
+            ulong LocalClientId = NetworkManager.Singleton.LocalClientId;
+            if (LocalClientId != networkObject.OwnerClientId)
+                networkObject.ChangeOwnership(LocalClientId);
         }
     }
 }

@@ -17,11 +17,11 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (!Inventory.InventoryGrid.IsOpen)
             {
                 Inventory.GetOwnership();
-                Inventory.InventoryGrid.ToggleInventoryGrid();
+                Inventory.InventoryGrid.ToggleGrid();
             }
             else if (Inventory.InventoryGrid.IsOpen)
             {
-                Inventory.InventoryGrid.ToggleInventoryGrid();
+                Inventory.InventoryGrid.ToggleGrid();
             }
         }
     }

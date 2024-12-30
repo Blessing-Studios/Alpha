@@ -1,5 +1,6 @@
 using Blessing.Player;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
@@ -8,10 +9,12 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public GameObject InventoryCanvas;
         public InventoryGrid PlayerInventoryGrid;
-        public InventoryGrid OtherInventoryGrid;
-        public InventoryGrid SelectedInventoryGrid;
+        public EquipmentSlot ChestSlot;
+        public IGrid OtherInventoryGrid;
+        public IGrid SelectedGrid;
         [SerializeField] private List<Item> itemList = new();
-        [SerializeField] private GameObject itemPrefab;
+        public GameObject ItemPrefab { get { return GameManager.Singleton.InventoryItemPrefab; } }
+        public NetworkObject LooseItemPrefab { get { return GameManager.Singleton.LooseItemPrefab; } }
         private Transform canvasTransform { get { return InventoryCanvas.transform; } }
         [SerializeField] private InventoryItem selectedItem;
 
@@ -19,7 +22,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             GameManager.Singleton.InventoryController = this;
         }
-        
+
         void Start()
         {
             // Criar lógica para desativar o inventory controller dos outros players nesse Client
@@ -36,7 +39,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                 // Find Canvas if PlayerInventoryGrid is null
             }
         }
-        
+
         void Update()
         {
             // Fazer um check para ver se tem algum inventário aberto
@@ -47,7 +50,9 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (Input.GetKeyDown(KeyCode.I))
             {
-                ToggleInventoryGrid(PlayerInventoryGrid);
+                ToggleGrid(PlayerInventoryGrid);
+                ToggleGrid(ChestSlot);
+                
             }
 
             if (Input.GetKeyDown(KeyCode.Q))
@@ -76,9 +81,9 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
-        private void ToggleInventoryGrid(InventoryGrid inventoryGrid)
+        private void ToggleGrid(IGrid grid)
         {
-            inventoryGrid.ToggleInventoryGrid();
+            grid.ToggleGrid();
         }
 
         private void RotateItem()
@@ -91,10 +96,10 @@ namespace Blessing.Gameplay.TradeAndInventory
         private void RemoveSelectedItem()
         {
             if (selectedItem == null) return;
-            if (SelectedInventoryGrid == null) return;
+            if (SelectedGrid == null) return;
 
             selectedItem.gameObject.SetActive(false); // Temporário
-            selectedItem = null;  
+            selectedItem = null;
         }
 
         private void InsertRandomItem()
@@ -106,46 +111,57 @@ namespace Blessing.Gameplay.TradeAndInventory
         private void HandleItemDrag()
         {
             if (selectedItem == null) return;
-            
+
             selectedItem.RectTransform.SetParent(canvasTransform);
             selectedItem.RectTransform.position = Input.mousePosition;
         }
         private void HandleHighlight()
         {
-            
-            if (SelectedInventoryGrid == null) return;
+
+            if (SelectedGrid == null) return;
 
             Vector2Int position = GetTileGridPosition();
 
-            if (SelectedInventoryGrid.HighlightPosition == position) 
+            // If the positions are equal, doesn't need to recalculate
+            if (SelectedGrid.HighlightPosition == position)
             {
                 return;
             }
 
             if (selectedItem == null)
             {
-                InventoryItem item = SelectedInventoryGrid.GetItem(position);
+                InventoryItem item = SelectedGrid.GetItem(position);
                 if (item != null)
                 {
-                    SelectedInventoryGrid.SetHighlight(item);
+                    SelectedGrid.SetHighlight(item);
                 }
                 else
                 {
-                    SelectedInventoryGrid.RemoveHighlight();
+                    SelectedGrid.RemoveHighlight();
                 }
             }
             else if (selectedItem != null)
             {
-                SelectedInventoryGrid.SetHighlight(selectedItem, GetTileGridPosition());
+                SelectedGrid.SetHighlight(selectedItem, GetTileGridPosition());
             }
         }
-
-        public InventoryItem CreateItem(int id)
+        public InventoryItem CreateItem(Item item)
         {
-            InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+            InventoryItem inventoryItem = Instantiate(ItemPrefab).GetComponent<InventoryItem>();
+            inventoryItem.gameObject.SetActive(false);
             inventoryItem.RectTransform.SetParent(canvasTransform);
 
-            foreach(Item item in itemList)
+            
+            inventoryItem.Set(item);
+            return inventoryItem;
+        }
+        public InventoryItem CreateItem(int id)
+        {
+            InventoryItem inventoryItem = Instantiate(ItemPrefab).GetComponent<InventoryItem>();
+            inventoryItem.gameObject.SetActive(false);
+            inventoryItem.RectTransform.SetParent(canvasTransform);
+
+            foreach (Item item in itemList)
             {
                 if (item.Id == id)
                 {
@@ -157,13 +173,13 @@ namespace Blessing.Gameplay.TradeAndInventory
             return null;
         }
 
-        public InventoryItem CreateItem (InventoryItemData data)
+        public InventoryItem CreateItem(InventoryItemData data)
         {
-            InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+            InventoryItem inventoryItem = Instantiate(ItemPrefab).GetComponent<InventoryItem>();
             inventoryItem.gameObject.SetActive(false);
             inventoryItem.RectTransform.SetParent(canvasTransform);
 
-            foreach(Item item in itemList)
+            foreach (Item item in itemList)
             {
                 if (item.Id == data.ItemId)
                 {
@@ -177,20 +193,26 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void CreateRandomItem() // Função temporário para teste
         {
-            if (SelectedInventoryGrid == null) return;
+            if (SelectedGrid == null) return;
 
             if (selectedItem != null) return;
-            
-            InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+
+            InventoryItem inventoryItem = Instantiate(ItemPrefab).GetComponent<InventoryItem>();
 
             inventoryItem.RectTransform.SetParent(canvasTransform);
             inventoryItem.Set(itemList[UnityEngine.Random.Range(0, itemList.Count)]);
 
             selectedItem = inventoryItem;
         }
-        private void LeftMouseButtonPress()
+        private void LeftMouseButtonPress() // Organizar
         {
-            if (SelectedInventoryGrid == null) return;
+            if (SelectedGrid == null && selectedItem != null)
+            {
+                MoveItemToGround();
+                return;
+            }
+
+            if (SelectedGrid == null) return;
 
             Vector2Int tileGridPosition = GetTileGridPosition();
 
@@ -210,32 +232,49 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (selectedItem != null)
             {
-                position.x -= (selectedItem.Width -1) * InventoryGrid.TileSizeWidth / 2;
-                position.y += (selectedItem.Height - 1) * InventoryGrid.TileSizeHeight / 2;
+                position.x -= (selectedItem.Width - 1) * BaseGrid.TileSizeWidth / 2;
+                position.y += (selectedItem.Height - 1) * BaseGrid.TileSizeHeight / 2;
             }
 
-            return SelectedInventoryGrid.GetTileGridPosition(position);
+            return SelectedGrid.GetTileGridPosition(position);
         }
         private void PlaceItem()
         {
             if (selectedItem == null) return;
-            if (SelectedInventoryGrid == null) return;
+            if (SelectedGrid == null) return;
 
-            if (SelectedInventoryGrid.PlaceItem(selectedItem))
+            if (SelectedGrid.PlaceItem(selectedItem))
                 selectedItem = null;
         }
         private void PlaceItem(Vector2Int position)
         {
             if (selectedItem == null) return;
-            if (SelectedInventoryGrid == null) return;
+            if (SelectedGrid == null) return;
 
-            if (SelectedInventoryGrid.PlaceItem(selectedItem, position))
+            if (SelectedGrid.PlaceItem(selectedItem, position))
                 selectedItem = null;
         }
 
         private void PickUpItem(Vector2Int position)
         {
-            selectedItem = SelectedInventoryGrid.PickUpItem(position);
+            selectedItem = SelectedGrid.PickUpItem(position);
+        }
+
+        public void MoveItemToGround()
+        {
+            InventoryItem inventoryItem = selectedItem;
+
+            GameObject owner = PlayerInventoryGrid.Inventory.gameObject;
+            
+            var looseItem = Instantiate(LooseItemPrefab, position: owner.transform.position, rotation: owner.transform.rotation);
+
+            looseItem.GetComponent<LooseItem>().InventoryItem = inventoryItem;
+
+            looseItem.Spawn();
+
+            inventoryItem.gameObject.SetActive(false);
+
+            selectedItem = null;
         }
     }
 }

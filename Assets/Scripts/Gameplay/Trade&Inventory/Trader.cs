@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Interation;
 using Unity.VisualScripting;
@@ -10,9 +11,12 @@ namespace Blessing.Gameplay.TradeAndInventory
     public class Trader : MonoBehaviour, IInteractable
     {
         public CharacterInventory TraderInventory { get; private set; }
-        public CharacterInventory Customer;
-        private Guid itemGuid;
-        private Vector2Int itemOriginalPosition;
+        public Character Customer;
+        private Guid reservedItemGuid;
+        private Vector2Int reservedItemPosition;
+
+        // Para debugar
+        [SerializeField] private InventoryItem reservedItem;
         
         void Awake()
         {
@@ -21,19 +25,20 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void Interact(Interactor interactor)
         {
-            if (interactor.gameObject.TryGetComponent(out CharacterInventory customer))
+            Debug.Log(gameObject.name + "Interact");
+            if (interactor.gameObject.TryGetComponent(out Character customer))
             {
                 if (!TraderInventory.InventoryGrid.IsOpen)
                 {
                     // if is closed, open inventoryGrid and get customer
                     this.Customer = customer;
                     TraderInventory.GetOwnership();
-                    TraderInventory.InventoryGrid.ToggleInventoryGrid();
+                    TraderInventory.InventoryGrid.ToggleGrid();
                 }
                 else if (TraderInventory.InventoryGrid.IsOpen)
                 {
                     // If is opened, close Inventory and remove customer
-                    TraderInventory.InventoryGrid.ToggleInventoryGrid();
+                    TraderInventory.InventoryGrid.ToggleGrid();
                     Customer = null;
                 }
             }
@@ -49,14 +54,18 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
 
             InventoryItem item = data as InventoryItem;
+            
+            // Temporariamente comentado
+            // if (component.gameObject == Customer.gameObject
+            //     && item.Data.Id == reservedItemGuid)
 
-            if (component.gameObject == Customer.gameObject
-                && item.Data.Id == itemGuid)
+            if (item.Data.Id == reservedItemGuid)
             {
                 PurchaseItem(item);
             }
 
-            if (component.gameObject == gameObject)
+            if (component.gameObject == gameObject
+                && item.Data.Id != reservedItemGuid)
             {
                 SellItem(item);
             }
@@ -64,23 +73,17 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void OnRemoveItem(Component component, object data)
         {
+            if (component.gameObject != gameObject) return;
+
             if (Customer == null) return;
-            
-            if (data is not InventoryItem)
-            {
-                return;
-            }
+
+            if (data is not InventoryItem) return;
 
             InventoryItem item = data as InventoryItem;
             
-            itemGuid = item.Data.Id;
-            itemOriginalPosition = item.GridPosition;
+            ReserveItem(item);
 
-            if (component.gameObject == gameObject)
-            {
-                ShowItemInfo(item);
-                return;
-            }
+            ShowItemInfo(item);
         }
 
         private void ShowItemInfo(InventoryItem item)
@@ -91,17 +94,25 @@ namespace Blessing.Gameplay.TradeAndInventory
             Debug.Log(gameObject.name + "Item Value: " + item.Value);
 
             // Check if player has Gold to buy,
-            bool canBuyItem = item.Value < Customer.Gold;
+            bool canBuyItem = item.Value < Customer.Inventory.Gold;
             if (!canBuyItem)
             {
                 // Show message that the player is trying to buy item but doesn't have gold
             }
         }
 
-        private void ReserveItemToSell(InventoryItem item)
+        private void ReserveItem(InventoryItem item)
         {
-            itemGuid = item.Data.Id;
-            itemOriginalPosition = item.GridPosition;
+            reservedItemGuid = item.Data.Id;
+            reservedItemPosition = item.GridPosition;
+            reservedItem = item;
+        }
+
+        private void CleanReserveItem()
+        {
+            reservedItemGuid = Guid.Empty;
+            reservedItemPosition = Vector2Int.zero;
+            reservedItem = null;
         }
 
 
@@ -110,7 +121,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             
 
             // Get Gold from player
-            bool itemBought = Customer.SpendGold(item.Value);
+            bool itemBought = Customer.Inventory.SpendGold(item.Value);
 
             if (!itemBought)
             {
@@ -122,11 +133,13 @@ namespace Blessing.Gameplay.TradeAndInventory
             
             // If success, show message that item was bought
             Debug.Log(gameObject.name + "PurchaseItem Customer: " + Customer.gameObject.name);
+
+            CleanReserveItem();
         }
 
         private void SellItem(InventoryItem item)
         {
-            bool itemSell = Customer.GainGold(item.Value);
+            bool itemSell = Customer.Inventory.GainGold(item.Value);
 
             if (!itemSell)
             {
@@ -141,10 +154,10 @@ namespace Blessing.Gameplay.TradeAndInventory
         private void CancelPurchase(InventoryItem item)
         {
             // Remove Item from buyer inventory
-            Customer.RemoveItem(item);
+            Customer.Inventory.RemoveItem(item);
 
             // Add Item to original place from trader
-            TraderInventory.InventoryGrid.PlaceItem(item, itemOriginalPosition);
+            TraderInventory.InventoryGrid.PlaceItem(item, reservedItemPosition);
             Debug.Log(gameObject.name + "CancelPurchase: " + Customer.gameObject.name);
         }
 
@@ -154,7 +167,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             TraderInventory.RemoveItem(item);
 
             // Add Item to original seller
-            Customer.InventoryGrid.PlaceItem(item);
+            Customer.Inventory.InventoryGrid.PlaceItem(item);
         }
     }
 }

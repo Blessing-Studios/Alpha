@@ -17,6 +17,7 @@ namespace Blessing.Player
             {
                 InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
                 InventoryGrid.Inventory = this;
+                InventoryGrid.Owner = this.gameObject;
                 GameManager.Singleton.InventoryController.PlayerInventoryGrid.InitializeGrid();
             }
             

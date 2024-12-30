@@ -5,6 +5,9 @@
 
     !!Quando recarrega, o player reconectando pode pegar Autoridade de outros player characters
 
+    Fazer sistema de equipamentos. // Criar tipos de equipamentos
+    
+
 ### Mudanças nas configurações
     Project Settings
         Physics Settings - Game Object
@@ -18,6 +21,10 @@
 
     Separar a lógica das NetWorkBehaviors em duas classes, uma que é MonoBehaviors e outra que é NetworkBehaviors
         Exemplo PlayerController, transformar em duas classes
+
+    Mover CheckAvailableSpace e outros checks do InventoryGrid para Inventory
+
+    Criar um sistema de pooling https://docs-multiplayer.unity3d.com/netcode/current/advanced-topics/object-pooling/
     
 
 ### Bugs para arrumar
@@ -25,7 +32,11 @@
 Na classe PlayerCharacter, 
 public override bool CheckIfAttackPressed(string nextComboAction)
 Fazer essa função;
+
+Criar lógica para checar se item foi duplicado
+
 Quando um jogador cai e reconecta a vida buga, o personagem não regenera mais vida
+
 
 
 ### Links para estudar

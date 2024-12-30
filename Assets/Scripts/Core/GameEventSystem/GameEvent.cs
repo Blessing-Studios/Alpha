@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Blessing.GameEventSystem
+namespace Blessing.Core.GameEventSystem
 {
     [CreateAssetMenu(menuName = "GameEvent")]
     public class GameEvent : ScriptableObject

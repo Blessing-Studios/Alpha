@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,7 +15,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         #if UNITY_EDITOR
         public void Awake()
         {
-            string[] guids = AssetDatabase.FindAssets("t:item", new[] {"Assets/Scripts/Gameplay/Trade&Inventory/Items"});
+            string[] guids = AssetDatabase.FindAssets("t:item", new[] {"Assets/Scripts/Items"});
 
             if (Id == 0)
                 Id = guids.Length;
@@ -28,7 +26,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         static void GenerateItemsIds()
         {
             // Find all Texture2Ds that have 'co' in their filename, that are labelled with 'architecture' and are placed in 'MyAwesomeProps' folder
-            string[] guids = AssetDatabase.FindAssets("t:item", new[] {"Assets/Scripts/Gameplay/Trade&Inventory/Items"});
+            string[] guids = AssetDatabase.FindAssets("t:item", new[] {"Assets/Scripts/Items"});
 
             int incrementId = 1;
 

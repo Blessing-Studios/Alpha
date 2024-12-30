@@ -98,6 +98,7 @@ MonoBehaviour:
   gridSizeHeight: 10
   inventoryItemPrefab: {fileID: 1735508749840339164, guid: 7c787da5e9598154881342ee787ec093, type: 3}
   <ItemHighlight>k__BackingField: {fileID: 1369535270149950160}
+  <IsOpen>k__BackingField: 0
 --- !u!114 &1349275696551117147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,6 +496,7 @@ GameObject:
   - component: {fileID: 8528038331948675608}
   - component: {fileID: 7825422510486251141}
   - component: {fileID: 4714996891553617270}
+  - component: {fileID: 709592758935235110}
   - component: {fileID: 3549866743602787485}
   - component: {fileID: 3693926438149755363}
   - component: {fileID: 5786774671740019027}
@@ -600,6 +602,33 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43862928417577270, guid: d487063872abfd245b894576be57e191, type: 2}
+--- !u!54 &709592758935235110
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7506204756206563225}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &3549866743602787485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,6 +690,7 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+  canMove: 1
   Gravity: -2
   GroundedGravity: -0.5
   distToGround: 0.1
@@ -677,7 +707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 753c2efdda885734084cc37b75cabe66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Buyer: {fileID: 0}
+  Customer: {fileID: 0}
 --- !u!114 &-1899099510461261544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -700,6 +730,7 @@ MonoBehaviour:
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
   gold: 0
+  GoldText: {fileID: 0}
 --- !u!1 &8464804813423888541
 GameObject:
   m_ObjectHideFlags: 0

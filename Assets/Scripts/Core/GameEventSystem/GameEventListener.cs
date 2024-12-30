@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-namespace Blessing.GameEventSystem
+namespace Blessing.Core.GameEventSystem
 {
     [System.Serializable]
     public class GameEventListener : MonoBehaviour

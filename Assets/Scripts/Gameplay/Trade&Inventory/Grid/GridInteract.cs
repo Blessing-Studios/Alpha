@@ -3,15 +3,15 @@ using UnityEngine.EventSystems;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    [RequireComponent(typeof(InventoryGrid))]
+    [RequireComponent(typeof(IGrid))]
     public class GridInteract : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         private InventoryController inventoryController;
-        private InventoryGrid inventoryGrid;
+        private IGrid grid;
 
         void Awake()
         {
-            inventoryGrid = GetComponent<InventoryGrid>();
+            grid = GetComponent<IGrid>();
         }
         void Start()
         {
@@ -20,13 +20,13 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            GameManager.Singleton.InventoryController.SelectedInventoryGrid = inventoryGrid;
+            GameManager.Singleton.InventoryController.SelectedGrid = grid;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            inventoryGrid.ExitGrid();
-            GameManager.Singleton.InventoryController.SelectedInventoryGrid = null;
+            grid.ExitGrid();
+            GameManager.Singleton.InventoryController.SelectedGrid = null;
         }
     }
 }

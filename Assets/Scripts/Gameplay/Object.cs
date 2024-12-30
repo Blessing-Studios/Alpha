@@ -11,7 +11,7 @@ namespace Blessing.Gameplay
         NetworkVariable<bool> m_Initialized = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         Vector3 m_OriginalPosition;
         Quaternion m_OriginalRotation;
-        protected bool canMove = true;
+        [SerializeField] protected bool canMove = true;
         protected Vector3 currentMovement = Vector3.zero;
         public float Gravity = -2.0f;
         public float GroundedGravity = -0.5f;
@@ -36,12 +36,14 @@ namespace Blessing.Gameplay
             m_SessionOwnerNetworkObjectSpawner.Value = new NetworkBehaviourReference(spawner);
         }
 
-        void Update()
-        {
-            HandleGravity();
-            HandleMovement(canMove);
-        }
+        // void Update()
+        // {
+        //     HandleGravity();
+        //     HandleMovement(canMove);
+        // }
 
+
+        // Refazer
         protected virtual void HandleGravity()
         {
             if (IsGrounded())
@@ -49,13 +51,14 @@ namespace Blessing.Gameplay
             else
                 currentMovement.y += Gravity * Time.deltaTime;
         }
-
+        // Refazer
         public bool IsGrounded()
         {
             bool groundCheck = Physics.Raycast(transform.position, -Vector3.up, distToGround);
             return groundCheck;
         }
 
+        // Refazer
         protected virtual void HandleMovement(bool canMove)
         {
             if (!canMove)

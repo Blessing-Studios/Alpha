@@ -14,7 +14,7 @@ namespace Blessing.Scene
             GameManager.Singleton.SceneStarter = this;
         }
 
-        void Start()
+        public override void OnNetworkSpawn()
         {
             if (!HasStarted.Value)
             {

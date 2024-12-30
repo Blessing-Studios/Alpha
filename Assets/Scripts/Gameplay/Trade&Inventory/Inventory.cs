@@ -1,4 +1,4 @@
-using Blessing.GameEventSystem;
+using Blessing.Core.GameEventSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         [Header("Events")]
         public GameEvent OnAddItem;
         public GameEvent OnRemoveItem;
-        public List<GameEventListener> Listeners { get; set; }
+        // public List<GameEventListener> Listeners { get; set; }
 
         protected virtual void Awake()
         {
@@ -148,7 +148,6 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             return true;
         }
-
         public bool AddItem(InventoryItem inventoryItem, Vector2Int position)
         {
             if (!AddInventoryItem(inventoryItem, position)) return false;
@@ -156,6 +155,9 @@ namespace Blessing.Gameplay.TradeAndInventory
             // InventoryNetworkList has to be changed after InventoryLocalList
             InventoryLocalList.Add(inventoryItem.GetData());
             InventoryNetworkList.Add(inventoryItem.GetData()); // Checar erro
+
+            if (OnAddItem != null)
+                OnAddItem.Raise(this, inventoryItem);
 
             return true;
         }
@@ -183,11 +185,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                 }
             }
 
-            inventoryItem.Data.Position = position;
-
             ItemList.Add(inventoryItem);
-
-            OnAddItem.Raise(this, inventoryItem);
 
             return true;
         }
@@ -200,6 +198,9 @@ namespace Blessing.Gameplay.TradeAndInventory
             // InventoryNetworkList has to be changed after InventoryLocalList
             InventoryLocalList.Remove(inventoryItem.GetData());
             InventoryNetworkList.Remove(inventoryItem.GetData());
+
+            if(OnRemoveItem != null)
+                OnRemoveItem.Raise(this, inventoryItem);
 
             return true;
         }
@@ -221,20 +222,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             ItemList.Remove(inventoryItem);
 
-            OnRemoveItem.Raise(this, inventoryItem);
-
             return true;
-        }
-        private void PlaceItemOnGrid(InventoryItem inventoryItem, Vector2Int position)
-        {
-            if (InventoryGrid != null && HasAuthority)
-                InventoryGrid.PlaceItemOnGrid(inventoryItem, position);
-        }
-
-        private void RemoveItemFromGrid(InventoryItem item)
-        {
-            if (InventoryGrid != null && HasAuthority)
-                InventoryGrid.RemoveItemFromGrid(item);
         }
 
         private void UpdateFromInventory()
@@ -245,14 +233,66 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void GetOwnership()
         {
-            ulong LocalClientId = NetworkManager.Singleton.LocalClientId;
-            if (LocalClientId != OwnerClientId)
-                ChangeOwnership(LocalClientId);
+            NetworkObject networkObject = GetComponent<NetworkObject>();
+            GameManager.Singleton.GetOwnership(networkObject);
+
+            // ulong LocalClientId = NetworkManager.Singleton.LocalClientId;
+            // if (LocalClientId != OwnerClientId)
+            //     ChangeOwnership(LocalClientId);
         }
 
         public void ChangeOwnership(ulong id)
         {
             GetComponent<NetworkObject>().ChangeOwnership(id);
+        }
+
+        public bool CheckAvailableSpace(Vector2Int position, int width, int height)
+        {
+            
+            if (!BoundaryCheck(position, width, height)) 
+            {
+                return false;
+            }
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (ItemSlot[position.x + x, position.y + y] != null)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public bool BoundaryCheck(Vector2Int position, int width, int height)
+        {
+            if (!PositionCheck(position))
+            {
+                return false;
+            }
+
+            position.x += width - 1;
+            position.y += height - 1;
+
+            if (!PositionCheck(position))
+            { 
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool PositionCheck(Vector2Int position)
+        {
+            if (position.x < 0 || position.y < 0) return false;
+
+            if (position.x >= Width || position.y >= Height) return false;
+
+            return true;
         }
     }
 }
