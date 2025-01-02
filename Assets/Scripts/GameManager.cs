@@ -15,7 +15,6 @@ namespace Blessing
     {
         public static GameManager Singleton { get; private set; }
         public Camera MainCamera;
-        
         public CinemachineCamera VirtualCamera;
         public List<PlayerCharacter> PlayerCharacterList;
         [field: SerializeField] public List<PlayerController> PlayerList { get; private set; }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Blessing.Player
 {
+    // Colocar essa lógica em outro luagr
     public class PlayerInventory : CharacterInventory
     {
         protected override void Start()
@@ -19,6 +20,14 @@ namespace Blessing.Player
                 InventoryGrid.Inventory = this;
                 InventoryGrid.Owner = this.gameObject;
                 GameManager.Singleton.InventoryController.PlayerInventoryGrid.InitializeGrid();
+
+
+                // Temporário
+                foreach (BaseGrid grid in GameManager.Singleton.InventoryController.Grids)
+                {
+                    grid.Owner = this.gameObject;
+                    grid.InitializeGrid();
+                }
             }
             
             base.Start();

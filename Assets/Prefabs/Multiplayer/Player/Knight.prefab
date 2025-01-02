@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3752516906
+  GlobalObjectIdHash: 3936908184
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 3
@@ -750,6 +750,23 @@ MonoBehaviour:
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
   gold: 100
   GoldText: {fileID: 0}
+  Equipments:
+  - Name: Helm
+    SlotType:
+      value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}
+    inventoryItem: {fileID: 0}
+  - Name: Chest
+    SlotType:
+      value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
+    inventoryItem: {fileID: 0}
+  - Name: Boots
+    SlotType:
+      value: {fileID: 11400000, guid: 0b813e2225fad4e4d9ae3ef58b410c5b, type: 2}
+    inventoryItem: {fileID: 0}
+  - Name: Weapon
+    SlotType:
+      value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
+    inventoryItem: {fileID: 0}
 --- !u!114 &-6873965126545705189
 MonoBehaviour:
   m_ObjectHideFlags: 0

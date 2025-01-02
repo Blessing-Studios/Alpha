@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using Blessing.Gameplay.TradeAndInventory;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -14,6 +16,7 @@ namespace Blessing.Gameplay.Characters
         public int Gold { get { return gold; } }
         //Checar se Gold é positivo
 
+        public List<CharacterEquipment> Equipments;
 
         public bool SpendGold(int amount)
         {
@@ -31,6 +34,11 @@ namespace Blessing.Gameplay.Characters
 
             gold += amount;
             return true;
+        }
+
+        public void ValidateEquipments()
+        {
+            // TODO:
         }
     }
 }

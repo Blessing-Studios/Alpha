@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    [CreateAssetMenu(fileName = "Gear", menuName = "Scriptable Objects/Gear")]
+    [CreateAssetMenu(fileName = "Gear", menuName = "Scriptable Objects/Items/Gear")]
     public class Gear : Item
     {
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 

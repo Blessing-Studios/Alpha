@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab3a1f2811799bb44a63b0c7ba892be8, type: 3}
-  m_Name: Bow
+  m_Name: LeatherHelmet
   m_EditorClassIdentifier: 
   Value: 10
   Width: 2
-  Height: 3
-  Sprite: {fileID: -1253022538, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
-  Id: 2
+  Height: 2
+  Sprite: {fileID: -1401906386, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
+  Id: 8
   EquipmentType:
-    value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
+    value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}

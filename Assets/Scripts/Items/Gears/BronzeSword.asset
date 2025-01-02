@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab3a1f2811799bb44a63b0c7ba892be8, type: 3}
+  m_Script: {fileID: 11500000, guid: 15ab02322f77e544b8b51ecef92e4010, type: 3}
   m_Name: BronzeSword
   m_EditorClassIdentifier: 
   Value: 10
   Width: 2
   Height: 3
-  Sprite: {fileID: 1783370484, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
-  Id: 4
+  Sprite: {fileID: 252688296, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
+  Id: 9
   EquipmentType:
     value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
+  Damage: 10

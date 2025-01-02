@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Value: 10
   Width: 3
-  Height: 4
-  Sprite: {fileID: 1757165551, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
+  Height: 3
+  Sprite: {fileID: 1128091913, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
   Id: 3
   EquipmentType:
-    value: {fileID: 11400000, guid: 168fb41a8320b1047805ef405cb7400b, type: 2}
+    value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}

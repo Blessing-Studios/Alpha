@@ -2,11 +2,13 @@ using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Core.GameEventSystem;
 using System;
 using UnityEngine;
+using Blessing.Gameplay.Characters;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
     public class EquipmentSlot : BaseGrid, IGrid
     {
+        public CharacterEquipment CharacterEquipment;
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
         public ScriptableObjectReference SlotType;
         [SerializeField] public EquipmentType GearSlotType { get { return SlotType.value as EquipmentType; } }
@@ -31,11 +33,32 @@ namespace Blessing.Gameplay.TradeAndInventory
             ItemHighlight.SetParent(rectTransform);
             RemoveHighlight();
 
+            SetCharacterEquipment();
+
             // UpdateFromEquipment();
 
             if (activated)
                 gameObject.SetActive(false);
         }
+
+        private void SetCharacterEquipment()
+        {
+            if (Owner == null) return;
+
+            if (Owner.TryGetComponent(out CharacterInventory characterInventory))
+            {
+                foreach (CharacterEquipment equipment in characterInventory.Equipments)
+                {
+                    if (equipment.GearSlotType == GearSlotType)
+                    {
+                        Debug.Log(gameObject.name + ": Achou CharacterEquipment");
+                        CharacterEquipment = equipment;
+                        return;
+                    }
+                }
+            }
+        }
+
         public InventoryItem GetItem(Vector2Int position)
         {
             return EquippedItem;
@@ -54,21 +77,27 @@ namespace Blessing.Gameplay.TradeAndInventory
             // Mudar quem tem autoridade para poder fazer a mudança online
 
             if (!CheckGearType(inventoryItem))
-            {
                 return false;
-            }
-
+            
             if (!CheckAvailableSpace())
-            {
                 return false;
-            }
+
+            if (!BoundaryCheck(position, inventoryItem.Width, inventoryItem.Height))
+                return false;
+
+            //Rotate Item to the right side
+            if (inventoryItem.Rotated)
+                inventoryItem.Rotate();
+
             // Move the item in the right position on the InventoryGrid
             if (!PlaceItemOnGrid(inventoryItem, position))
-            {
                 return false;
-            }
 
             // Equip Item
+            
+            if (!CharacterEquipment.SetEquipment(inventoryItem))
+                return false;
+
             EquippedItem = inventoryItem;
 
             if (OnAddItem != null)
@@ -111,6 +140,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             EquippedItem = null;
 
             RemoveItemFromGrid(inventoryItem);
+
+            CharacterEquipment.Unequip();
 
             if(OnRemoveItem != null)
                 OnRemoveItem.Raise(this, inventoryItem);

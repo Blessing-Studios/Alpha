@@ -9,7 +9,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public GameObject InventoryCanvas;
         public InventoryGrid PlayerInventoryGrid;
-        public EquipmentSlot ChestSlot;
+        public List<BaseGrid> Grids;
         public IGrid OtherInventoryGrid;
         public IGrid SelectedGrid;
         [SerializeField] private List<Item> itemList = new();
@@ -50,9 +50,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (Input.GetKeyDown(KeyCode.I))
             {
-                ToggleGrid(PlayerInventoryGrid);
-                ToggleGrid(ChestSlot);
-                
+                ToggleGrids();
             }
 
             if (Input.GetKeyDown(KeyCode.Q))
@@ -81,9 +79,12 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
-        private void ToggleGrid(IGrid grid)
+        private void ToggleGrids()
         {
-            grid.ToggleGrid();
+            foreach (var grid in Grids)
+            {
+                grid.ToggleGrid();
+            }
         }
 
         private void RotateItem()
