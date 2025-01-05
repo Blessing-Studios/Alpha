@@ -77,11 +77,11 @@ namespace Blessing.Gameplay.TradeAndInventory
             // Link com mais informações em como usar o NetworkListEvent 
             // https://discussions.unity.com/t/how-to-use-networklist/947471/2
 
-            if(!UpdateLocalItemList()) return;
+            if(!UpdateLocalList(ref InventoryLocalList, InventoryNetworkList)) return;
 
             if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Add)
             {
-                InventoryItem itemCreated = GameManager.Singleton.InventoryController.CreateItem(changeEvent.Value);
+                InventoryItem itemCreated = CreateItem(changeEvent.Value);
                 AddInventoryItem(itemCreated, itemCreated.Data.Position);
                 // PlaceItemOnGrid(itemCreated, itemCreated.Data.Position);
                 UpdateFromInventory();
@@ -103,15 +103,15 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
-        private InventoryItem CreateItem( InventoryItemData data)
+        protected InventoryItem CreateItem( InventoryItemData data)
         {
             return GameManager.Singleton.InventoryController.CreateItem(data);
         }
 
-        private bool UpdateLocalItemList()
+        protected bool UpdateLocalList(ref List<InventoryItemData> localList, NetworkList<InventoryItemData> networkList)
         {
             List<InventoryItemData> tempList = new();
-            foreach (InventoryItemData data in InventoryNetworkList)
+            foreach (InventoryItemData data in networkList)
             {
                 tempList.Add(data);
             }
@@ -119,9 +119,10 @@ namespace Blessing.Gameplay.TradeAndInventory
             bool isEqual = true;
 
             int networkListCount = tempList.Count;
-            int inventoryDataListCount = InventoryLocalList.Count;
+            int localListCount = localList.Count;
 
-            if (networkListCount != inventoryDataListCount)
+            // First check if the lists has diferent sizes before checking each item
+            if (networkListCount != localListCount)
             {
                 isEqual = false;
             }
@@ -129,7 +130,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             {
                 for (int i = 0; i < networkListCount; i++)
                 {
-                    if (!tempList[i].Equals(InventoryLocalList[i]))
+                    if (!tempList[i].Equals(localList[i]))
                     {
                         isEqual = false;
                     }
@@ -143,8 +144,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
 
             // Update InventoryLocalList
-            InventoryLocalList.Clear();
-            InventoryLocalList = tempList;
+            localList.Clear();
+            localList = tempList;
 
             return true;
         }
@@ -154,7 +155,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             // InventoryNetworkList has to be changed after InventoryLocalList
             InventoryLocalList.Add(inventoryItem.GetData());
-            InventoryNetworkList.Add(inventoryItem.GetData()); // Checar erro
+            InventoryNetworkList.Add(inventoryItem.GetData());
 
             if (OnAddItem != null)
                 OnAddItem.Raise(this, inventoryItem);

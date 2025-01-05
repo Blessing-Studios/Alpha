@@ -1,5 +1,38 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1016764484914369382
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1583196315626289370}
+  m_Layer: 0
+  m_Name: Listeners
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1583196315626289370
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1016764484914369382}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 14.458801, y: -0.96150076, z: 2.168366}
+  m_LocalScale: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2660219163199609914}
+  - {fileID: 4632989939359819636}
+  m_Father: {fileID: 6370903744886762439}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1511698797570248328
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,6 +207,66 @@ MonoBehaviour:
   IsActive: 1
   <DmgMultiplier>k__BackingField: 0
   TakeHitEffect: {fileID: 0}
+--- !u!1 &2394620303536455781
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4632989939359819636}
+  - component: {fileID: 1537612734830531770}
+  m_Layer: 0
+  m_Name: OnRemoveEquipment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4632989939359819636
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2394620303536455781}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1583196315626289370}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1537612734830531770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2394620303536455781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc0a02ec4aba6a549a7caff2b62c61b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameEvent: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Gameplay.Characters.Character, Assembly-CSharp
+        m_MethodName: OnRemoveEquipment
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6028631068472643565
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +314,7 @@ Transform:
   - {fileID: 6931712906820337884}
   - {fileID: 4410562106461084563}
   - {fileID: 5143992474855496680}
+  - {fileID: 1583196315626289370}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5369011401359272698
@@ -671,21 +765,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c15fa3ae0bd0e4cad31c66f732fcbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  strength: 0
-  constitution: 0
-  dexterity: 0
-  intelligence: 0
-  wisdom: 0
-  charisma: 0
-  luck: 0
+  Strength: 0
+  Constitution: 0
+  Dexterity: 0
+  Intelligence: 0
+  Wisdom: 0
+  Charisma: 0
+  Luck: 0
   UseBaseStats: 0
-  <BaseStrength>k__BackingField: 5
-  <BaseConstitution>k__BackingField: 5
-  <BaseDexterity>k__BackingField: 5
-  <BaseIntelligence>k__BackingField: 5
-  <BaseWisdom>k__BackingField: 5
-  <BaseCharisma>k__BackingField: 5
-  <BaseLuck>k__BackingField: 5
+  BaseStrength: 5
+  BaseConstitution: 5
+  BaseDexterity: 5
+  BaseIntelligence: 5
+  BaseWisdom: 5
+  BaseCharisma: 5
+  BaseLuck: 5
+  Traits: []
 --- !u!114 &655986913388950610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -749,24 +844,26 @@ MonoBehaviour:
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
   gold: 100
-  GoldText: {fileID: 0}
   Equipments:
   - Name: Helm
     SlotType:
       value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}
-    inventoryItem: {fileID: 0}
+    InventoryItem: {fileID: 0}
   - Name: Chest
     SlotType:
       value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
-    inventoryItem: {fileID: 0}
+    InventoryItem: {fileID: 0}
   - Name: Boots
     SlotType:
       value: {fileID: 11400000, guid: 0b813e2225fad4e4d9ae3ef58b410c5b, type: 2}
-    inventoryItem: {fileID: 0}
+    InventoryItem: {fileID: 0}
   - Name: Weapon
     SlotType:
       value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
-    inventoryItem: {fileID: 0}
+    InventoryItem: {fileID: 0}
+  EquipmentLocalList: []
+  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
+  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &-6873965126545705189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -781,6 +878,66 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InteractorSource: {fileID: 6370903744886762439}
   InteractRange: 2
+--- !u!1 &6737046069800503288
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2660219163199609914}
+  - component: {fileID: 8823009368625040407}
+  m_Layer: 0
+  m_Name: OnAddEquipment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2660219163199609914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6737046069800503288}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1583196315626289370}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8823009368625040407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6737046069800503288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc0a02ec4aba6a549a7caff2b62c61b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameEvent: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Gameplay.Characters.Character, Assembly-CSharp
+        m_MethodName: OnAddEquipment
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8756473815224977827
 GameObject:
   m_ObjectHideFlags: 0

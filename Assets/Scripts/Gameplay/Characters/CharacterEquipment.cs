@@ -1,4 +1,5 @@
 using System;
+using Blessing.Core.GameEventSystem;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.TradeAndInventory;
 using Unity.Services.Vivox;
@@ -14,23 +15,25 @@ namespace Blessing.Gameplay.Characters
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
         public ScriptableObjectReference SlotType;
         [SerializeField] public EquipmentType GearSlotType { get { return SlotType.value as EquipmentType; } }
-        public InventoryItem Item;
-
+        public InventoryItem InventoryItem;
         public bool SetEquipment(InventoryItem inventoryItem)
         {
+            if (InventoryItem != null && inventoryItem.Data.Equals(InventoryItem.Data)) return false;
+
             Gear gear = inventoryItem.Item as Gear;
 
             if (gear == null) return false;
 
             if (gear.GearType != GearSlotType) return false;
 
-            Item = inventoryItem;
+            InventoryItem = inventoryItem;
+            
             return true;
         }
 
         public void Unequip()
         {
-           Item = null;
+           InventoryItem = null;
         }
     }
 }

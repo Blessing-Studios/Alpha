@@ -5,6 +5,8 @@ using System;
 using Unity.VisualScripting;
 using System.Collections.Generic;
 using Unity.Netcode.Components;
+using Blessing.Characters;
+using Blessing.Gameplay.TradeAndInventory;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -13,6 +15,7 @@ namespace Blessing.Gameplay.Characters
     [RequireComponent(typeof(CharacterHealth))]
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(CharacterInventory))]
+    [RequireComponent(typeof(CharacterStats))]
     public abstract class Character : MonoBehaviour, IHitter, IHittable
     {
         protected string characterName;
@@ -28,6 +31,7 @@ namespace Blessing.Gameplay.Characters
         public CharacterStateMachine CharacterStateMachine { get; protected set; }
         public CharacterHealth Health { get; protected set; }
         public CharacterInventory Inventory { get; protected set; }
+        public CharacterStats CharacterStats { get; protected set; }
         [field: SerializeField] public List<IHittable> TargetList { get; private set; }
         public CharacterController CharacterController { get; protected set; }
         public CharacterNetwork CharacterNetwork { get; protected set; }
@@ -75,6 +79,8 @@ namespace Blessing.Gameplay.Characters
             CharacterStateMachine = GetComponent<CharacterStateMachine>();
             Health = GetComponent<CharacterHealth>();
             Inventory = GetComponent<CharacterInventory>();
+            CharacterStats = GetComponent<CharacterStats>();
+
             CharacterController = GetComponent<CharacterController>();
 
             CharacterNetwork = GetComponent<CharacterNetwork>();
@@ -158,6 +164,24 @@ namespace Blessing.Gameplay.Characters
 
             if (health <= 0)
                 CharacterStateMachine.SetNextState(CharacterStateMachine.DeadState);
+        }
+
+        public void OnAddEquipment(Component component, object data)
+        {
+            Debug.Log(gameObject.name + ": OnAddEquipment");
+
+            if (component.gameObject != gameObject) return;
+
+            CharacterStats.UpdateAllStats();
+        }
+
+        public void OnRemoveEquipment(Component component, object data)
+        {
+            Debug.Log(gameObject.name + ": OnRemoveEquipment");
+
+            if (component.gameObject != gameObject) return;
+
+            CharacterStats.UpdateAllStats();
         }
         public abstract bool CheckIfActionTriggered(string actionName);
     }

@@ -9,7 +9,7 @@ namespace Blessing.Core.GameEventSystem
         public List<GameEventListener> Listeners = new();
 
         // Raise event through different methods signatures
-        public void Raise(Component sender, object data)
+        public void Raise(Component sender, object data = null)
         {
             foreach (GameEventListener listener in Listeners)
             {

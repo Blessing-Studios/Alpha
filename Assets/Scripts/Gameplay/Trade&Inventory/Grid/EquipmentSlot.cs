@@ -8,6 +8,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 {
     public class EquipmentSlot : BaseGrid, IGrid
     {
+        public CharacterInventory CharacterInventory;
         public CharacterEquipment CharacterEquipment;
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
         public ScriptableObjectReference SlotType;
@@ -17,6 +18,9 @@ namespace Blessing.Gameplay.TradeAndInventory
         [Header("Events")]
         public GameEvent OnAddItem;
         public GameEvent OnRemoveItem;
+        public GameEvent OnAddEquipment;
+        public GameEvent OnRemoveEquipment;
+
 
         public override void InitializeGrid()
         {
@@ -47,11 +51,12 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (Owner.TryGetComponent(out CharacterInventory characterInventory))
             {
+                CharacterInventory = characterInventory;
+
                 foreach (CharacterEquipment equipment in characterInventory.Equipments)
                 {
                     if (equipment.GearSlotType == GearSlotType)
                     {
-                        Debug.Log(gameObject.name + ": Achou CharacterEquipment");
                         CharacterEquipment = equipment;
                         return;
                     }
@@ -94,12 +99,15 @@ namespace Blessing.Gameplay.TradeAndInventory
                 return false;
 
             // Equip Item
-            
-            if (!CharacterEquipment.SetEquipment(inventoryItem))
+            if (!CharacterInventory.AddEquipment(CharacterEquipment, inventoryItem))
                 return false;
+
+            // if (!CharacterEquipment.SetEquipment(inventoryItem))
+            //     return false;
 
             EquippedItem = inventoryItem;
 
+            // Raise Events
             if (OnAddItem != null)
                 OnAddItem.Raise(this, inventoryItem);
 
@@ -141,9 +149,10 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             RemoveItemFromGrid(inventoryItem);
 
-            CharacterEquipment.Unequip();
+            CharacterInventory.RemoveEquipment(CharacterEquipment, inventoryItem);
 
-            if(OnRemoveItem != null)
+            // Raise Event
+            if (OnRemoveItem != null)
                 OnRemoveItem.Raise(this, inventoryItem);
 
             return inventoryItem;

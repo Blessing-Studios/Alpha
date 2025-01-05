@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Blessing.Core.ScriptableObjectDropdown;
+using Blessing.Gameplay.Characters.Traits;
 using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
@@ -9,5 +11,6 @@ namespace Blessing.Gameplay.TradeAndInventory
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
         public ScriptableObjectReference EquipmentType;
         [SerializeField] public EquipmentType GearType { get { return EquipmentType.value as EquipmentType; } }
+        public List<Trait> Traits;
     }
 }

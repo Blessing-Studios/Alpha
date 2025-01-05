@@ -19,3 +19,5 @@ MonoBehaviour:
   Id: 6
   EquipmentType:
     value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
+  Traits:
+  - {fileID: 11400000, guid: 7422e16d2c5459148a88866b30ba08cf, type: 2}

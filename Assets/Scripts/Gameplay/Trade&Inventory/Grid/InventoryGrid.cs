@@ -61,7 +61,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             // Refazer Lógica
             // Pega os itens do inventário e coloca no inventoryGrid
-            foreach(InventoryItem item in Inventory.ItemList)
+            foreach (InventoryItem item in Inventory.ItemList)
             {
                 PlaceItemOnGrid(item, item.Data.Position);
             }

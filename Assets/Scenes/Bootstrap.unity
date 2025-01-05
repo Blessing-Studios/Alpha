@@ -420,11 +420,19 @@ MonoBehaviour:
   <ItemHighlight>k__BackingField: {fileID: 1506687610}
   <IsOpen>k__BackingField: 0
   looseItemPrefab: {fileID: 0}
+  CharacterInventory: {fileID: 0}
+  CharacterEquipment:
+    Name: 
+    SlotType:
+      value: {fileID: 0}
+    InventoryItem: {fileID: 0}
   SlotType:
     value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
   EquippedItem: {fileID: 0}
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
+  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
+  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &249650712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1531,11 +1539,19 @@ MonoBehaviour:
   <ItemHighlight>k__BackingField: {fileID: 922572967}
   <IsOpen>k__BackingField: 0
   looseItemPrefab: {fileID: 0}
+  CharacterInventory: {fileID: 0}
+  CharacterEquipment:
+    Name: 
+    SlotType:
+      value: {fileID: 0}
+    InventoryItem: {fileID: 0}
   SlotType:
     value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
   EquippedItem: {fileID: 0}
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
+  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
+  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &780557220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1646,11 +1662,19 @@ MonoBehaviour:
   <ItemHighlight>k__BackingField: {fileID: 1470417585}
   <IsOpen>k__BackingField: 0
   looseItemPrefab: {fileID: 0}
+  CharacterInventory: {fileID: 0}
+  CharacterEquipment:
+    Name: 
+    SlotType:
+      value: {fileID: 0}
+    InventoryItem: {fileID: 0}
   SlotType:
     value: {fileID: 11400000, guid: 0b813e2225fad4e4d9ae3ef58b410c5b, type: 2}
   EquippedItem: {fileID: 0}
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
+  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
+  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &835528735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2239,11 +2263,19 @@ MonoBehaviour:
   <ItemHighlight>k__BackingField: {fileID: 764032728}
   <IsOpen>k__BackingField: 0
   looseItemPrefab: {fileID: 0}
+  CharacterInventory: {fileID: 0}
+  CharacterEquipment:
+    Name: 
+    SlotType:
+      value: {fileID: 0}
+    InventoryItem: {fileID: 0}
   SlotType:
     value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}
   EquippedItem: {fileID: 0}
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
+  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
+  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &1396770650
 MonoBehaviour:
   m_ObjectHideFlags: 0
