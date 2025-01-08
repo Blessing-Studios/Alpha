@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63217b872cfb16947be5a28def4e8a28, type: 3}
+  m_Name: LeatherBackpack
+  m_EditorClassIdentifier: 
+  Value: 10
+  Width: 2
+  Height: 2
+  Sprite: {fileID: 1646091163, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
+  Id: 10
+  EquipmentType:
+    value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
+  Traits: []
+  GridSizeWidth: 10
+  gridSizeHeight: 10

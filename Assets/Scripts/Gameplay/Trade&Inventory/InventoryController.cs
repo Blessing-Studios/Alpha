@@ -1,3 +1,4 @@
+using Blessing.Gameplay.TradeAndInventory.Containers;
 using Blessing.Player;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -152,9 +153,9 @@ namespace Blessing.Gameplay.TradeAndInventory
             inventoryItem.gameObject.SetActive(false);
             inventoryItem.RectTransform.SetParent(canvasTransform);
 
-            
             inventoryItem.Set(item);
             return inventoryItem;
+
         }
         public InventoryItem CreateItem(int id)
         {
@@ -266,7 +267,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             InventoryItem inventoryItem = selectedItem;
 
             GameObject owner = PlayerInventoryGrid.Inventory.gameObject;
-            
+
             var looseItem = Instantiate(LooseItemPrefab, position: owner.transform.position, rotation: owner.transform.rotation);
 
             looseItem.GetComponent<LooseItem>().InventoryItem = inventoryItem;

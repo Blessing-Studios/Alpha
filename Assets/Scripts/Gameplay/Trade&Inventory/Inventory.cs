@@ -51,6 +51,11 @@ namespace Blessing.Gameplay.TradeAndInventory
                     NetworkVariableReadPermission.Everyone,
                     NetworkVariableWritePermission.Owner
                 );
+
+            if (InventoryGrid == null)
+            {
+                InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
+            }
         }
         protected virtual void Start()
         {

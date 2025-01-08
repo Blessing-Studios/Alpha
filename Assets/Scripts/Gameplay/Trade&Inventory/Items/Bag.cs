@@ -2,13 +2,12 @@ using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    [CreateAssetMenu(fileName = "Backpack", menuName = "Scriptable Objects/Items/Gears/Backpack")]
-    public class Backpack : Gear
+    [CreateAssetMenu(fileName = "Bag", menuName = "Scriptable Objects/Items/Gears/Bag")]
+    public class Bag : Gear
     {
-        [Header("Backpack Info")]
+        [Header("Bag Info")]
         public int GridSizeWidth;
         public int gridSizeHeight;
         public Inventory Inventory;
     }
 }
-

@@ -8,11 +8,11 @@ namespace Blessing.Gameplay.TradeAndInventory
 {
     public class EquipmentSlot : BaseGrid, IGrid
     {
-        public CharacterInventory CharacterInventory;
-        public CharacterEquipment CharacterEquipment;
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
         public ScriptableObjectReference SlotType;
         [SerializeField] public EquipmentType GearSlotType { get { return SlotType.value as EquipmentType; } }
+        public CharacterInventory CharacterInventory;
+        public CharacterEquipment CharacterEquipment;
         public InventoryItem EquippedItem;
 
         [Header("Events")]
@@ -39,7 +39,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             SetCharacterEquipment();
 
-            // UpdateFromEquipment();
+            base.InitializeGrid();
 
             if (activated)
                 gameObject.SetActive(false);

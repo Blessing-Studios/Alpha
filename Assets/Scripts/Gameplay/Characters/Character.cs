@@ -183,6 +183,20 @@ namespace Blessing.Gameplay.Characters
 
             CharacterStats.UpdateAllStats();
         }
+
+        public void OnAddBackEquipment(Component component, object data)
+        {
+            OnAddEquipment(component, data);
+
+            // Make the BackPack the inventory of the char
+        }
+
+        public void OnRemoveBackEquipment(Component component, object data)
+        {
+            OnRemoveEquipment(component, data);
+
+            // Remove Inventory of the char
+        }
         public abstract bool CheckIfActionTriggered(string actionName);
     }
 }
