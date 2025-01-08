@@ -90,7 +90,6 @@ namespace Blessing.Characters
 
         public void UpdateAllStats()
         {
-            Debug.Log("UpdateALl Entrou");
             foreach (Stat stat in Enum.GetValues(typeof(Stat)))
             {
                 UpdateStat(stat);

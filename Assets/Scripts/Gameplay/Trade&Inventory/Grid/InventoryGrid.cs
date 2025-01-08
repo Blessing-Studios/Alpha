@@ -18,7 +18,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public TextMeshProUGUI NameText;
 
         public override void InitializeGrid()
-        {   
+        {
             bool activated = false;
             if (!gameObject.activeSelf)
             {
@@ -28,8 +28,6 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (NameText != null)
                 NameText.text = Inventory.Name;
-
-            gameObject.SetActive(true);
 
             if (Inventory == null)
             {
@@ -41,9 +39,12 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             rectTransform.sizeDelta = new Vector2(gridSizeWidth * TileSizeWidth, gridSizeHeight * TileSizeHeight);
             ItemHighlight.SetParent(rectTransform);
+            
             RemoveHighlight();
 
             UpdateFromInventory();
+
+            base.InitializeGrid();
 
             if (activated)
                 gameObject.SetActive(false);

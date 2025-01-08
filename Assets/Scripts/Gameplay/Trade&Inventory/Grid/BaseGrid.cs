@@ -7,12 +7,13 @@ namespace Blessing.Gameplay.TradeAndInventory
     public abstract class BaseGrid : MonoBehaviour
     {
         public GameObject Owner;
-        public const float TileSizeWidth = 32;
-        public const float TileSizeHeight = 32;
+        public const float TileSizeWidth = 46;
+        public const float TileSizeHeight = 46;
         protected RectTransform rectTransform;
         [SerializeField] protected int gridSizeWidth = 20;
         [SerializeField] protected int gridSizeHeight = 10;
         public List<InventoryItem> GridItems;
+        [field: SerializeField] public RectTransform TileFrame { get; protected set; }
         [field: SerializeField] public RectTransform ItemHighlight { get; protected set; }
         [field: SerializeField] public Vector2Int? HighlightPosition { get; protected set; } 
         [field: SerializeField] public bool IsOpen { get; protected set; }
@@ -23,11 +24,14 @@ namespace Blessing.Gameplay.TradeAndInventory
             rectTransform = GetComponent<RectTransform>();
 
             gameObject.SetActive(false);
+
+            // TileSizeWidth = GetComponent<SpriteRenderer>().size.x;
+            // TileSizeHeight = GetComponent<SpriteRenderer>().size.y;
         }
 
         public virtual void InitializeGrid()
         {
-           // 
+           SetTileFrame();
         }
 
         public virtual bool PlaceItemOnGrid(InventoryItem inventoryItem, Vector2Int position)
@@ -67,6 +71,19 @@ namespace Blessing.Gameplay.TradeAndInventory
             // Set Highlight position
             HighlightPosition = inventoryItem.Data.Position;
             ItemHighlight.localPosition = CalculatePosition(inventoryItem.Data.Position, width, height);
+        }
+
+        public virtual void SetTileFrame()
+        {
+            if (TileFrame == null) return;
+
+            TileFrame.gameObject.SetActive(true);
+
+            TileFrame.sizeDelta = new Vector2() 
+            {
+                x = gridSizeWidth * TileSizeWidth,
+                y = gridSizeHeight * TileSizeHeight
+            };
         }
 
         public virtual void SetHighlight(InventoryItem inventoryItem, Vector2Int position)
