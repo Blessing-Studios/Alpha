@@ -14,7 +14,7 @@ namespace Blessing.Gameplay.Characters
     [RequireComponent(typeof(MovementController))]
     [RequireComponent(typeof(CharacterHealth))]
     [RequireComponent(typeof(CharacterController))]
-    [RequireComponent(typeof(CharacterInventory))]
+    [RequireComponent(typeof(CharacterGear))]
     [RequireComponent(typeof(CharacterStats))]
     public abstract class Character : MonoBehaviour, IHitter, IHittable
     {
@@ -30,7 +30,7 @@ namespace Blessing.Gameplay.Characters
         public MovementController MovementController { get; protected set; }
         public CharacterStateMachine CharacterStateMachine { get; protected set; }
         public CharacterHealth Health { get; protected set; }
-        public CharacterInventory Inventory { get; protected set; }
+        public CharacterGear Gear { get; protected set; }
         public CharacterStats CharacterStats { get; protected set; }
         [field: SerializeField] public List<IHittable> TargetList { get; private set; }
         public CharacterController CharacterController { get; protected set; }
@@ -78,7 +78,7 @@ namespace Blessing.Gameplay.Characters
             MovementController = GetComponent<MovementController>();
             CharacterStateMachine = GetComponent<CharacterStateMachine>();
             Health = GetComponent<CharacterHealth>();
-            Inventory = GetComponent<CharacterInventory>();
+            Gear = GetComponent<CharacterGear>();
             CharacterStats = GetComponent<CharacterStats>();
 
             CharacterController = GetComponent<CharacterController>();
@@ -168,34 +168,52 @@ namespace Blessing.Gameplay.Characters
 
         public void OnAddEquipment(Component component, object data)
         {
-            Debug.Log(gameObject.name + ": OnAddEquipment");
-
             if (component.gameObject != gameObject) return;
 
+            Debug.Log(gameObject.name + ": OnAddEquipment");
+
             CharacterStats.UpdateAllStats();
+
+            CharacterEquipment characterEquipment = data as CharacterEquipment;
+
+            InventoryItem inventoryItem = characterEquipment.InventoryItem;
+
+            Backpack backpack = inventoryItem.Item as Backpack;
+
+            if (backpack != null)
+            {
+                AddBackpack(inventoryItem);
+            }
         }
 
         public void OnRemoveEquipment(Component component, object data)
         {
-            Debug.Log(gameObject.name + ": OnRemoveEquipment");
-
             if (component.gameObject != gameObject) return;
 
+            Debug.Log(gameObject.name + ": OnRemoveEquipment");
+
             CharacterStats.UpdateAllStats();
+
+            CharacterEquipment characterEquipment = data as CharacterEquipment;
+
+            if (characterEquipment.GearSlotType == Gear.BackpackSlot)
+            {
+                RemoveBackpack();
+            }
         }
 
-        public void OnAddBackEquipment(Component component, object data)
+        public void AddBackpack(InventoryItem inventoryItem)
         {
-            OnAddEquipment(component, data);
-
+            Debug.Log(gameObject.name + ": OnAddBackpack");
             // Make the BackPack the inventory of the char
+
+            if (inventoryItem != null)
+                Gear.SetInventory(inventoryItem);
         }
 
-        public void OnRemoveBackEquipment(Component component, object data)
+        public void RemoveBackpack()
         {
-            OnRemoveEquipment(component, data);
-
-            // Remove Inventory of the char
+            Gear.UnequipInventory();
         }
         public abstract bool CheckIfActionTriggered(string actionName);
     }

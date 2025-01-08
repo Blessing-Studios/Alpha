@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    [RequireComponent(typeof(CharacterInventory))]
+    [RequireComponent(typeof(Inventory))]
     public class Trader : MonoBehaviour, IInteractable
     {
-        public CharacterInventory TraderInventory { get; private set; }
+        public Inventory TraderInventory { get; private set; }
         public Character Customer;
         private Guid reservedItemGuid;
         private Vector2Int reservedItemPosition;
@@ -20,7 +20,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         
         void Awake()
         {
-            TraderInventory = GetComponent<CharacterInventory>();
+            TraderInventory = GetComponent<Inventory>();
         }
 
         public void Interact(Interactor interactor)
@@ -94,7 +94,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             Debug.Log(gameObject.name + "Item Value: " + item.Value);
 
             // Check if player has Gold to buy,
-            bool canBuyItem = item.Value < Customer.Inventory.Gold;
+            bool canBuyItem = item.Value < Customer.Gear.Gold;
             if (!canBuyItem)
             {
                 // Show message that the player is trying to buy item but doesn't have gold
@@ -121,7 +121,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             
 
             // Get Gold from player
-            bool itemBought = Customer.Inventory.SpendGold(item.Value);
+            bool itemBought = Customer.Gear.SpendGold(item.Value);
 
             if (!itemBought)
             {
@@ -139,7 +139,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private void SellItem(InventoryItem item)
         {
-            bool itemSell = Customer.Inventory.GainGold(item.Value);
+            bool itemSell = Customer.Gear.GainGold(item.Value);
 
             if (!itemSell)
             {
@@ -154,7 +154,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         private void CancelPurchase(InventoryItem item)
         {
             // Remove Item from buyer inventory
-            Customer.Inventory.RemoveItem(item);
+            Customer.Gear.Inventory.RemoveItem(item);
 
             // Add Item to original place from trader
             TraderInventory.InventoryGrid.PlaceItem(item, reservedItemPosition);
@@ -167,7 +167,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             TraderInventory.RemoveItem(item);
 
             // Add Item to original seller
-            Customer.Inventory.InventoryGrid.PlaceItem(item);
+            Customer.Gear.Inventory.InventoryGrid.PlaceItem(item);
         }
     }
 }

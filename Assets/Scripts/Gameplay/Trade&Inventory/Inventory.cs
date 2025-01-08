@@ -43,23 +43,21 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         protected virtual void Awake()
         {
-            ItemSlot = new InventoryItem[Width, Height];
-
             InventoryNetworkList = new NetworkList<InventoryItemData>
                 (
                     new List<InventoryItemData>(),
                     NetworkVariableReadPermission.Everyone,
                     NetworkVariableWritePermission.Owner
                 );
+        }
+        protected virtual void Start()
+        {
+            ItemSlot = new InventoryItem[Width, Height];
 
             if (InventoryGrid == null)
             {
                 InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
             }
-        }
-        protected virtual void Start()
-        {
-            
         }
 
         protected virtual void InitializeItems()
@@ -115,44 +113,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         protected bool UpdateLocalList(ref List<InventoryItemData> localList, NetworkList<InventoryItemData> networkList)
         {
-            List<InventoryItemData> tempList = new();
-            foreach (InventoryItemData data in networkList)
-            {
-                tempList.Add(data);
-            }
-
-            bool isEqual = true;
-
-            int networkListCount = tempList.Count;
-            int localListCount = localList.Count;
-
-            // First check if the lists has diferent sizes before checking each item
-            if (networkListCount != localListCount)
-            {
-                isEqual = false;
-            }
-            else
-            {
-                for (int i = 0; i < networkListCount; i++)
-                {
-                    if (!tempList[i].Equals(localList[i]))
-                    {
-                        isEqual = false;
-                    }
-                }
-            }
-
-            // If there was no change in the data, do nothing
-            if (isEqual)
-            {
-                return false;
-            }
-
-            // Update InventoryLocalList
-            localList.Clear();
-            localList = tempList;
-
-            return true;
+            return GameManager.Singleton.UpdateLocalList(ref localList, networkList);
         }
         public bool AddItem(InventoryItem inventoryItem, Vector2Int position)
         {

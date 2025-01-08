@@ -24,6 +24,7 @@ namespace Blessing
         public SceneStarter SceneStarter;
         public InventoryController InventoryController;
         [field: SerializeField] public GameObject InventoryItemPrefab { get; private set; }
+        [field: SerializeField] public NetworkObject ContainerPrefab { get; private set; }
         [field: SerializeField] public NetworkObject LooseItemPrefab { get; private set; }
         protected virtual void Awake()
         {
@@ -102,6 +103,48 @@ namespace Blessing
             ulong LocalClientId = NetworkManager.Singleton.LocalClientId;
             if (LocalClientId != networkObject.OwnerClientId)
                 networkObject.ChangeOwnership(LocalClientId);
+        }
+
+        public bool UpdateLocalList(ref List<InventoryItemData> localList, NetworkList<InventoryItemData> networkList)
+        {
+            List<InventoryItemData> tempList = new();
+            foreach (InventoryItemData data in networkList)
+            {
+                tempList.Add(data);
+            }
+
+            bool isEqual = true;
+
+            int networkListCount = tempList.Count;
+            int localListCount = localList.Count;
+
+            // First check if the lists has diferent sizes before checking each item
+            if (networkListCount != localListCount)
+            {
+                isEqual = false;
+            }
+            else
+            {
+                for (int i = 0; i < networkListCount; i++)
+                {
+                    if (!tempList[i].Equals(localList[i]))
+                    {
+                        isEqual = false;
+                    }
+                }
+            }
+
+            // If there was no change in the data, do nothing
+            if (isEqual)
+            {
+                return false;
+            }
+
+            // Update InventoryLocalList
+            localList.Clear();
+            localList = tempList;
+
+            return true;
         }
     }
 }

@@ -19,6 +19,12 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public override void InitializeGrid()
         {
+            if (Inventory == null)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             bool activated = false;
             if (!gameObject.activeSelf)
             {
@@ -80,7 +86,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public InventoryItem GetItem(Vector2Int position)
         {
             if (!PositionCheck(position)) return null;
-
+    
             return Inventory.ItemSlot[position.x, position.y];
         }
         public bool PlaceItem(InventoryItem inventoryItem)

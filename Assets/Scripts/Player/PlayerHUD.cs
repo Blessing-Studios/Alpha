@@ -39,7 +39,7 @@ namespace Blessing.Player
 
             if (PlayerCharacter == null) return;
 
-            GoldText.text = "Gold " + PlayerCharacter.Inventory.Gold;
+            GoldText.text = "Gold " + PlayerCharacter.Gear.Gold;
         }
     }
 }

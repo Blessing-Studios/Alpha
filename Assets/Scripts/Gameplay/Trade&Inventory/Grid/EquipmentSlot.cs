@@ -11,17 +11,13 @@ namespace Blessing.Gameplay.TradeAndInventory
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
         public ScriptableObjectReference SlotType;
         [SerializeField] public EquipmentType GearSlotType { get { return SlotType.value as EquipmentType; } }
-        public CharacterInventory CharacterInventory;
+        public CharacterGear CharacterGear;
         public CharacterEquipment CharacterEquipment;
         public InventoryItem EquippedItem;
 
         [Header("Events")]
         public GameEvent OnAddItem;
         public GameEvent OnRemoveItem;
-        public GameEvent OnAddEquipment;
-        public GameEvent OnRemoveEquipment;
-
-
         public override void InitializeGrid()
         {
             bool activated = false;
@@ -39,6 +35,9 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             SetCharacterEquipment();
 
+            if (EquippedItem != null)
+                EquippedItem.gameObject.SetActive(true);
+
             base.InitializeGrid();
 
             if (activated)
@@ -49,15 +48,20 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (Owner == null) return;
 
-            if (Owner.TryGetComponent(out CharacterInventory characterInventory))
+            if (Owner.TryGetComponent(out CharacterGear characterGear))
             {
-                CharacterInventory = characterInventory;
+                CharacterGear = characterGear;
 
-                foreach (CharacterEquipment equipment in characterInventory.Equipments)
+                foreach (CharacterEquipment equipment in CharacterGear.Equipments)
                 {
                     if (equipment.GearSlotType == GearSlotType)
                     {
                         CharacterEquipment = equipment;
+
+                        EquippedItem = CharacterEquipment.InventoryItem;
+                        if (EquippedItem != null)
+                            PlaceItemOnGrid(EquippedItem, Vector2Int.zero);
+                            
                         return;
                     }
                 }
@@ -99,7 +103,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                 return false;
 
             // Equip Item
-            if (!CharacterInventory.AddEquipment(CharacterEquipment, inventoryItem))
+            if (!CharacterGear.AddEquipment(CharacterEquipment, inventoryItem))
                 return false;
 
             // if (!CharacterEquipment.SetEquipment(inventoryItem))
@@ -137,7 +141,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (EquippedItem != null) return null;
 
-            return Vector2Int.one;
+            return Vector2Int.zero;
         }
         public InventoryItem PickUpItem(Vector2Int position)
         {
@@ -149,7 +153,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             RemoveItemFromGrid(inventoryItem);
 
-            CharacterInventory.RemoveEquipment(CharacterEquipment, inventoryItem);
+            CharacterGear.RemoveEquipment(CharacterEquipment, inventoryItem);
 
             // Raise Event
             if (OnRemoveItem != null)

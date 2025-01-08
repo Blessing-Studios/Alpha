@@ -12,6 +12,11 @@ namespace Blessing.Gameplay.TradeAndInventory
         public Sprite Sprite;
         public int Id = 0;
 
+        public virtual void Initialize(Component component)
+        {
+            //
+        }
+
         #if UNITY_EDITOR
         public void Awake()
         {

@@ -155,14 +155,14 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
-        protected virtual void OpenGrid()
+        public virtual void OpenGrid()
         {
             IsOpen = true;
             gameObject.SetActive(true);
             InitializeGrid();
         }
 
-        protected virtual void CloseGrid()
+        public virtual void CloseGrid()
         {
             IsOpen = false;
             gameObject.SetActive(false);

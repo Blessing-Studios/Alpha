@@ -4,6 +4,7 @@ using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.TradeAndInventory;
 using NUnit.Framework;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
@@ -57,16 +58,23 @@ namespace Blessing.Gameplay.TradeAndInventory
         public void Interact(Interactor interactor)
         {
             Debug.Log(gameObject.name + "Interact");
-            if (interactor.gameObject.TryGetComponent(out CharacterInventory character))
+            if (interactor.gameObject.TryGetComponent(out CharacterGear character))
             {
                 GetOwnership();
 
-                Debug.Log(gameObject.name + "Interact TryGet Entrou: ");
+                // Try to equip item, if yes, return
+                if (character.AddEquipment(InventoryItem))
+                {
+                    InventoryItem.gameObject.SetActive(true);
+                    NetworkObject.DeferDespawn(deferredDespawnTicks, destroy: true);
+                    Debug.Log(gameObject.name + "Item equiped: " + character.gameObject.name);
+                    return;
+                }
 
-                if (character.InventoryGrid.PlaceItem(InventoryItem))
+                if (character.Inventory == null) return;
+                if (character.Inventory.InventoryGrid.PlaceItem(InventoryItem))
                 {
                     Debug.Log(gameObject.name + "Got Item: " + character.gameObject.name);
-
                     // Destroy this object
                     // TODO: mudar lógica para usar pooling
                     NetworkObject.DeferDespawn(deferredDespawnTicks, destroy: true);
@@ -77,7 +85,6 @@ namespace Blessing.Gameplay.TradeAndInventory
                 }
             }
         }
-
         public void GetOwnership()
         {
             NetworkObject networkObject = GetComponent<NetworkObject>();

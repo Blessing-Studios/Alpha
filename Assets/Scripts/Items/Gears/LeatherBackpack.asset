@@ -20,5 +20,5 @@ MonoBehaviour:
   EquipmentType:
     value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
   Traits: []
-  GridSizeWidth: 10
-  gridSizeHeight: 10
+  GridSizeWidth: 9
+  GridSizeHeight: 9

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Blessing.Core.GameEventSystem;
+using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.Characters.Traits;
 using Blessing.Gameplay.TradeAndInventory;
 using TMPro;
@@ -11,7 +12,7 @@ using UnityEngine.UIElements;
 
 namespace Blessing.Gameplay.Characters
 {
-    public class CharacterInventory : Inventory
+    public class CharacterGear : NetworkBehaviour
     {
         [Header("Character")]
         protected Character character;
@@ -21,14 +22,18 @@ namespace Blessing.Gameplay.Characters
 
         public List<CharacterEquipment> Equipments;
         public NetworkList<InventoryItemData> EquipmentNetworkList;
+
+        [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
+        public ScriptableObjectReference BackpackSlotType;
+        [SerializeField] public EquipmentType BackpackSlot { get { return BackpackSlotType.value as EquipmentType; } }
+        public Inventory Inventory;
         public List<InventoryItemData> EquipmentLocalList;
+
         [Header("Events")]
         public GameEvent OnAddEquipment;
         public GameEvent OnRemoveEquipment;
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-
             character = GetComponent<Character>();
 
             EquipmentNetworkList = new NetworkList<InventoryItemData>
@@ -37,6 +42,14 @@ namespace Blessing.Gameplay.Characters
                     NetworkVariableReadPermission.Everyone,
                     NetworkVariableWritePermission.Owner
                 );
+        }
+
+        protected virtual void Start()
+        {
+            if (BackpackSlot == null)
+            {
+                Debug.LogError(gameObject.name + ": BackpackSlot can't be null");
+            }
         }
 
         public override void OnNetworkSpawn()
@@ -81,6 +94,7 @@ namespace Blessing.Gameplay.Characters
         public bool AddEquipment(CharacterEquipment equipment, InventoryItem inventoryItem)
         {
             Gear gear = inventoryItem.Item as Gear;
+            if (gear == null) return false;
             if (equipment.GearSlotType == gear.GearType)
             {
                 if (!equipment.SetEquipment(inventoryItem)) return false;
@@ -130,7 +144,7 @@ namespace Blessing.Gameplay.Characters
 
                 // Raise Events
                 if (OnRemoveEquipment != null)
-                    OnRemoveEquipment.Raise(this);
+                    OnRemoveEquipment.Raise(this, equipment);
                 
                 return true;
             }
@@ -198,6 +212,40 @@ namespace Blessing.Gameplay.Characters
         {
             // TODO:
             // CharactersEquipments can't repeat
+        }
+
+        protected InventoryItem CreateItem( InventoryItemData data)
+        {
+            return GameManager.Singleton.InventoryController.CreateItem(data);
+        }
+
+        protected bool UpdateLocalList(ref List<InventoryItemData> localList, NetworkList<InventoryItemData> networkList)
+        {
+            return GameManager.Singleton.UpdateLocalList(ref localList, networkList);
+        }
+
+        public void SetInventory(InventoryItem inventoryItem)
+        {
+            Inventory = inventoryItem.Inventory;
+
+            GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
+            Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
+
+            GameManager.Singleton.InventoryController.CheckOpenGrids();
+        }
+
+        public void UnequipInventory()
+        {
+            GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
+
+            if (Inventory != null)
+            {
+                Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
+                Inventory = null;
+            }
+            
+
+            GameManager.Singleton.InventoryController.CheckOpenGrids();
         }
     }
 }

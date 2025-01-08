@@ -22,6 +22,8 @@
     Separar a lógica das NetWorkBehaviors em duas classes, uma que é MonoBehaviors e outra que é NetworkBehaviors
         Exemplo PlayerController, transformar em duas classes
 
+    Desacoplar as classes InventoryGrid e Inventory
+
     Mover CheckAvailableSpace e outros checks do InventoryGrid para Inventory
 
     Criar um sistema de pooling https://docs-multiplayer.unity3d.com/netcode/current/advanced-topics/object-pooling/

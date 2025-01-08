@@ -629,7 +629,7 @@ MonoBehaviour:
   looseItemPrefab: {fileID: 0}
   SlotType:
     value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
-  CharacterInventory: {fileID: 0}
+  CharacterGear: {fileID: 0}
   CharacterEquipment:
     Name: 
     SlotType:
@@ -638,8 +638,6 @@ MonoBehaviour:
   EquippedItem: {fileID: 0}
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
-  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
-  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &249650712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1066,6 +1064,7 @@ MonoBehaviour:
   SceneStarter: {fileID: 0}
   InventoryController: {fileID: 0}
   <InventoryItemPrefab>k__BackingField: {fileID: 1735508749840339164, guid: 7c787da5e9598154881342ee787ec093, type: 3}
+  <ContainerPrefab>k__BackingField: {fileID: 2964627397090348853, guid: 483ae8fbfb8367b42937bc1c802a421c, type: 3}
   <LooseItemPrefab>k__BackingField: {fileID: 1062098594658658245, guid: 49a326bde239dc945bab5b080513c455, type: 3}
 --- !u!1 &434370404
 GameObject:
@@ -1760,7 +1759,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 708fbf99de0e34d44b719ec8c7022b39, type: 2}
   - {fileID: 11400000, guid: a86cf7b9a277c9b44933a8e616c7c687, type: 2}
   - {fileID: 11400000, guid: 4eb542237bbc8324c9ce25dc578c9f37, type: 2}
+  - {fileID: 11400000, guid: 2c1d6d1ac841fc54c910e7dc41b339da, type: 2}
+  - {fileID: 11400000, guid: cc451abe073ceb6489f3b0334ca1ab38, type: 2}
+  - {fileID: 11400000, guid: 57814247270d8e84aa0faffe68fc69be, type: 2}
+  - {fileID: 11400000, guid: 31f578057afbb2f498ce0310d1f17dbd, type: 2}
+  - {fileID: 11400000, guid: cc451abe073ceb6489f3b0334ca1ab38, type: 2}
   selectedItem: {fileID: 0}
+  isGridsOpen: 0
 --- !u!1 &743293208
 GameObject:
   m_ObjectHideFlags: 0
@@ -1976,7 +1981,7 @@ MonoBehaviour:
   looseItemPrefab: {fileID: 0}
   SlotType:
     value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
-  CharacterInventory: {fileID: 0}
+  CharacterGear: {fileID: 0}
   CharacterEquipment:
     Name: 
     SlotType:
@@ -1985,8 +1990,6 @@ MonoBehaviour:
   EquippedItem: {fileID: 0}
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
-  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
-  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &780557220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2102,7 +2105,7 @@ MonoBehaviour:
   looseItemPrefab: {fileID: 0}
   SlotType:
     value: {fileID: 11400000, guid: 0b813e2225fad4e4d9ae3ef58b410c5b, type: 2}
-  CharacterInventory: {fileID: 0}
+  CharacterGear: {fileID: 0}
   CharacterEquipment:
     Name: 
     SlotType:
@@ -2111,8 +2114,6 @@ MonoBehaviour:
   EquippedItem: {fileID: 0}
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
-  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
-  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &835528735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2378,7 +2379,7 @@ MonoBehaviour:
   looseItemPrefab: {fileID: 0}
   SlotType:
     value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
-  CharacterInventory: {fileID: 0}
+  CharacterGear: {fileID: 0}
   CharacterEquipment:
     Name: 
     SlotType:
@@ -2387,8 +2388,6 @@ MonoBehaviour:
   EquippedItem: {fileID: 0}
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
-  OnAddEquipment: {fileID: 11400000, guid: 74a0157ab432bcd42a84cbabd0f5fe1e, type: 2}
-  OnRemoveEquipment: {fileID: 11400000, guid: 9be10d5071810314f867d3a51d99c336, type: 2}
 --- !u!114 &922055524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3336,7 +3335,7 @@ MonoBehaviour:
   looseItemPrefab: {fileID: 0}
   SlotType:
     value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}
-  CharacterInventory: {fileID: 0}
+  CharacterGear: {fileID: 0}
   CharacterEquipment:
     Name: 
     SlotType:
@@ -3345,8 +3344,6 @@ MonoBehaviour:
   EquippedItem: {fileID: 0}
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
-  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
-  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &1396770650
 MonoBehaviour:
   m_ObjectHideFlags: 0

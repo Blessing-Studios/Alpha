@@ -8,6 +8,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public Item Item;
         public InventoryItemData Data;
+        public Inventory Inventory;
         public Vector2Int GridPosition { get { return Data.Position; } }
         public bool Rotated { get { return Data.Rotated; } }
         public int Value { get { return Item.Value; } }
@@ -36,6 +37,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         private void InitializeItem(Item item)
         {
             Item = item;
+            Item.Initialize(this);
+
             GetComponent<Image>().sprite = item.Sprite;
 
             gameObject.name = item.name;

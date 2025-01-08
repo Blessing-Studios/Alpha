@@ -18,10 +18,12 @@ namespace Blessing.Gameplay.TradeAndInventory
         public NetworkObject LooseItemPrefab { get { return GameManager.Singleton.LooseItemPrefab; } }
         private Transform canvasTransform { get { return InventoryCanvas.transform; } }
         [SerializeField] private InventoryItem selectedItem;
+        [SerializeField] private bool isGridsOpen = false;
 
         void Awake()
         {
             GameManager.Singleton.InventoryController = this;
+            isGridsOpen = false;
         }
 
         void Start()
@@ -80,11 +82,37 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
-        private void ToggleGrids()
+        public void ToggleGrids()
+        {
+            if (!isGridsOpen)
+                OpenGrids();
+            else
+                CloseGrids();
+
+            isGridsOpen = !isGridsOpen;
+        }
+        
+        public void CheckOpenGrids()
+        {
+            if (isGridsOpen)
+                OpenGrids();
+            else
+                CloseGrids();
+        }
+
+        public void OpenGrids()
         {
             foreach (var grid in Grids)
             {
-                grid.ToggleGrid();
+                grid.OpenGrid();
+            }
+        }
+
+        public void CloseGrids()
+        {
+            foreach (var grid in Grids)
+            {
+                grid.CloseGrid();
             }
         }
 
@@ -266,7 +294,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             InventoryItem inventoryItem = selectedItem;
 
-            GameObject owner = PlayerInventoryGrid.Inventory.gameObject;
+            GameObject owner = PlayerInventoryGrid.Owner;
 
             var looseItem = Instantiate(LooseItemPrefab, position: owner.transform.position, rotation: owner.transform.rotation);
 
