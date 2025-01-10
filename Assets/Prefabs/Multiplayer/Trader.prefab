@@ -100,7 +100,7 @@ MonoBehaviour:
   <ItemHighlight>k__BackingField: {fileID: 7905404145417121674}
   <IsOpen>k__BackingField: 0
   looseItemPrefab: {fileID: 0}
-  Inventory: {fileID: 0}
+  Inventory: {fileID: 4164361017039539415}
   NameText: {fileID: 85968614753173493}
 --- !u!114 &1349275696551117147
 MonoBehaviour:
@@ -428,7 +428,6 @@ GameObject:
   - component: {fileID: 3549866743602787485}
   - component: {fileID: 3693926438149755363}
   - component: {fileID: 5786774671740019027}
-  - component: {fileID: -1899099510461261544}
   - component: {fileID: 4164361017039539415}
   m_Layer: 0
   m_Name: Trader
@@ -570,7 +569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1467524026
+  GlobalObjectIdHash: 2985539146
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 3
@@ -636,33 +635,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 753c2efdda885734084cc37b75cabe66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GridSizeWidth: 10
+  GridSizeHeight: 10
+  <Inventory>k__BackingField: {fileID: 0}
   Customer: {fileID: 0}
   reservedItem: {fileID: 0}
---- !u!114 &-1899099510461261544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7506204756206563225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2059e9f132204e4c90d38fa57a21eda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  gold: 0
-  Equipments:
-  - Name: 
-    SlotType:
-      value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
-    InventoryItem: {fileID: 0}
-  BackpackSlotType:
-    value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
-  Inventory: {fileID: 4164361017039539415}
-  EquipmentLocalList: []
-  OnAddEquipment: {fileID: 0}
-  OnRemoveEquipment: {fileID: 0}
 --- !u!114 &4164361017039539415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -676,14 +653,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  <ShowDebug>k__BackingField: 0
+  Owner: {fileID: 0}
   <Name>k__BackingField: Trader
   Width: 20
   Height: 10
-  InventoryGrid: {fileID: 0}
+  GridSize:
+    m_InternalValue: {x: 0, y: 0}
+  IsInitialized:
+    m_InternalValue: 0
+  OwnerData:
+    m_InternalValue:
+      ItemId: 0
+      Position: {x: 0, y: 0}
+      Rotated: 0
+  InventoryGrid: {fileID: 351259125256166580}
   ItemList: []
   InventoryLocalList: []
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
+  ItemSlotX: 0
+  ItemSlotY: 0
 --- !u!1 &8464804813423888541
 GameObject:
   m_ObjectHideFlags: 0

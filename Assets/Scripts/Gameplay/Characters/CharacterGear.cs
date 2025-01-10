@@ -29,6 +29,7 @@ namespace Blessing.Gameplay.Characters
         [SerializeField] public EquipmentType BackpackSlot { get { return BackpackSlotType.value as EquipmentType; } }
         public Inventory Inventory;
         public List<InventoryItemData> EquipmentLocalList;
+        private bool isEquipmentsInitialized = false;
 
         [Header("Events")]
         public GameEvent OnAddEquipment;
@@ -51,12 +52,41 @@ namespace Blessing.Gameplay.Characters
             {
                 Debug.LogError(gameObject.name + ": BackpackSlot can't be null");
             }
+
+            if (!HasAuthority)
+                Initialize();
         }
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
             EquipmentNetworkList.OnListChanged += OnEquipmentNetworkListChanged;
+
+            if (!HasAuthority)
+                Initialize();
+        }
+
+        public void Initialize()
+        {
+            UpdateLocalList(ref EquipmentLocalList, EquipmentNetworkList);
+
+            if (!isEquipmentsInitialized)
+            {
+                InitializeEquipments();
+            }
+        }
+
+        private void InitializeEquipments()
+        {
+            RemoveAllEquipments();
+
+            foreach (InventoryItemData itemData in EquipmentNetworkList)
+            {
+                InventoryItem item = FindItem(itemData);
+                AddEquipment(item);
+            }
+
+            isEquipmentsInitialized = true;
         }
 
         private void OnEquipmentNetworkListChanged(NetworkListEvent<InventoryItemData> changeEvent)
@@ -65,8 +95,8 @@ namespace Blessing.Gameplay.Characters
 
             if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Add)
             {
-                InventoryItem itemCreated = CreateItem(changeEvent.Value);
-                AddEquipment(itemCreated);
+                InventoryItem item = FindItem(changeEvent.Value);
+                AddEquipment(item);
             }
 
             if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Remove)
@@ -126,6 +156,15 @@ namespace Blessing.Gameplay.Characters
             }
 
             return false;
+        }
+
+        private void RemoveAllEquipments()
+        {
+            foreach (CharacterEquipment equipment in Equipments)
+            {
+                RemoveEquipmentTraits(equipment);
+                equipment.Unequip();
+            }
         }
 
         public bool RemoveEquipment(CharacterEquipment equipment, InventoryItem inventoryItem)
@@ -220,6 +259,11 @@ namespace Blessing.Gameplay.Characters
             return GameManager.Singleton.InventoryController.CreateItem(data);
         }
 
+        protected InventoryItem FindItem(InventoryItemData data)
+        {
+            return GameManager.Singleton.FindInventoryItem(data);
+        }
+
         protected bool UpdateLocalList(ref List<InventoryItemData> localList, NetworkList<InventoryItemData> networkList)
         {
             return GameManager.Singleton.UpdateLocalList(ref localList, networkList);
@@ -242,7 +286,7 @@ namespace Blessing.Gameplay.Characters
             // if (Inventory != null && HasAuthority)
             // {
             //     GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
-            //     Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
+            //     Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
             // }
 
             Inventory = null;

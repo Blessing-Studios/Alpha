@@ -12,8 +12,8 @@ namespace Blessing.Gameplay.TradeAndInventory
 {
     public class LooseItem : NetworkBehaviour, IInteractable
     {
+        [field: SerializeField] public bool ShowDebug { get; private set; }
         public InventoryItem InventoryItem;
-
         protected NetworkVariable<InventoryItemData> data = new(new InventoryItemData(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public Item Item;
         public string Guid;
@@ -30,8 +30,15 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
 
             GetComponent<SpriteRenderer>().sprite = InventoryItem.Item.Sprite;
+
+            // Para debugar
             Guid = InventoryItem.Data.Id.ToString();
             GuidText.text = Guid;
+
+            if (ShowDebug)
+                GuidText.gameObject.SetActive(true);
+            else
+                GuidText.gameObject.SetActive(false);
         }
 
         private void InitializeLooseItem()

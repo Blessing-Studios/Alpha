@@ -100,6 +100,18 @@ namespace Blessing.Player
             {
                 GameManager.Singleton.AddPlayerCharacter(GetOwnerName(), this);
                 GameManager.Singleton.PlayerCharacterList.Add(this);
+
+                gameObject.name = "Char-" + GetOwnerName();
+
+                // Find Player Controller
+                // foreach (PlayerController player in GameManager.Singleton.PlayerList)
+                // {
+                //     if (player.GetPlayerName() == GetOwnerName())
+                //     {
+                //         player.SetPlayerCharacter(this);
+                //         return;
+                //     }
+                // }
             }
         }
 
@@ -244,7 +256,7 @@ namespace Blessing.Player
             if (Gear.Inventory != null && HasAuthority)
             {
                 GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
-                Gear.Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
+                Gear.Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
             }
 
             base.RemoveBackpack();

@@ -10,7 +10,9 @@ namespace Blessing.Gameplay.TradeAndInventory
     [RequireComponent(typeof(Inventory))]
     public class Trader : MonoBehaviour, IInteractable
     {
-        public Inventory TraderInventory { get; private set; }
+        public int GridSizeWidth = 5;
+        public int GridSizeHeight = 5;
+        [field: SerializeField] public Inventory Inventory { get; private set; }
         public Character Customer;
         private Guid reservedItemGuid;
         private Vector2Int reservedItemPosition;
@@ -20,25 +22,56 @@ namespace Blessing.Gameplay.TradeAndInventory
         
         void Awake()
         {
-            TraderInventory = GetComponent<Inventory>();
+            Inventory = GetComponent<Inventory>();
         }
 
+        void Start()
+        {
+            Inventory.SetNetworkVariables(GridSizeWidth, GridSizeHeight);
+            Inventory.Initialize();
+
+            if (Inventory.InventoryGrid == null)
+            {
+                Debug.Log(gameObject.name + " InventoryGrid can't be null");
+            }
+        }
+
+        void Update()
+        {
+            HandleAutoClose();
+        }
+
+        private void HandleAutoClose()
+        {
+            if (Customer == null) return;
+
+            if (!Inventory.InventoryGrid.IsOpen) return;
+
+            float maxDistance = (float ) (Customer.CharacterStats.Dexterity + Customer.CharacterStats.Luck) / 3;
+
+            float distance = Vector3.Distance(transform.position, Customer.transform.position);
+
+            if (distance > maxDistance)
+            {
+                Customer = null;
+                Inventory.InventoryGrid.CloseGrid();
+            }
+        }
         public void Interact(Interactor interactor)
         {
-            Debug.Log(gameObject.name + "Interact");
             if (interactor.gameObject.TryGetComponent(out Character customer))
             {
-                if (!TraderInventory.InventoryGrid.IsOpen)
+                if (!Inventory.InventoryGrid.IsOpen)
                 {
                     // if is closed, open inventoryGrid and get customer
                     this.Customer = customer;
-                    TraderInventory.GetOwnership();
-                    TraderInventory.InventoryGrid.ToggleGrid();
+                    Inventory.GetOwnership();
+                    Inventory.InventoryGrid.ToggleGrid();
                 }
-                else if (TraderInventory.InventoryGrid.IsOpen)
+                else if (Inventory.InventoryGrid.IsOpen)
                 {
                     // If is opened, close Inventory and remove customer
-                    TraderInventory.InventoryGrid.ToggleGrid();
+                    Inventory.InventoryGrid.ToggleGrid();
                     Customer = null;
                 }
             }
@@ -157,14 +190,14 @@ namespace Blessing.Gameplay.TradeAndInventory
             Customer.Gear.Inventory.RemoveItem(item);
 
             // Add Item to original place from trader
-            TraderInventory.InventoryGrid.PlaceItem(item, reservedItemPosition);
+            Inventory.InventoryGrid.PlaceItem(item, reservedItemPosition);
             Debug.Log(gameObject.name + "CancelPurchase: " + Customer.gameObject.name);
         }
 
         private void CancelSell(InventoryItem item)
         {
             // Remove Item from Trader inventory
-            TraderInventory.RemoveItem(item);
+            Inventory.RemoveItem(item);
 
             // Add Item to original seller
             Customer.Gear.Inventory.InventoryGrid.PlaceItem(item);

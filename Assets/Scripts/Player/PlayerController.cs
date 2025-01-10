@@ -13,20 +13,38 @@ namespace Blessing.Player
         public NetworkObject CharacterToSpawn;
         public Vector3 SpawnLocation;
         [field: SerializeField] public PlayerCharacter PlayerCharacter { get; private set; }
+
+        public void SetPlayerCharacter(PlayerCharacter playerCharacter)
+        {
+            if (GetPlayerName() != playerCharacter.GetOwnerName()) return;
+
+            PlayerCharacter = playerCharacter;
+        }
+
         [HideInInspector] public NetworkVariable<FixedString32Bytes> PlayerName = new();
         public string GetPlayerName()
         {
             return PlayerName.Value.ToString();
+        }
+
+        public void SetNetworkVariables(string playerName)
+        {
+            if (!HasAuthority) return;
+
+            PlayerName.Value = new FixedString32Bytes(playerName);
+            gameObject.name = "Player-" + playerName;
         }
         public NetworkVariable<bool> IsDisabled = new();
         // private int deferredDespawnTicks = 4;
 
         public override void OnNetworkSpawn()
         {
-            PlayerName.OnValueChanged += OnNetworkPlayerNameChanged;
+            PlayerName.OnValueChanged += OnPlayerNameValueChanged;
+
+            SetNetworkVariables(GameDataManager.Singleton.PlayerName);
         }
 
-        private void OnNetworkPlayerNameChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
+        private void OnPlayerNameValueChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
         {
             gameObject.name = "Player-" + newValue.ToString();
         }
@@ -44,8 +62,6 @@ namespace Blessing.Player
         {
             if (HasAuthority)
             {
-                PlayerName.Value = new FixedString32Bytes(GameDataManager.Singleton.PlayerName);
-
                 if (GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetPlayerName()))
                 {
                     FindPlayerCharacter();
@@ -56,6 +72,11 @@ namespace Blessing.Player
                 }
 
                 SetPlayer();
+            }
+
+            if (!HasAuthority)
+            {
+                gameObject.name = "Player-" + GetPlayerName();
             }
         }
         private void FindPlayerCharacter()

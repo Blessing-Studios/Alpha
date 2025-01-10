@@ -11,8 +11,8 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public GameObject InventoryCanvas;
         public InventoryGrid PlayerInventoryGrid;
+        public InventoryGrid OtherInventoryGrid;
         public List<BaseGrid> Grids;
-        public IGrid OtherInventoryGrid;
         public IGrid SelectedGrid;
         [SerializeField] private List<Item> itemList = new();
         public GameObject ItemPrefab { get { return GameManager.Singleton.InventoryItemPrefab; } }

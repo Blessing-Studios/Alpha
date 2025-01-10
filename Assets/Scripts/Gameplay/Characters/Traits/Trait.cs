@@ -20,7 +20,7 @@ namespace Blessing.Gameplay.Characters.Traits
         public int GetStatChange(Stat stat)
         {
             int changeValue = 0;
-            foreach(StatChange change in StatChanges)
+            foreach (StatChange change in StatChanges)
             {
                 if (change.Stat == stat)
                 {

@@ -62,17 +62,17 @@ namespace Blessing
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.I))
+            if (Input.GetKeyDown(KeyCode.Tab))
             {
                 InventoryController.ToggleGrids();
             }
 
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.P))
             {
                 InventoryController.CreateRandomItem();
             }
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.L))
             {
                 InventoryController.InsertRandomItem();
             }

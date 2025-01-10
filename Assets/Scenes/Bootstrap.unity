@@ -1750,6 +1750,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InventoryCanvas: {fileID: 727260156}
   PlayerInventoryGrid: {fileID: 664324399}
+  OtherInventoryGrid: {fileID: 665941197}
   Grids:
   - {fileID: 664324399}
   - {fileID: 1396770649}

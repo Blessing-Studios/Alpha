@@ -60,7 +60,6 @@ namespace Blessing.Gameplay.TradeAndInventory
         {   
             if (Inventory == null) 
             {
-                Debug.LogError(gameObject.name + " Inventory is missing");
                 return;
             }
             
