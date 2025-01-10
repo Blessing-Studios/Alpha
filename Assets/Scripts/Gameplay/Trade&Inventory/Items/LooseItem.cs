@@ -3,6 +3,7 @@ using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.TradeAndInventory;
 using NUnit.Framework;
+using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,7 +16,8 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         protected NetworkVariable<InventoryItemData> data = new(new InventoryItemData(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public Item Item;
-        public String Guid;
+        public string Guid;
+        public TextMeshPro GuidText;
         private readonly int deferredDespawnTicks = 4;
         public override void OnNetworkSpawn()
         {
@@ -29,6 +31,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             GetComponent<SpriteRenderer>().sprite = InventoryItem.Item.Sprite;
             Guid = InventoryItem.Data.Id.ToString();
+            GuidText.text = Guid;
         }
 
         private void InitializeLooseItem()
@@ -68,6 +71,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                     InventoryItem.gameObject.SetActive(true);
                     NetworkObject.DeferDespawn(deferredDespawnTicks, destroy: true);
                     Debug.Log(gameObject.name + "Item equiped: " + character.gameObject.name);
+                    
                     return;
                 }
 

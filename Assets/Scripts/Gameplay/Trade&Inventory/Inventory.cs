@@ -1,4 +1,5 @@
 using Blessing.Core.GameEventSystem;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +28,28 @@ namespace Blessing.Gameplay.TradeAndInventory
     }
     public class Inventory : NetworkBehaviour
     {
+        [field: SerializeField] public bool ShowDebug { get; private set; }
+        public GameObject Owner; // Para testar
         [field: SerializeField] public string Name { get; private set; }
         public int Width = 20;
         public int Height = 10;
+
+        public NetworkVariable<Vector2Int> GridSize = new NetworkVariable<Vector2Int>
+            (
+                new Vector2Int(0, 0),
+                NetworkVariableReadPermission.Everyone,
+                NetworkVariableWritePermission.Owner
+            );
+
+        [field: SerializeField]
+        public NetworkVariable<bool> IsInitialized= new NetworkVariable<bool>
+            (
+                false,
+                NetworkVariableReadPermission.Everyone,
+                NetworkVariableWritePermission.Owner
+            );
+
+        [field: SerializeField] public NetworkVariable<InventoryItemData> OwnerData = new(new InventoryItemData(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public InventoryGrid InventoryGrid;
         public List<InventoryItem> ItemList = new();
         public NetworkList<InventoryItemData> InventoryNetworkList;
@@ -39,6 +59,10 @@ namespace Blessing.Gameplay.TradeAndInventory
         [Header("Events")]
         public GameEvent OnAddItem;
         public GameEvent OnRemoveItem;
+
+        [Header("Debug")]
+        public int ItemSlotX;
+        public int ItemSlotY;
         // public List<GameEventListener> Listeners { get; set; }
 
         protected virtual void Awake()
@@ -50,16 +74,20 @@ namespace Blessing.Gameplay.TradeAndInventory
                     NetworkVariableWritePermission.Owner
                 );
         }
-        protected virtual void Start()
+        // Initialize Inventory, Where inventoryItem is the item containing this inventory
+        public void SetNetworkVariables(int gridWidth, int gridHeight, InventoryItem inventoryItem = null)
         {
-            ItemSlot = new InventoryItem[Width, Height];
+            if (!HasAuthority) return;
+            
+            Width = gridWidth;
+            Height = gridHeight;
 
-            if (InventoryGrid == null)
-            {
-                InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
-            }
+            if (inventoryItem == null) return;
+
+            Owner = inventoryItem.gameObject;
+
+            Initialize();
         }
-
         protected virtual void InitializeItems()
         {
             // TODO:
@@ -70,23 +98,88 @@ namespace Blessing.Gameplay.TradeAndInventory
             //     ItemList.Add(item);
             // }
         }
+        public virtual void Initialize()
+        {
+            if (!HasAuthority) return;
+
+            IsInitialized.Value = true;
+
+            GridSize.Value = new Vector2Int(Width, Height);
+
+            ItemSlot = new InventoryItem[Width, Height];
+
+            gameObject.SetActive(true);
+
+            if (Owner == null) return;
+
+            InventoryItem inventoryItem = Owner.GetComponent<InventoryItem>();
+
+            gameObject.name = inventoryItem.Item.name + "-Container";
+
+            inventoryItem.Inventory = this;
+            OwnerData.Value = inventoryItem.Data;
+        }
 
         public override void OnNetworkSpawn()
-        {
+        {   
+            GridSize.OnValueChanged += OnGridSizeValueChanged;
+            OwnerData.OnValueChanged += OnOwnerDataOnValueChanged;
             InventoryNetworkList.OnListChanged += OnInventoryNetworkListChanged;
+
+            // This is for a player that enters after this inventory is already on scene by another client
+            if (HasAuthority) return;
+            if (!IsInitialized.Value) return;
+
+            Width = GridSize.Value.x;
+            Height = GridSize.Value.y;
+
+            ItemSlot = new InventoryItem[Width, Height];
+
+            InventoryItem inventoryItem = GameManager.Singleton.InventoryController.FindInventoryItem(OwnerData.Value);
+
+            if (inventoryItem == null) return;
+
+            gameObject.name = inventoryItem.Item.name + "-Container";
+
+            inventoryItem.Inventory = this;
+            Owner = inventoryItem.gameObject;
+        }
+
+        private void OnGridSizeValueChanged(Vector2Int previousValue, Vector2Int newValue)
+        {
+            if (HasAuthority) return;
+            
+            Width = newValue.x;
+            Height = newValue.y;
+
+            ItemSlot = new InventoryItem[Width, Height];
+        }
+
+        private void OnOwnerDataOnValueChanged(InventoryItemData previousValue, InventoryItemData newValue)
+        {
+            if (HasAuthority) return;
+
+            InventoryItem inventoryItem = GameManager.Singleton.InventoryController.FindInventoryItem(newValue);
+
+            if (inventoryItem == null) return;
+
+            gameObject.name = inventoryItem.Item.name + "-Container";
+
+            inventoryItem.Inventory = this;
+            Owner = inventoryItem.gameObject;
         }
         private void OnInventoryNetworkListChanged(NetworkListEvent<InventoryItemData> changeEvent)
         {
             // Link com mais informações em como usar o NetworkListEvent 
             // https://discussions.unity.com/t/how-to-use-networklist/947471/2
 
-            if(!UpdateLocalList(ref InventoryLocalList, InventoryNetworkList)) return;
+            if (!UpdateLocalList(ref InventoryLocalList, InventoryNetworkList)) return;
 
             if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Add)
             {
-                InventoryItem itemCreated = CreateItem(changeEvent.Value);
-                AddInventoryItem(itemCreated, itemCreated.Data.Position);
-                // PlaceItemOnGrid(itemCreated, itemCreated.Data.Position);
+                InventoryItem inventoryItem = FindItem(changeEvent.Value);
+                inventoryItem.Data = changeEvent.Value;
+                AddInventoryItem(inventoryItem, inventoryItem.Data.Position);
                 UpdateFromInventory();
             }
 
@@ -97,8 +190,8 @@ namespace Blessing.Gameplay.TradeAndInventory
                     InventoryItem item = ItemList[i];
                     if (item.Data.Id == changeEvent.Value.Id)
                     {
+                        item.Data = changeEvent.Value;
                         RemoveInventoryItem(item);
-                        // RemoveItemFromGrid(item);
                         UpdateFromInventory();
                         break;
                     }
@@ -106,9 +199,29 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
-        protected InventoryItem CreateItem( InventoryItemData data)
+        protected virtual void Start()
         {
-            return GameManager.Singleton.InventoryController.CreateItem(data);
+            if (InventoryGrid == null)
+            {
+                InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
+            }
+
+            // To prevent a race condition, moved from OnNetworkSpawn() to Start()
+            // if (Owner == null)
+            //     Initialize();
+        }
+        protected virtual void Update()
+        {
+            if (ShowDebug)
+            {
+                ItemSlotX = ItemSlot.GetLength(0);
+                ItemSlotY = ItemSlot.GetLength(1);
+            }
+        }
+
+        protected InventoryItem FindItem(InventoryItemData data)
+        {
+            return GameManager.Singleton.FindInventoryItem(data);
         }
 
         protected bool UpdateLocalList(ref List<InventoryItemData> localList, NetworkList<InventoryItemData> networkList)
@@ -166,7 +279,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             InventoryLocalList.Remove(inventoryItem.GetData());
             InventoryNetworkList.Remove(inventoryItem.GetData());
 
-            if(OnRemoveItem != null)
+            if (OnRemoveItem != null)
                 OnRemoveItem.Raise(this, inventoryItem);
 
             return true;
@@ -215,8 +328,8 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public bool CheckAvailableSpace(Vector2Int position, int width, int height)
         {
-            
-            if (!BoundaryCheck(position, width, height)) 
+
+            if (!BoundaryCheck(position, width, height))
             {
                 return false;
             }
@@ -246,7 +359,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             position.y += height - 1;
 
             if (!PositionCheck(position))
-            { 
+            {
                 return false;
             }
 

@@ -11,21 +11,27 @@ namespace Blessing.Gameplay.TradeAndInventory
         public int GridSizeWidth;
         public int GridSizeHeight;
 
-        public override void Initialize(Component component)
+        public override void Initialize(InventoryItem inventoryItem)
         {
-            base.Initialize(component);
-
-            InventoryItem inventoryItem = component as InventoryItem;
+            base.Initialize(inventoryItem);
 
             var container = Instantiate(GameManager.Singleton.ContainerPrefab);
 
-            inventoryItem.Inventory = container.GetComponent<Inventory>();
-            inventoryItem.Inventory.Width = GridSizeWidth;
-            inventoryItem.Inventory.Height = GridSizeHeight;
+            // container.gameObject.name = inventoryItem.Item.name + "-Container";
+
+            // inventoryItem.Inventory = container.GetComponent<Inventory>();
+
+            // Para testar
+            // inventoryItem.Inventory.Owner = inventoryItem.gameObject;
+
+            // inventoryItem.Inventory.Width = GridSizeWidth;
+            // inventoryItem.Inventory.Height = GridSizeHeight;
+
+            // container.gameObject.SetActive(true);
 
             container.Spawn();
 
-            container.gameObject.SetActive(true);
+            container.GetComponent<Inventory>().SetNetworkVariables(GridSizeWidth, GridSizeHeight, inventoryItem);
         }
     }
 }

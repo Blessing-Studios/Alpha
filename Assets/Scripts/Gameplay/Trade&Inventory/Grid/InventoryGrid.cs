@@ -57,7 +57,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         }
 
         public void UpdateFromInventory()
-        {
+        {   
             if (Inventory == null) 
             {
                 Debug.LogError(gameObject.name + " Inventory is missing");

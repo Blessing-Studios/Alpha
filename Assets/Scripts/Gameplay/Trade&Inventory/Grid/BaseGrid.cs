@@ -41,7 +41,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             inventoryItem.Data.Position = position;
             inventoryItem.RectTransform.localPosition = CalculatePosition(position, inventoryItem.Width, inventoryItem.Height);
-
+            
             GridItems.Add(inventoryItem);
 
             inventoryItem.gameObject.SetActive(true);
@@ -130,15 +130,17 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public virtual Vector2Int GetTileGridPosition(Vector2 mousePosition)
         {
-            Vector2 positionOnTheGrid = new();
+            Vector2 positionOnTheGrid = new()
+            {
+                x = mousePosition.x - rectTransform.position.x,
+                y = rectTransform.position.y - mousePosition.y
+            };
 
-            positionOnTheGrid.x = mousePosition.x - rectTransform.position.x;
-            positionOnTheGrid.y = rectTransform.position.y - mousePosition.y;
-
-            Vector2Int tileGridPosition = new();
-            
-            tileGridPosition.x = (int)(positionOnTheGrid.x / TileSizeWidth);
-            tileGridPosition.y = (int)(positionOnTheGrid.y / TileSizeWidth);
+            Vector2Int tileGridPosition = new()
+            {
+                x = (int)(positionOnTheGrid.x / TileSizeWidth),
+                y = (int)(positionOnTheGrid.y / TileSizeWidth)
+            };
 
             return tileGridPosition;
         }

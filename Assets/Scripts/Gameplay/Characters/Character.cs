@@ -184,6 +184,8 @@ namespace Blessing.Gameplay.Characters
             {
                 AddBackpack(inventoryItem);
             }
+
+            GameManager.Singleton.InventoryController.SyncGrids();
         }
 
         public void OnRemoveEquipment(Component component, object data)
@@ -200,18 +202,17 @@ namespace Blessing.Gameplay.Characters
             {
                 RemoveBackpack();
             }
+
+            GameManager.Singleton.InventoryController.SyncGrids();
         }
 
-        public void AddBackpack(InventoryItem inventoryItem)
+        public virtual void AddBackpack(InventoryItem inventoryItem)
         {
-            Debug.Log(gameObject.name + ": OnAddBackpack");
-            // Make the BackPack the inventory of the char
-
             if (inventoryItem != null)
                 Gear.SetInventory(inventoryItem);
         }
 
-        public void RemoveBackpack()
+        public virtual void RemoveBackpack()
         {
             Gear.UnequipInventory();
         }

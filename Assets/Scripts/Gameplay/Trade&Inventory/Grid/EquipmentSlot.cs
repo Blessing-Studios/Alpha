@@ -27,6 +27,8 @@ namespace Blessing.Gameplay.TradeAndInventory
                 gameObject.SetActive(true);
             }
 
+            CleanGrid();
+
             gameObject.SetActive(true);
 
             rectTransform.sizeDelta = new Vector2(gridSizeWidth * TileSizeWidth, gridSizeHeight * TileSizeHeight);
@@ -99,8 +101,10 @@ namespace Blessing.Gameplay.TradeAndInventory
                 inventoryItem.Rotate();
 
             // Move the item in the right position on the InventoryGrid
-            if (!PlaceItemOnGrid(inventoryItem, position))
-                return false;
+            // if (!PlaceItemOnGrid(inventoryItem, position))
+            //     return false;
+
+            EquippedItem = inventoryItem;
 
             // Equip Item
             if (!CharacterGear.AddEquipment(CharacterEquipment, inventoryItem))
@@ -108,8 +112,6 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             // if (!CharacterEquipment.SetEquipment(inventoryItem))
             //     return false;
-
-            EquippedItem = inventoryItem;
 
             // Raise Events
             if (OnAddItem != null)
@@ -164,6 +166,8 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         protected override void CleanGrid()
         {
+            GridItems.Clear();
+            
             InventoryItem item = EquippedItem;
             if (item == null) return;
 

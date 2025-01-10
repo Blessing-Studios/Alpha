@@ -37,6 +37,8 @@ Fazer essa função;
 
 Criar lógica para checar se item foi duplicado
 
+Mochilas estão bugando no online
+
 Quando um jogador cai e reconecta a vida buga, o personagem não regenera mais vida
 
 

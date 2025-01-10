@@ -257,7 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 392121763
+  GlobalObjectIdHash: 588298983
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 3
@@ -323,6 +323,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebe95bf467e4a17409514fd016c3cb59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GridSizeWidth: 10
+  GridSizeHeight: 10
 --- !u!114 &3890581990903331927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,14 +338,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  <ShowDebug>k__BackingField: 0
+  Owner: {fileID: 0}
   <Name>k__BackingField: Loot
   Width: 10
   Height: 10
+  NetworkWidth:
+    m_InternalValue: 1
+  NetworkHeight:
+    m_InternalValue: 1
+  OwnerData:
+    m_InternalValue:
+      ItemId: 0
+      Position: {x: 0, y: 0}
+      Rotated: 0
   InventoryGrid: {fileID: 6846952372295626962}
   ItemList: []
   InventoryLocalList: []
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
+  ItemSlotX: 0
+  ItemSlotY: 0
 --- !u!1 &8464804813423888541
 GameObject:
   m_ObjectHideFlags: 0

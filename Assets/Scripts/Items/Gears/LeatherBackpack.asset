@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63217b872cfb16947be5a28def4e8a28, type: 3}
   m_Name: LeatherBackpack
   m_EditorClassIdentifier: 
+  Label: 
   Value: 10
   Width: 2
   Height: 2
@@ -20,5 +21,5 @@ MonoBehaviour:
   EquipmentType:
     value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
   Traits: []
-  GridSizeWidth: 9
-  GridSizeHeight: 9
+  GridSizeWidth: 8
+  GridSizeHeight: 8

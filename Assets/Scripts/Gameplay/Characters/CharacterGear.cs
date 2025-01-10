@@ -4,6 +4,7 @@ using Blessing.Core.GameEventSystem;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.Characters.Traits;
 using Blessing.Gameplay.TradeAndInventory;
+using NUnit.Framework;
 using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -171,7 +172,7 @@ namespace Blessing.Gameplay.Characters
                     equipment.Unequip();
 
                     if (OnRemoveEquipment != null)
-                        OnRemoveEquipment.Raise(this);
+                        OnRemoveEquipment.Raise(this, equipment);
                 }
             }
 
@@ -226,26 +227,25 @@ namespace Blessing.Gameplay.Characters
 
         public void SetInventory(InventoryItem inventoryItem)
         {
+            // if (HasAuthority)
+            // {
+            //     // TODO: 
+            //     GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
+            //     Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
+            // }
+
             Inventory = inventoryItem.Inventory;
-
-            GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
-            Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
-
-            GameManager.Singleton.InventoryController.CheckOpenGrids();
         }
 
         public void UnequipInventory()
         {
-            GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
+            // if (Inventory != null && HasAuthority)
+            // {
+            //     GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
+            //     Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
+            // }
 
-            if (Inventory != null)
-            {
-                Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
-                Inventory = null;
-            }
-            
-
-            GameManager.Singleton.InventoryController.CheckOpenGrids();
+            Inventory = null;
         }
     }
 }

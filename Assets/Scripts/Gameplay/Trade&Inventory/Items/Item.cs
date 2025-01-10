@@ -6,13 +6,14 @@ namespace Blessing.Gameplay.TradeAndInventory
     [CreateAssetMenu(fileName = "Item", menuName = "Scriptable Objects/Item")]
     public class Item : ScriptableObject
     {
+        public string Label;
         public int Value = 10;
         public int Width = 1;
         public int Height = 1;
         public Sprite Sprite;
         public int Id = 0;
 
-        public virtual void Initialize(Component component)
+        public virtual void Initialize(InventoryItem inventoryItem)
         {
             //
         }

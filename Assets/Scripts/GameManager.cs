@@ -8,6 +8,7 @@ using UnityEngine.PlayerLoop;
 using Blessing.Gameplay.TradeAndInventory;
 using Unity.VisualScripting;
 using Unity.Netcode;
+using UnityEngine.Pool;
 
 namespace Blessing
 {
@@ -23,6 +24,8 @@ namespace Blessing
         public Dictionary<string, PlayerCharacter> PlayerCharactersDic { get { return playerCharactersDic; } }
         public SceneStarter SceneStarter;
         public InventoryController InventoryController;
+        public InventoryItemPooler InventoryItemPooler;
+        public IObjectPool<InventoryItem> InventoryItemPool;
         [field: SerializeField] public GameObject InventoryItemPrefab { get; private set; }
         [field: SerializeField] public NetworkObject ContainerPrefab { get; private set; }
         [field: SerializeField] public NetworkObject LooseItemPrefab { get; private set; }
@@ -49,6 +52,34 @@ namespace Blessing
             if (VirtualCamera == null)
             {
                 Debug.LogError(base.gameObject.name + ": VirtualCamera is missing");
+            }
+
+            if (InventoryItemPooler == null)
+                Debug.LogError(gameObject.name + ": Missing InventoryItemPooler");
+
+            InventoryItemPool = InventoryItemPooler.Pool;
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                InventoryController.ToggleGrids();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                InventoryController.CreateRandomItem();
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                InventoryController.InsertRandomItem();
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                InventoryController.RotateItem();
             }
         }
 
@@ -78,6 +109,16 @@ namespace Blessing
         public Transform GetPlayerSpawn(int index)
         {
             return PlayerSpawnLocations[index];
+        }
+
+        public InventoryItem GetInventoryItem()
+        {
+            return InventoryItemPool.Get();
+        }
+
+        internal InventoryItem FindInventoryItem(InventoryItemData data)
+        {
+            return InventoryController.FindInventoryItem(data);
         }
 
         public void InitializePlayers()

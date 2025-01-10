@@ -10,6 +10,7 @@ using Unity.Collections;
 using UnityEngine.InputSystem;
 using Blessing.Gameplay.HealthAndDamage;
 using Blessing.Gameplay.Interation;
+using Blessing.Gameplay.TradeAndInventory;
 
 namespace Blessing.Player
 {
@@ -223,6 +224,30 @@ namespace Blessing.Player
             }
 
             return false;
+        }
+
+        public override void AddBackpack(InventoryItem inventoryItem)
+        {
+            base.AddBackpack(inventoryItem);
+            
+            // If this is the Local Player, change PlayerInventoryGrid
+            if (HasAuthority)
+            { 
+                GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Gear.Inventory;
+                Gear.Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
+            }
+        }
+
+        public override void RemoveBackpack()
+        {
+            // If this is the Local Player, change PlayerInventoryGrid
+            if (Gear.Inventory != null && HasAuthority)
+            {
+                GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
+                Gear.Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid as InventoryGrid;
+            }
+
+            base.RemoveBackpack();
         }
     }
 }

@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3858861263
+  GlobalObjectIdHash: 3517138945
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 3
@@ -71,11 +71,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  <ShowDebug>k__BackingField: 0
+  Owner: {fileID: 0}
   <Name>k__BackingField: 
   Width: 1
   Height: 1
+  NetworkGridSize:
+    m_InternalValue: {x: 0, y: 0}
+  NetworkWidth:
+    m_InternalValue: 1
+  NetworkHeight:
+    m_InternalValue: 1
+  OwnerData:
+    m_InternalValue:
+      ItemId: 0
+      Position: {x: 0, y: 0}
+      Rotated: 0
   InventoryGrid: {fileID: 0}
   ItemList: []
   InventoryLocalList: []
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
+  ItemSlotX: 0
+  ItemSlotY: 0

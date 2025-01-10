@@ -18,7 +18,7 @@ namespace Blessing.Gameplay.Characters
         public InventoryItem InventoryItem;
         public bool SetEquipment(InventoryItem inventoryItem)
         {
-            if (InventoryItem != null && inventoryItem.Data.Equals(InventoryItem.Data)) return false;
+            if (InventoryItem != null) return false;
 
             Gear gear = inventoryItem.Item as Gear;
 

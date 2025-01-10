@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityEngine.UI;
 
 namespace Blessing.Gameplay.TradeAndInventory
@@ -8,6 +9,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public Item Item;
         public InventoryItemData Data;
+        public IObjectPool<InventoryItem> Pool;
         public Inventory Inventory;
         public Vector2Int GridPosition { get { return Data.Position; } }
         public bool Rotated { get { return Data.Rotated; } }
@@ -37,7 +39,6 @@ namespace Blessing.Gameplay.TradeAndInventory
         private void InitializeItem(Item item)
         {
             Item = item;
-            Item.Initialize(this);
 
             GetComponent<Image>().sprite = item.Sprite;
 
@@ -49,6 +50,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             InitializeItem(item);
             SetData(Guid.NewGuid(), item.Id, Vector2Int.zero, false);
+            item.Initialize(this);
         }
 
         public void Set(Item item, InventoryItemData  data)
