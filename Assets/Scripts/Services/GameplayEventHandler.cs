@@ -11,6 +11,7 @@ namespace Blessing.Services
         internal static event Action<NetworkObject> OnNetworkObjectDespawned;
         internal static event Action<NetworkObject, ulong, ulong> OnNetworkObjectOwnershipChanged;
         internal static event Action<string, string> OnStartButtonPressed;
+        internal static event Action<SceneReference> OnSinglePlayerButtonPressed;
         internal static event Action OnReturnToMainMenuButtonPressed;
         internal static event Action OnQuitGameButtonPressed;
         internal static event Action<Task> OnConnectToSessionCompleted;
@@ -29,6 +30,11 @@ namespace Blessing.Services
         internal static void StartButtonPressed(string playerName, string sessionName)
         {
             OnStartButtonPressed?.Invoke(playerName, sessionName);
+        }
+
+        internal static void SinglePlayerButtonPressed(SceneReference scene)
+        {
+            OnSinglePlayerButtonPressed?.Invoke(scene);
         }
 
         internal static void ReturnToMainMenuPressed()

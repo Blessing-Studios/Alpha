@@ -10,7 +10,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public int GridSizeWidth = 5;
         public int GridSizeHeight = 5;
-        public Character Looter;
+        private Character looter;
         [field: SerializeField] public Inventory Inventory { get; private set; }
         void Awake()
         {
@@ -30,40 +30,41 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         void Update()
         {
-            HandleAutoClose();
-        }
-
-        private void HandleAutoClose()
-        {
-            if (Looter == null) return;
-
-            if (!Inventory.InventoryGrid.IsOpen) return;
-
-            float maxDistance = (float ) (Looter.CharacterStats.Dexterity + Looter.CharacterStats.Luck) / 3;
-
-            float distance = Vector3.Distance(transform.position, Looter.transform.position);
-
-            if (distance > maxDistance)
-            {
-                Looter = null;
-                Inventory.InventoryGrid.CloseGrid();
-            }
+            HandleStopInteraction();
         }
 
         public void Interact(Interactor interactor)
         {
             if (interactor.gameObject.TryGetComponent(out Character looter))
             {
-                Looter = looter;
-                if (!Inventory.InventoryGrid.IsOpen)
+                this.looter = looter;
+                Inventory.InventoryGrid.Inventory = Inventory;
+
+                if (!GameManager.Singleton.InventoryController.IsGridsOpen)
                 {
-                    Inventory.GetOwnership();
-                    Inventory.InventoryGrid.ToggleGrid();
+                    GameManager.Singleton.InventoryController.OpenAllGrids();
                 }
-                else if (Inventory.InventoryGrid.IsOpen)
+                else if (GameManager.Singleton.InventoryController.IsGridsOpen)
                 {
-                    Inventory.InventoryGrid.ToggleGrid();
+                    GameManager.Singleton.InventoryController.CloseAllGrids();
                 }
+            }
+        }
+        private void HandleStopInteraction()
+        {
+            if (looter == null) return;
+
+            if (!Inventory.InventoryGrid.IsOpen) return;
+
+            float maxDistance = (float ) (looter.CharacterStats.Dexterity + looter.CharacterStats.Luck) / 3;
+
+            float distance = Vector3.Distance(transform.position, looter.transform.position);
+
+            if (distance > maxDistance)
+            {
+                looter = null;
+                GameManager.Singleton.InventoryController.CloseAllGrids();
+                Inventory.InventoryGrid.Inventory = null;
             }
         }
     }

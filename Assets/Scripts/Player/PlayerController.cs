@@ -39,6 +39,7 @@ namespace Blessing.Player
 
         public override void OnNetworkSpawn()
         {
+            Debug.Log(gameObject.name + ": Player Spawn");
             PlayerName.OnValueChanged += OnPlayerNameValueChanged;
 
             SetNetworkVariables(GameDataManager.Singleton.PlayerName);

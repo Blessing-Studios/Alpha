@@ -245,6 +245,7 @@ namespace Blessing.Player
             // If this is the Local Player, change PlayerInventoryGrid
             if (HasAuthority)
             { 
+                GameManager.Singleton.InventoryController.PlayerCharacter = this;
                 GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Gear.Inventory;
                 Gear.Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
             }

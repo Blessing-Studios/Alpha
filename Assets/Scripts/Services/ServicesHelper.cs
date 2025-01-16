@@ -41,6 +41,7 @@ namespace Blessing.Services
             NetworkManager.Singleton.OnClientStopped += OnClientStopped;
 
             GameplayEventHandler.OnStartButtonPressed += OnStartButtonPressed;
+            GameplayEventHandler.OnSinglePlayerButtonPressed += OnSinglePlayerButtonPressed;
             GameplayEventHandler.OnReturnToMainMenuButtonPressed += OnReturnToMainMenuButtonPressed;
             GameplayEventHandler.OnQuitGameButtonPressed += OnQuitGameButtonPressed;
         }
@@ -58,6 +59,7 @@ namespace Blessing.Services
             }
 
             GameplayEventHandler.OnStartButtonPressed -= OnStartButtonPressed;
+            GameplayEventHandler.OnSinglePlayerButtonPressed -= OnSinglePlayerButtonPressed;
             GameplayEventHandler.OnReturnToMainMenuButtonPressed -= OnReturnToMainMenuButtonPressed;
             GameplayEventHandler.OnQuitGameButtonPressed -= OnQuitGameButtonPressed;
         }
@@ -67,6 +69,24 @@ namespace Blessing.Services
             var connectTask = ConnectToSession(playerName, sessionName);
             await connectTask;
             GameplayEventHandler.ConnectToSessionComplete(connectTask);
+        }
+
+        async void OnSinglePlayerButtonPressed(SceneReference scene)
+        {   
+            
+            // Quando host carregar a cena, todos os clientes carregarão junto.
+            await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(scene.SceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+
+            NetworkManager.Singleton.NetworkConfig.NetworkTopology = NetworkTopologyTypes.ClientServer;   
+            // Descarregar a cena presente, que deve ser o menu.
+            SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
+            ConnectToSinglePlayerSession();
+        }
+
+        private void ConnectToSinglePlayerSession()
+        {
+            NetworkManager.Singleton.StartHost();
+            GameDataManager.Singleton.IsHost = true;
         }
 
         void OnReturnToMainMenuButtonPressed()
@@ -164,6 +184,8 @@ namespace Blessing.Services
 
         async Task ConnectToSession(string playerName, string sessionName)
         {
+            NetworkManager.Singleton.NetworkConfig.NetworkTopology = NetworkTopologyTypes.DistributedAuthority;
+            
             if (AuthenticationService.Instance == null)
             {
                 return;

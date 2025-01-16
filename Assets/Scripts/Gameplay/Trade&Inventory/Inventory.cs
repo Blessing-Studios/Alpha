@@ -41,14 +41,6 @@ namespace Blessing.Gameplay.TradeAndInventory
                 NetworkVariableWritePermission.Owner
             );
 
-        // [field: SerializeField]
-        // public NetworkVariable<bool> IsInitialized = new NetworkVariable<bool>
-        //     (
-        //         false,
-        //         NetworkVariableReadPermission.Everyone,
-        //         NetworkVariableWritePermission.Owner
-        //     );
-
         private bool isItemsInitialized = false;
         private bool isInitialized = false;
 
@@ -212,11 +204,11 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         protected virtual void Start()
         {
-            // if (InventoryGrid == null)
-            // {
-            //     // TODO: temporário
-            //     InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
-            // }
+            if (InventoryGrid == null)
+            {
+                // TODO: temporário
+                InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
+            }
         }
         protected virtual void Update()
         {
@@ -285,7 +277,8 @@ namespace Blessing.Gameplay.TradeAndInventory
                     int posY = position.y + y;
                 }
             }
-
+            inventoryItem.Data.Position = position;
+            
             ItemList.Add(inventoryItem);
 
             return true;

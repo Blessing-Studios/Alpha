@@ -25,7 +25,6 @@ namespace Blessing.Services
             if (task.IsCompletedSuccessfully)
             {
                 Debug.Log("ConnectToSessionCompleted");
-
                 if (GameDataManager.Singleton.IsHost)
                 {
                     // Quando host carregar a cena, todos os clientes carregarão junto.

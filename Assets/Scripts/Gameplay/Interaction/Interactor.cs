@@ -15,6 +15,8 @@ namespace Blessing.Gameplay.Interation
         public Transform InteractorSource;
         public float InteractRange = 2f;
         private List<IInteractable> interactables = new();
+        [SerializeField] private IInteractable currentInteracting;
+        public float MaxDistance = 5;
 
         public void HandleInteraction()
         {
@@ -25,6 +27,9 @@ namespace Blessing.Gameplay.Interation
             {
                 if (hitCollider.gameObject.TryGetComponent(out IInteractable other))
                 {
+                    // Can't interact with itself
+                    if (transform == other.transform) continue;
+
                     interactables.Add(other);
                 }
             }
@@ -32,7 +37,10 @@ namespace Blessing.Gameplay.Interation
             IInteractable closest = GetClosest(InteractorSource.position, interactables);
 
             if (closest != null)
-                closest.Interact(this);
+            {
+                currentInteracting = closest;
+                currentInteracting.Interact(this);
+            }
         }
 
         private IInteractable GetClosest(Vector3 startPosition, List<IInteractable> interactables)
@@ -55,7 +63,6 @@ namespace Blessing.Gameplay.Interation
 
             return bestTarget;
         }
-
         void OnDrawGizmos()
         {
             Gizmos.color = Color.green;

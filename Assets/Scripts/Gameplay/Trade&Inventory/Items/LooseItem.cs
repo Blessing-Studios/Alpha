@@ -79,7 +79,18 @@ namespace Blessing.Gameplay.TradeAndInventory
                 if (character.AddEquipment(InventoryItem))
                 {
                     InventoryItem.gameObject.SetActive(true);
-                    NetworkObject.DeferDespawn(deferredDespawnTicks, destroy: true);
+
+                    // TODO: criar um sistema de pooling para destruir objetos
+                    if (NetworkManager.Singleton.NetworkConfig.NetworkTopology == NetworkTopologyTypes.DistributedAuthority)
+                    {
+                        gameObject.SetActive(false);
+                        NetworkObject.DeferDespawn(deferredDespawnTicks, destroy: true);
+                    }
+                    else
+                    {
+                        gameObject.SetActive(false);
+                    }
+                    
                     Debug.Log(gameObject.name + "Item equiped: " + character.gameObject.name);
                     
                     return;
@@ -91,7 +102,16 @@ namespace Blessing.Gameplay.TradeAndInventory
                     Debug.Log(gameObject.name + "Got Item: " + character.gameObject.name);
                     // Destroy this object
                     // TODO: mudar lógica para usar pooling, criar pooling para LooseItems,
-                    NetworkObject.DeferDespawn(deferredDespawnTicks, destroy: true);
+
+                    if (NetworkManager.Singleton.NetworkConfig.NetworkTopology == NetworkTopologyTypes.DistributedAuthority)
+                    {
+                        gameObject.SetActive(false);
+                        NetworkObject.DeferDespawn(deferredDespawnTicks, destroy: true);
+                    }
+                    else
+                    {
+                        gameObject.SetActive(false);
+                    }
 
                     if (character.Inventory.InventoryGrid)
                     {

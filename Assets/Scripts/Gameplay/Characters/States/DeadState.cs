@@ -19,10 +19,7 @@ namespace Blessing.Gameplay.Characters.States
 
             animator.SetTrigger("Die");
 
-            // character.GetHealth().SetCharacterAsDead();
-
-            movementController.DisableMovement();
-            DisableCollision();
+            character.OnDeath();
         }
 
         public override void OnUpdate()
@@ -33,20 +30,6 @@ namespace Blessing.Gameplay.Characters.States
             {
                 // comboStateMachine.SetNextStateToMain();
             }
-        }
-
-        /// <summary>
-        /// Disable Collision With the Default Layer
-        /// </summary>
-        public void DisableCollision()
-        {
-            movementController.GetCharacterController().excludeLayers = LayerMask.GetMask("Default");
-
-            // var children = character.gameObject.GetComponentsInChildren<Transform>(true);
-            // foreach (var child in children)
-            // {
-            //     child.gameObject.layer = LayerMask.NameToLayer("Dead");
-            // }
         }
     }
 }

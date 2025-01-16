@@ -14,7 +14,8 @@ namespace Blessing.Gameplay
 
         public override void OnNetworkSpawn()
         {
-            if (IsSessionOwner)
+            Debug.Log(gameObject.name + ": OnNetworkSpawn HasAuthority - " + HasAuthority);
+            if (HasAuthority)
             {
                 Spawn();
             }

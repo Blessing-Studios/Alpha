@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Blessing.Characters;
 using Blessing.Core.GameEventSystem;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.Characters.Traits;
+using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.TradeAndInventory;
 using NUnit.Framework;
 using TMPro;
@@ -13,7 +15,7 @@ using UnityEngine.UIElements;
 
 namespace Blessing.Gameplay.Characters
 {
-    public class CharacterGear : NetworkBehaviour
+    public class CharacterGear : NetworkBehaviour, IInteractable
     {
         [Header("Character")]
         protected Character character;
@@ -30,10 +32,16 @@ namespace Blessing.Gameplay.Characters
         public Inventory Inventory;
         public List<InventoryItemData> EquipmentLocalList;
         private bool isEquipmentsInitialized = false;
+        private Character looter;
+        public bool CanBeLooted { get { return character.Health.IsDead; } }
 
         [Header("Events")]
         public GameEvent OnAddEquipment;
         public GameEvent OnRemoveEquipment;
+        public CharacterStats GetStats()
+        {
+            return character.CharacterStats;
+        }
         protected void Awake()
         {
             character = GetComponent<Character>();
@@ -55,6 +63,12 @@ namespace Blessing.Gameplay.Characters
 
             if (!HasAuthority)
                 Initialize();
+        }
+
+        protected virtual void Update()
+        {
+            if (CanBeLooted)
+                HandleStopInteraction();
         }
 
         public override void OnNetworkSpawn()
@@ -144,13 +158,15 @@ namespace Blessing.Gameplay.Characters
             if (gear == null)
             {
                 return false;
-            } 
+            }
             if (equipment.GearSlotType == gear.GearType)
             {
-                
+
                 if (!equipment.SetEquipment(inventoryItem)) return false;
 
                 ApplyEquipmentTraits(equipment);
+
+                inventoryItem.Data.Position = Vector2Int.zero;
 
                 // Raise Events
                 if (OnAddEquipment != null)
@@ -279,7 +295,7 @@ namespace Blessing.Gameplay.Characters
             return GameManager.Singleton.UpdateLocalList(ref localList, networkList);
         }
 
-        public void SetInventory(InventoryItem inventoryItem)
+        public virtual void SetInventory(InventoryItem inventoryItem)
         {
             // if (HasAuthority)
             // {
@@ -292,7 +308,7 @@ namespace Blessing.Gameplay.Characters
                 Debug.Log(gameObject.name + ": inventoryItem.Inventory - " + inventoryItem.Item.name);
                 return;
             }
-            
+
             Inventory = inventoryItem.Inventory;
         }
 
@@ -305,6 +321,44 @@ namespace Blessing.Gameplay.Characters
             // }
 
             Inventory = null;
+        }
+        public void Interact(Interactor interactor)
+        {
+            if (!CanBeLooted) return;
+
+            if (interactor.gameObject.TryGetComponent(out Character looter))
+            {
+                // Set Grids
+                GameManager.Singleton.GetOwnership(NetworkObject);
+
+                this.looter = looter;
+
+                GameManager.Singleton.InventoryController.OtherCharacter = character;
+
+                if (!GameManager.Singleton.InventoryController.IsGridsOpen)
+                {
+                    GameManager.Singleton.InventoryController.OpenAllGrids();
+                }
+                else if (GameManager.Singleton.InventoryController.IsGridsOpen)
+                {
+                    GameManager.Singleton.InventoryController.CloseAllGrids();
+                }
+            }
+        }
+        private void HandleStopInteraction()
+        {
+            if (looter == null) return;
+
+            float maxDistance = (float)(looter.CharacterStats.Dexterity + looter.CharacterStats.Luck) / 3;
+
+            float distance = Vector3.Distance(transform.position, looter.transform.position);
+
+            if (distance > maxDistance)
+            {
+                looter = null;
+                GameManager.Singleton.InventoryController.CloseAllGrids();
+                GameManager.Singleton.InventoryController.OtherCharacter = null;
+            }
         }
     }
 }

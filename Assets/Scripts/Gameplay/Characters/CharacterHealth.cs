@@ -35,8 +35,9 @@ namespace Blessing.Gameplay.Characters
         [SerializeField] protected int damageOverTime = 0;
         [Tooltip("Time to wait for health change ove time")]
         [SerializeField] protected float waitTime = 0.5f;
-        protected bool isAlive = true;
+        [SerializeField] protected bool isAlive = true;
         public bool IsAlive { get { return isAlive;}}
+        public bool IsDead { get { return !isAlive;}}
         // [SerializeField] protected int _maxWounds = 4;
         [field: SerializeField] public int MaxWounds { get; private set; }
         [SerializeField] protected int woundHealth = 25;
@@ -103,11 +104,6 @@ namespace Blessing.Gameplay.Characters
         public float GethealthPercent()
         {
             return (float)health.Value / OriginalMaxHealth;
-        }
-
-        public bool GetIfCharacterIsAlive()
-        {
-            return isAlive;
         }
 
         public void SetCharacterAsAlive()

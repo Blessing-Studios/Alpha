@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Unity.Netcode.Components;
 using Blessing.Characters;
 using Blessing.Gameplay.TradeAndInventory;
+using Blessing.Gameplay.Interation;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -100,25 +101,6 @@ namespace Blessing.Gameplay.Characters
             }
         }
 
-        // public void SetStateIndex(int index) // mover para CharacterNetwork
-        // {
-        //     if (HasAuthority)
-        //         stateIndex.Value = index;
-        // }
-
-        // public override void OnNetworkSpawn() // mover para CharacterNetwork
-        // {
-        //     base.OnNetworkSpawn();
-        //     if (ShowDebug) Debug.Log(gameObject.name + " OnNetworkSpawn");
-        //     stateIndex.OnValueChanged += OnNetworkStateIndexChanged;
-        // }
-
-        // protected virtual void OnNetworkStateIndexChanged(int previousValue, int newValue) // mover para CharacterNetwork
-        // {
-        //     if (ShowDebug) Debug.Log(gameObject.name + ": OnNetworkStateIndexChanged");
-        //     CharacterStateMachine.SetNextStateByIndex(stateIndex.Value);
-        // }
-
         public void ClearTargetList()
         {
             // if (!HasAuthority) return;
@@ -162,6 +144,9 @@ namespace Blessing.Gameplay.Characters
         {
             if (!HasAuthority) return;
 
+            // Por enquanto, não pode bater em characters mortos
+            if (Health.IsDead) return;
+
             //Receive Damage
             Health.ReceiveDamage(hitter.HitInfo.Damage);
 
@@ -172,6 +157,50 @@ namespace Blessing.Gameplay.Characters
             if (health <= 0)
                 CharacterStateMachine.SetNextState(CharacterStateMachine.DeadState);
         }
+
+        public virtual void OnDeath()
+        {
+            Health.SetCharacterAsDead();
+            MovementController.DisableMovement();
+            MovementController.DisableCollision();
+        }
+
+        // public void Interact(Interactor interactor)
+        // {
+        //     if (Health.IsAlive) return;
+
+        //     if (interactor.gameObject.TryGetComponent(out Character looter))
+        //     {
+        //         this.looter = looter;
+
+        //         Gear.Inventory.InventoryGrid.Inventory = Gear.Inventory;
+        //         if (!Gear.Inventory.InventoryGrid.IsOpen)
+        //         {
+        //             Gear.Inventory.GetOwnership();
+        //             Gear.Inventory.InventoryGrid.ToggleGrid();
+        //         }
+        //         else if (Gear.Inventory.InventoryGrid.IsOpen)
+        //         {
+        //             Gear.Inventory.InventoryGrid.ToggleGrid();
+        //         }
+        //     }
+        // }
+        // private void HandleStopInteraction()
+        // {
+        //     if (looter == null) return;
+
+        //     if (!Gear.Inventory.InventoryGrid.IsOpen) return;
+
+        //     float maxDistance = (float ) (looter.CharacterStats.Dexterity + looter.CharacterStats.Luck) / 3;
+
+        //     float distance = Vector3.Distance(transform.position, looter.transform.position);
+
+        //     if (distance > maxDistance)
+        //     {
+        //         looter = null;
+        //         Gear.Inventory.InventoryGrid.CloseGrid();
+        //     }
+        // }
 
         public void OnAddEquipment(Component component, object data)
         {
@@ -215,12 +244,18 @@ namespace Blessing.Gameplay.Characters
 
         public virtual void AddBackpack(InventoryItem inventoryItem)
         {
+            Debug.Log(gameObject.name + ": OnRemoveBackpack");
             if (inventoryItem != null)
+            {
                 Gear.SetInventory(inventoryItem);
+            }
+
+                
         }
 
         public virtual void RemoveBackpack()
         {
+            Debug.Log(gameObject.name + ": OnRemoveBackpack");
             Gear.UnequipInventory();
         }
         public abstract bool CheckIfActionTriggered(string actionName);

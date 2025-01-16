@@ -1,5 +1,6 @@
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.GameData;
+using Blessing.Services;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,9 +26,8 @@ namespace Blessing.UI
                 if (ShowDebug) Debug.Log("prototypeButton");
 
                 GameDataManager.Singleton.PlayerName = "Player1";
-                
-                Core.SceneManager.Singleton.LoadAsync(singlePlayerScene); 
-                Core.SceneManager.Singleton.Unload(Core.SceneManager.Singleton.CurrentScene);
+
+                GameplayEventHandler.SinglePlayerButtonPressed(singlePlayerScene);
             });
 
             multiplayerButton.onClick.AddListener(() => {

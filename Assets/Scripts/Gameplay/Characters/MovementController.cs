@@ -138,6 +138,11 @@ public abstract class MovementController : NetworkBehaviour
         characterController.Move(rotation * AttackMovement * Time.deltaTime * CharacterSpeed);
     }
 
+    public void DisableCollision()
+    {
+        GetCharacterController().excludeLayers = LayerMask.GetMask("Player");
+    }
+
     // this script pushes all rigidbodies that the character touches
     /**
     void OnControllerColliderHit(ControllerColliderHit hit)

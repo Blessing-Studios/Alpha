@@ -85,7 +85,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         public InventoryItem GetItem(Vector2Int position)
         {
             if (!PositionCheck(position)) return null;
-    
+
+            if (ShowDebug) Debug.Log(gameObject.name + ": ItemSlot - " + Inventory.ItemSlot[position.x, position.y]?.Item.name);
             return Inventory.ItemSlot[position.x, position.y];
         }
         public bool PlaceItem(InventoryItem inventoryItem)

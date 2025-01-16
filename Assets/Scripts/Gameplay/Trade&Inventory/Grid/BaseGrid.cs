@@ -6,6 +6,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 {
     public abstract class BaseGrid : MonoBehaviour
     {
+        [field: SerializeField] public bool ShowDebug { get; private set; }
         public GameObject Owner;
         public const float TileSizeWidth = 46;
         public const float TileSizeHeight = 46;
@@ -38,8 +39,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             inventoryItem.RectTransform.SetParent(this.rectTransform);
             inventoryItem.RectTransform.SetAsLastSibling();
-
-            inventoryItem.Data.Position = position;
+            
             inventoryItem.RectTransform.localPosition = CalculatePosition(position, inventoryItem.Width, inventoryItem.Height);
             
             GridItems.Add(inventoryItem);
@@ -73,19 +73,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             ItemHighlight.localPosition = CalculatePosition(inventoryItem.Data.Position, width, height);
         }
 
-        public virtual void SetTileFrame()
-        {
-            if (TileFrame == null) return;
-
-            TileFrame.gameObject.SetActive(true);
-
-            TileFrame.sizeDelta = new Vector2() 
-            {
-                x = gridSizeWidth * TileSizeWidth,
-                y = gridSizeHeight * TileSizeHeight
-            };
-        }
-
         public virtual void SetHighlight(InventoryItem inventoryItem, Vector2Int position)
         {
             ItemHighlight.gameObject.SetActive(true);
@@ -109,6 +96,19 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             HighlightPosition = position;
             ItemHighlight.localPosition = CalculatePosition(position, width, height);
+        }
+
+        public virtual void SetTileFrame()
+        {
+            if (TileFrame == null) return;
+
+            TileFrame.gameObject.SetActive(true);
+
+            TileFrame.sizeDelta = new Vector2() 
+            {
+                x = gridSizeWidth * TileSizeWidth,
+                y = gridSizeHeight * TileSizeHeight
+            };
         }
 
         public virtual void RemoveHighlight()
