@@ -4,6 +4,7 @@ using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.TradeAndInventory;
 using NUnit.Framework;
 using TMPro;
+using Unity.Mathematics;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -30,6 +31,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
 
             GetComponent<SpriteRenderer>().sprite = InventoryItem.Item.Sprite;
+
+            GetComponent<SphereCollider>().radius = GetComponent<SpriteRenderer>().bounds.size.magnitude / 4;
 
             // Para debugar
             Guid = InventoryItem.Data.Id.ToString();
@@ -83,12 +86,17 @@ namespace Blessing.Gameplay.TradeAndInventory
                 }
 
                 if (character.Inventory == null) return;
-                if (character.Inventory.InventoryGrid.PlaceItem(InventoryItem))
+                if (character.Inventory.AddItem(InventoryItem))
                 {
                     Debug.Log(gameObject.name + "Got Item: " + character.gameObject.name);
                     // Destroy this object
-                    // TODO: mudar lógica para usar pooling
+                    // TODO: mudar lógica para usar pooling, criar pooling para LooseItems,
                     NetworkObject.DeferDespawn(deferredDespawnTicks, destroy: true);
+
+                    if (character.Inventory.InventoryGrid)
+                    {
+                        character.Inventory.InventoryGrid.UpdateFromInventory();
+                    }
                 }
                 else
                 {

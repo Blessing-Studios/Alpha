@@ -20,6 +20,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         public GameEvent OnRemoveItem;
         public override void InitializeGrid()
         {
+            if (CharacterGear == null) CloseGrid();
+
             bool activated = false;
             if (!gameObject.activeSelf)
             {

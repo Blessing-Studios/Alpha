@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 
+[RequireComponent(typeof(CharacterController))]
 public abstract class MovementController : NetworkBehaviour
 {
     // protected ClientNetworkTransform clientNetworkTransform;

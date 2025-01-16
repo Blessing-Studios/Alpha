@@ -56,7 +56,7 @@ namespace Blessing.Gameplay.Characters.States
             string nextComboAction = "";
             if (moveIndex + 1 < combos[comboIndex].Moves.Length)
             {
-                nextComboAction = combos[comboIndex].Moves[moveIndex + 1].TriggerAction.Name; ;
+                nextComboAction = combos[comboIndex].Moves[moveIndex + 1].TriggerAction.Name;
             }
 
             //  Check if the nextComboAction was pressed

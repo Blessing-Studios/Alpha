@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0ea95c93c1d9f42bdc3eb469bd9365, type: 3}
+  m_Name: AllItems
+  m_EditorClassIdentifier: 
+  Name: All Items
+  Description: Lista com todos os items do jogo
+  Items:
+  - {fileID: 11400000, guid: 708fbf99de0e34d44b719ec8c7022b39, type: 2}
+  - {fileID: 11400000, guid: 2c1d6d1ac841fc54c910e7dc41b339da, type: 2}
+  - {fileID: 11400000, guid: 469980ac2143a6347a02c6e26f5d79e9, type: 2}
+  - {fileID: 11400000, guid: cc451abe073ceb6489f3b0334ca1ab38, type: 2}
+  - {fileID: 11400000, guid: 4a32bfc2120d7094391cfe353a8eb2f4, type: 2}
+  - {fileID: 11400000, guid: 07e94b812f8bbaa44bf457f714874eca, type: 2}
+  - {fileID: 11400000, guid: a86cf7b9a277c9b44933a8e616c7c687, type: 2}
+  - {fileID: 11400000, guid: 57814247270d8e84aa0faffe68fc69be, type: 2}
+  - {fileID: 11400000, guid: 4eb542237bbc8324c9ce25dc578c9f37, type: 2}
+  - {fileID: 11400000, guid: 31f578057afbb2f498ce0310d1f17dbd, type: 2}

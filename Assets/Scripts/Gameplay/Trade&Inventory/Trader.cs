@@ -16,6 +16,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         public Character Customer;
         private Guid reservedItemGuid;
         private Vector2Int reservedItemPosition;
+        protected Animator animator;
+        protected int isOpenHash;
 
         // Para debugar
         [SerializeField] private InventoryItem reservedItem;
@@ -23,6 +25,9 @@ namespace Blessing.Gameplay.TradeAndInventory
         void Awake()
         {
             Inventory = GetComponent<Inventory>();
+            animator = GetComponent<Animator>();
+
+            isOpenHash = Animator.StringToHash("IsOpen");
         }
 
         void Start()
@@ -53,28 +58,45 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (distance > maxDistance)
             {
-                Customer = null;
-                Inventory.InventoryGrid.CloseGrid();
+                CloseTrader();
             }
         }
         public void Interact(Interactor interactor)
         {
             if (interactor.gameObject.TryGetComponent(out Character customer))
             {
+                Inventory.GetOwnership();
                 if (!Inventory.InventoryGrid.IsOpen)
                 {
-                    // if is closed, open inventoryGrid and get customer
-                    this.Customer = customer;
-                    Inventory.GetOwnership();
-                    Inventory.InventoryGrid.ToggleGrid();
+                    OpenTrader(customer);
                 }
                 else if (Inventory.InventoryGrid.IsOpen)
                 {
-                    // If is opened, close Inventory and remove customer
-                    Inventory.InventoryGrid.ToggleGrid();
-                    Customer = null;
+                    CloseTrader();
                 }
             }
+        }
+
+        private void OpenTrader(Character customer)
+        {
+            this.Customer = customer;
+            Inventory.InventoryGrid.OpenGrid();
+
+            if (animator.GetBool(isOpenHash)) return;
+
+            animator.SetTrigger("Open");
+            animator.SetBool(isOpenHash, true);
+        }
+
+        private void CloseTrader()
+        {
+            Customer = null;
+            Inventory.InventoryGrid.CloseGrid();
+
+            if (!animator.GetBool(isOpenHash)) return;
+
+            animator.SetTrigger("Close");
+            animator.SetBool(isOpenHash, false);
         }
 
         public void OnAddItem(Component component, object data)
@@ -200,7 +222,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             Inventory.RemoveItem(item);
 
             // Add Item to original seller
-            Customer.Gear.Inventory.InventoryGrid.PlaceItem(item);
+            Customer.Gear.Inventory.AddItem(item);
         }
     }
 }

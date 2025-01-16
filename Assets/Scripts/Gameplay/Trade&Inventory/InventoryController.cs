@@ -11,10 +11,13 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public GameObject InventoryCanvas;
         public InventoryGrid PlayerInventoryGrid;
+        public GameObject PlayerEquipmentsFrame;
+        public CharacterStatsInfo PlayerStatsInfo;
         public InventoryGrid OtherInventoryGrid;
         public List<BaseGrid> Grids;
         public IGrid SelectedGrid;
-        [SerializeField] private List<Item> itemList = new();
+
+        [SerializeField] public ItemList SpawnableItems;
         public GameObject ItemPrefab { get { return GameManager.Singleton.InventoryItemPrefab; } }
         public NetworkObject LooseItemPrefab { get { return GameManager.Singleton.LooseItemPrefab; } }
         private Transform canvasTransform { get { return InventoryCanvas.transform; } }
@@ -24,8 +27,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         void Awake()
         {
-            GameManager.Singleton.InventoryController = this;
-            isGridsOpen = false;
+            // GameManager.Singleton.InventoryController = this;
         }
 
         void Start()
@@ -35,14 +37,29 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (InventoryCanvas == null)
             {
                 Debug.LogError(gameObject.name + " InventoryCanvas is missing");
-                // Find Canvas if canvas is null
             }
 
             if (PlayerInventoryGrid == null)
             {
                 Debug.LogError(gameObject.name + " PlayerInventoryGrid is missing");
-                // Find Canvas if PlayerInventoryGrid is null
             }
+
+            if (PlayerEquipmentsFrame == null)
+            {
+                Debug.LogError(gameObject.name + " PlayerEquipmentsFrame is missing");
+            }
+
+            if (PlayerStatsInfo == null)
+            {
+                Debug.LogError(gameObject.name + " PlayerStatsInfo is missing");
+            }
+
+            if (SpawnableItems == null)
+            {
+                Debug.LogError(gameObject.name + " SpawnableItems is missing");
+            }
+
+            CloseGrids();          
         }
 
         void Update()
@@ -59,14 +76,21 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
+        private bool CanOpenGrids()
+        {
+            if (GameManager.Singleton.SceneStarter != null) return true;
+            
+            return false;
+        }
+
         public void ToggleGrids()
         {
+            if (!CanOpenGrids()) return;
+
             if (!isGridsOpen)
                 OpenGrids();
             else
                 CloseGrids();
-
-            isGridsOpen = !isGridsOpen;
         }
         
         public void SyncGrids()
@@ -75,14 +99,22 @@ namespace Blessing.Gameplay.TradeAndInventory
                 OpenGrids();
             else
                 CloseGrids();
+
+            PlayerStatsInfo.UpdateStatInfo();
         }
 
         public void OpenGrids()
         {
+            if (!CanOpenGrids()) return;
+
             foreach (var grid in Grids)
             {
                 grid.OpenGrid();
             }
+
+            PlayerEquipmentsFrame.SetActive(true);
+
+            isGridsOpen = true;
         }
 
         public void CloseGrids()
@@ -91,6 +123,10 @@ namespace Blessing.Gameplay.TradeAndInventory
             {
                 grid.CloseGrid();
             }
+
+            PlayerEquipmentsFrame.SetActive(false);
+
+            isGridsOpen = false;
         }
 
         public void RotateItem()
@@ -184,7 +220,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             inventoryItem.gameObject.SetActive(true);
             inventoryItem.RectTransform.SetParent(canvasTransform);
 
-            foreach (Item item in itemList)
+            foreach (Item item in SpawnableItems.Items)
             {
                 if (item.Id == data.ItemId)
                 {
@@ -207,7 +243,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             InventoryItem inventoryItem = GetInventoryItem();
 
             inventoryItem.RectTransform.SetParent(canvasTransform);
-            inventoryItem.Set(itemList[UnityEngine.Random.Range(0, itemList.Count)]);
+            inventoryItem.Set(SpawnableItems.Items[UnityEngine.Random.Range(0, SpawnableItems.Items.Length)]);
 
             inventoryItemDic.Add(inventoryItem.Data.Id, inventoryItem);
 
@@ -281,7 +317,9 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             GameObject owner = PlayerInventoryGrid.Owner;
 
-            var looseItem = Instantiate(LooseItemPrefab, position: owner.transform.position, rotation: owner.transform.rotation);
+            Vector3 randomVector = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), UnityEngine.Random.Range(0.2f, 0.5f), UnityEngine.Random.Range(-0.5f, 0.5f)); 
+
+            var looseItem = Instantiate(LooseItemPrefab, position: owner.transform.position + randomVector, rotation: owner.transform.rotation);
 
             looseItem.GetComponent<LooseItem>().InventoryItem = inventoryItem;
 

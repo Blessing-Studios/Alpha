@@ -37,12 +37,9 @@ namespace Blessing.Gameplay.HealthAndDamage
             Owner = OwnerGameObject.GetComponent<IHitter>();
             if (Owner == null)
                 Debug.LogError("Owner must has IHitter interface: " + gameObject.transform.parent.name);
-            
-        }
 
-        void Start()
-        {
             gameObject.SetActive(false);
+            
         }
 
         void Update()

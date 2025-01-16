@@ -139,6 +139,13 @@ namespace Blessing.Gameplay.Characters
         /// <returns>false if failed already hit, true if added to TargetList</returns>
         public virtual bool Hit(IHittable target)
         {
+
+            if ((Character) target == this)
+            {
+                // Can't hit itself
+                return false;
+            }
+
             if (TargetList.Contains(target))
             {
                 // hit failed, target was already hit;

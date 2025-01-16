@@ -1984,7 +1984,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MultiplayerScene:
-    value: {fileID: 11400000, guid: d232e363982622d43a59616d48ba905a, type: 2}
+    value: {fileID: 11400000, guid: 3ade8dd594746db4a9781a057a8b4035, type: 2}
 --- !u!4 &468666534
 Transform:
   m_ObjectHideFlags: 0

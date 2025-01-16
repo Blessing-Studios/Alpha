@@ -24,7 +24,7 @@ namespace Blessing.Gameplay.Characters
         public List<CharacterEquipment> Equipments;
         public NetworkList<InventoryItemData> EquipmentNetworkList;
 
-        [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
+        [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
         public ScriptableObjectReference BackpackSlotType;
         [SerializeField] public EquipmentType BackpackSlot { get { return BackpackSlotType.value as EquipmentType; } }
         public Inventory Inventory;
@@ -62,8 +62,8 @@ namespace Blessing.Gameplay.Characters
             base.OnNetworkSpawn();
             EquipmentNetworkList.OnListChanged += OnEquipmentNetworkListChanged;
 
-            if (!HasAuthority)
-                Initialize();
+            // if (!HasAuthority)
+            //     Initialize();
         }
 
         public void Initialize()
@@ -82,8 +82,15 @@ namespace Blessing.Gameplay.Characters
 
             foreach (InventoryItemData itemData in EquipmentNetworkList)
             {
-                InventoryItem item = FindItem(itemData);
-                AddEquipment(item);
+                InventoryItem inventoryItem = FindItem(itemData);
+                AddEquipment(inventoryItem);
+
+                Backpack backpack = inventoryItem.Item as Backpack;
+
+                if (backpack != null)
+                {
+                    SetInventory(inventoryItem);
+                }
             }
 
             isEquipmentsInitialized = true;
@@ -91,7 +98,7 @@ namespace Blessing.Gameplay.Characters
 
         private void OnEquipmentNetworkListChanged(NetworkListEvent<InventoryItemData> changeEvent)
         {
-            if(!UpdateLocalList(ref EquipmentLocalList, EquipmentNetworkList)) return;
+            if (!UpdateLocalList(ref EquipmentLocalList, EquipmentNetworkList)) return;
 
             if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Add)
             {
@@ -108,7 +115,7 @@ namespace Blessing.Gameplay.Characters
         public bool SpendGold(int amount)
         {
             if (amount < 0) return false;
-  
+
             if (gold < amount) return false;
 
             gold -= amount;
@@ -122,12 +129,25 @@ namespace Blessing.Gameplay.Characters
             gold += amount;
             return true;
         }
+        public bool AddEquipment(InventoryItem inventoryItem)
+        {
+            foreach (CharacterEquipment equipment in Equipments)
+            {
+                if (AddEquipment(equipment, inventoryItem)) return true;
+            }
+
+            return false;
+        }
         public bool AddEquipment(CharacterEquipment equipment, InventoryItem inventoryItem)
         {
             Gear gear = inventoryItem.Item as Gear;
-            if (gear == null) return false;
+            if (gear == null)
+            {
+                return false;
+            } 
             if (equipment.GearSlotType == gear.GearType)
             {
+                
                 if (!equipment.SetEquipment(inventoryItem)) return false;
 
                 ApplyEquipmentTraits(equipment);
@@ -143,16 +163,6 @@ namespace Blessing.Gameplay.Characters
                 }
 
                 return true;
-            }
-            
-            return false;
-        }
-
-        public bool AddEquipment(InventoryItem inventoryItem)
-        {
-            foreach (CharacterEquipment equipment in Equipments)
-            {
-                if (AddEquipment(equipment, inventoryItem)) return true;
             }
 
             return false;
@@ -185,7 +195,7 @@ namespace Blessing.Gameplay.Characters
                 // Raise Events
                 if (OnRemoveEquipment != null)
                     OnRemoveEquipment.Raise(this, equipment);
-                
+
                 return true;
             }
 
@@ -239,7 +249,7 @@ namespace Blessing.Gameplay.Characters
                 character.CharacterStats.RemoveTrait(trait);
             }
         }
-    
+
         public void ApplyAllEquipmentsTraits()
         {
             foreach (CharacterEquipment equipment in Equipments)
@@ -254,7 +264,7 @@ namespace Blessing.Gameplay.Characters
             // CharactersEquipments can't repeat
         }
 
-        protected InventoryItem CreateItem( InventoryItemData data)
+        protected InventoryItem CreateItem(InventoryItemData data)
         {
             return GameManager.Singleton.InventoryController.CreateItem(data);
         }
@@ -277,7 +287,12 @@ namespace Blessing.Gameplay.Characters
             //     GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
             //     Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
             // }
-
+            if (inventoryItem.Inventory == null)
+            {
+                Debug.Log(gameObject.name + ": inventoryItem.Inventory - " + inventoryItem.Item.name);
+                return;
+            }
+            
             Inventory = inventoryItem.Inventory;
         }
 

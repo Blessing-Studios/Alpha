@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: Gravity
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 1511698797570248328, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1646976488681774380, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Controller
       value: 
@@ -38,7 +42,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5369011401359272698, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 1584435594
+      value: 410790043
       objectReference: {fileID: 0}
     - target: {fileID: 5369011401359272698, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
@@ -127,6 +131,14 @@ PrefabInstance:
     - target: {fileID: 6483174246542211240, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Center.y
       value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6931712906820337884, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.148
+      objectReference: {fileID: 0}
+    - target: {fileID: 6931712906820337884, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.006
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Blessing.Gameplay
 {
-    class SessionOwnerNetworkObjectSpawner : NetworkBehaviour
+    public class SessionOwnerNetworkObjectSpawner : NetworkBehaviour
     {
         [SerializeField]
         protected NetworkObject m_NetworkObjectToSpawn;
@@ -28,8 +28,10 @@ namespace Blessing.Gameplay
         public virtual void Spawn()
         {
             var spawnedNetworkObject = m_NetworkObjectToSpawn.InstantiateAndSpawn(NetworkManager, position: transform.position, rotation: transform.rotation);
+
             var spawnable = spawnedNetworkObject.GetComponent<ISpawnable>();
             spawnable.Init(this);
+
             m_IsRespawning.Value = false;
         }
 

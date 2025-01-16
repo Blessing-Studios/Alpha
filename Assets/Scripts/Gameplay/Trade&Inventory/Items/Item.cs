@@ -10,6 +10,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public int Value = 10;
         public int Width = 1;
         public int Height = 1;
+        public float Weight = 1.0f;
         public Sprite Sprite;
         public int Id = 0;
 

@@ -54,6 +54,11 @@ namespace Blessing
                 Debug.LogError(base.gameObject.name + ": VirtualCamera is missing");
             }
 
+            if (InventoryController == null)
+            {
+                Debug.LogError(base.gameObject.name + ": InventoryController is missing");
+            }
+
             if (InventoryItemPooler == null)
                 Debug.LogError(gameObject.name + ": Missing InventoryItemPooler");
 
@@ -131,12 +136,12 @@ namespace Blessing
 
         public bool ValidateCharOwnerNO(string playerName)
         {
-              PlayerCharacter playerCharacter = playerCharactersDic[playerName];
-              if (playerCharacter == null) return false;
+            PlayerCharacter playerCharacter = playerCharactersDic[playerName];
+            if (playerCharacter == null) return false;
 
-              if (playerCharacter.GetOwnerName() == playerName) return true;
+            if (playerCharacter.GetOwnerName() == playerName) return true;
 
-              return false;
+            return false;
         }
 
         public void GetOwnership(NetworkObject networkObject)

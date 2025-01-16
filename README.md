@@ -37,10 +37,23 @@ Fazer essa função;
 
 Criar lógica para checar se item foi duplicado
 
-Mochilas estão bugando no online
+Arrumar a UI para funcionar em todas resoluções
 
 Quando um jogador cai e reconecta a vida buga, o personagem não regenera mais vida
 
+SpawnStateException: Object is not spawned
+Unity.Netcode.NetworkSpawnManager.ChangeOwnership (Unity.Netcode.NetworkObject networkObject, System.UInt64 clientId, System.Boolean isAuthorized, System.Boolean isRequestApproval) (at ./Library/PackageCache/com.unity.netcode.gameobjects/Runtime/Spawning/NetworkSpawnManager.cs:623)
+Unity.Netcode.NetworkObject.ChangeOwnership (System.UInt64 newOwnerClientId) (at ./Library/PackageCache/com.unity.netcode.gameobjects/Runtime/Core/NetworkObject.cs:1753)
+Blessing.GameManager.GetOwnership (Unity.Netcode.NetworkObject networkObject) (at Assets/Scripts/GameManager.cs:146)
+Blessing.Gameplay.TradeAndInventory.LooseItem.GetOwnership () (at Assets/Scripts/Gameplay/Trade&Inventory/Items/LooseItem.cs:102)
+Blessing.Gameplay.TradeAndInventory.LooseItem.Interact (Blessing.Gameplay.Interation.Interactor interactor) (at 
+
+public void GetOwnership(NetworkObject networkObject)
+{
+    ulong LocalClientId = NetworkManager.Singleton.LocalClientId;
+    if (LocalClientId != networkObject.OwnerClientId)
+        networkObject.ChangeOwnership(LocalClientId);
+}
 
 
 ### Links para estudar

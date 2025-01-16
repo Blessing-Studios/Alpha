@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ac7476fff08b394a87810fba75d2d17, type: 3}
+  m_Name: SKeletonCombo1
+  m_EditorClassIdentifier: 
+  Name: Combo1
+  Description: Comobo Teste
+  Moves:
+  - Name: Attack1
+    Description: Teste
+    AnimationClip: {fileID: 7400000, guid: 05a643f1c8e942c4fba41abcf1997416, type: 2}
+    AnimationParam: LightAttack1
+    Action:
+      value: {fileID: 11400000, guid: 3b288b8291134a14b9d62350cee0c014, type: 2}
+    Direction:
+      value: {fileID: 11400000, guid: 014f2a0cadd64d0448dc036ef1e4305d, type: 2}
+    ExitEarlier: 0.1
+    Damage: 5
+    Impulse: 60
+  - Name: Attack2
+    Description: Teste
+    AnimationClip: {fileID: 7400000, guid: a5a60e5147208504c84d3bfa90c51275, type: 2}
+    AnimationParam: LightAttack2
+    Action:
+      value: {fileID: 11400000, guid: 3b288b8291134a14b9d62350cee0c014, type: 2}
+    Direction:
+      value: {fileID: 11400000, guid: 014f2a0cadd64d0448dc036ef1e4305d, type: 2}
+    ExitEarlier: 0.1
+    Damage: 10
+    Impulse: 60
+  - Name: Attack3
+    Description: Teste
+    AnimationClip: {fileID: 7400000, guid: 5bc90903d0929da4fb632a5e8b14f86e, type: 2}
+    AnimationParam: HeavyAttack1
+    Action:
+      value: {fileID: 11400000, guid: 3b288b8291134a14b9d62350cee0c014, type: 2}
+    Direction:
+      value: {fileID: 11400000, guid: ce380c11145837945a5091ed736052e9, type: 2}
+    ExitEarlier: 0.1
+    Damage: 15
+    Impulse: 60

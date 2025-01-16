@@ -163,21 +163,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private Vector2Int? FindEmptyPosition(int width, int height)
         {
-            int searchWidth = gridSizeWidth - width + 1;
-            int searchHeight = gridSizeHeight - height + 1;
-
-            Vector2Int position;
-
-            for (int y = 0; y < searchHeight; y++)
-            {
-                for (int x = 0; x < searchWidth; x++)
-                {
-                    position = new Vector2Int(x, y);
-                    if (CheckAvailableSpace(position, width, height)) return position;
-                }
-            }
-
-            return null;
+            return Inventory.FindEmptyPosition(width, height);
         }
     }
 }

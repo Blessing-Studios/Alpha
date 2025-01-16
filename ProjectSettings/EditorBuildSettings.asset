@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Arena.unity
     guid: 40c51b2c3f2a4194fafd8d9018c5a5bf
   - enabled: 1
+    path: Assets/Scenes/CombatArena.unity
+    guid: 9e584f4e6f400a347b28f08b368968ca
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
