@@ -3,6 +3,7 @@ using Blessing.Gameplay.TradeAndInventory.Containers;
 using Blessing.Player;
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public PlayerCharacter PlayerCharacter;
         public Character OtherCharacter;
-        public GameObject InventoryCanvas;
+        public Canvas InventoryCanvas;
         public InventoryGrid PlayerInventoryGrid;
         public GameObject PlayerEquipmentsFrame;
         public CharacterStatsInfo PlayerStatsInfo;
@@ -30,7 +31,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         [SerializeField] private InventoryItem selectedItem;
         [SerializeField] private bool isGridsOpen = false;
         public bool IsGridsOpen { get { return isGridsOpen; } }
-        private Dictionary<Guid, InventoryItem> inventoryItemDic = new();
+        private Dictionary<FixedString64Bytes, InventoryItem> inventoryItemDic = new();
 
         void Awake()
         {
@@ -101,6 +102,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             CloseGrids();
             CloseOtherGrids();
+            SelectedGrid = null;
         }
 
         public void ToggleGrids()
@@ -177,7 +179,6 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (OtherCharacter == null)
             {
-                OtherInventoryGrid.InitializeGrid();
                 OtherInventoryGrid.OpenGrid();
             }
         }
@@ -191,8 +192,11 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
 
             OtherStatsInfo.CharacterStats = null;
+            OtherCharacter = null;
 
             OtherEquipmentsFrame.SetActive(false);
+
+            OtherInventoryGrid.Inventory = null;
         }
 
         public void RotateItem()
@@ -221,7 +225,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (selectedItem == null) return;
 
-            selectedItem.RectTransform.SetParent(canvasTransform);
+            selectedItem.RectTransform.SetParent(canvasTransform, false);
             selectedItem.RectTransform.position = Input.mousePosition;
         }
         private void HandleHighlight()
@@ -267,7 +271,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             InventoryItem inventoryItem = GetInventoryItem();
             inventoryItem.gameObject.SetActive(true);
-            inventoryItem.RectTransform.SetParent(canvasTransform);
+            inventoryItem.RectTransform.SetParent(canvasTransform, false);
 
             inventoryItem.Set(item);
 
@@ -284,7 +288,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             InventoryItem inventoryItem = GetInventoryItem();
             inventoryItem.gameObject.SetActive(true);
-            inventoryItem.RectTransform.SetParent(canvasTransform);
+            inventoryItem.RectTransform.SetParent(canvasTransform, false);
 
             foreach (Item item in SpawnableItems.Items)
             {
@@ -308,7 +312,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             InventoryItem inventoryItem = GetInventoryItem();
 
-            inventoryItem.RectTransform.SetParent(canvasTransform);
+            inventoryItem.RectTransform.SetParent(canvasTransform, false);
             inventoryItem.Set(SpawnableItems.Items[UnityEngine.Random.Range(0, SpawnableItems.Items.Length)]);
 
             inventoryItemDic.Add(inventoryItem.Data.Id, inventoryItem);
@@ -353,7 +357,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                 position.y += (selectedItem.Height - 1) * BaseGrid.TileSizeHeight / 2;
             }
 
-            return SelectedGrid.GetTileGridPosition(position);
+            return SelectedGrid.GetTileGridPosition(position, InventoryCanvas.scaleFactor);
         }
         private void PlaceItem()
         {

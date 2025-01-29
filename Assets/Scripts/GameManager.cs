@@ -9,6 +9,8 @@ using Blessing.Gameplay.TradeAndInventory;
 using Unity.VisualScripting;
 using Unity.Netcode;
 using UnityEngine.Pool;
+using TMPro;
+using Blessing.GameData;
 
 namespace Blessing
 {
@@ -17,6 +19,7 @@ namespace Blessing
         public static GameManager Singleton { get; private set; }
         public Camera MainCamera;
         public CinemachineCamera VirtualCamera;
+        public TextMeshProUGUI FpsDisplay;
         public List<PlayerCharacter> PlayerCharacterList;
         [field: SerializeField] public List<PlayerController> PlayerList { get; private set; }
         public List<Transform> PlayerSpawnLocations;
@@ -65,6 +68,9 @@ namespace Blessing
             InventoryItemPool = InventoryItemPooler.Pool;
         }
 
+        private float pollingTime = 0.5f;
+        private float time;
+        private int frameCount;
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Tab))
@@ -86,6 +92,24 @@ namespace Blessing
             {
                 InventoryController.RotateItem();
             }
+
+            if (Input.GetKeyDown(KeyCode.N))
+            {
+                GameDataManager.Singleton.SaveGame();
+            }
+            
+
+            time += Time.deltaTime;
+            frameCount++;
+
+            if (time >= pollingTime)
+            {
+                FpsDisplay.text = "FPS " + Mathf.RoundToInt(frameCount / time);
+
+                time -= pollingTime;
+                frameCount = 0;
+            }
+            
         }
 
         public void SetSelectedGameObject(GameObject gameObject)
@@ -128,18 +152,23 @@ namespace Blessing
 
         public void InitializePlayers()
         {
+            foreach(PlayerCharacter playerCharacter in PlayerCharacterList)
+            {
+                playerCharacter.Initialize();
+            }
+
             foreach (PlayerController player in PlayerList)
             {
                 player.Initialization();
             }
         }
 
-        public bool ValidateCharOwnerNO(string playerName)
+        public bool ValidateCharPlayerOwner(string playerName)
         {
             PlayerCharacter playerCharacter = playerCharactersDic[playerName];
             if (playerCharacter == null) return false;
 
-            if (playerCharacter.GetOwnerName() == playerName) return true;
+            if (playerCharacter.GetPlayerOwnerName() == playerName) return true;
 
             return false;
         }

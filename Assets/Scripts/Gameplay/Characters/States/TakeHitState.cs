@@ -14,11 +14,12 @@ namespace Blessing.Gameplay.Characters.States
         public TakeHitState(CharacterStateMachine _characterStateMachine, int _stateIndex) : base(_characterStateMachine, _stateIndex)
         {
             movementController = characterStateMachine.MovementController;
-            duration = 2.0f;
         }
         public override void OnEnter()
         {
             base.OnEnter();
+
+            duration = 2.0f / characterStateMachine.Character.CharacterStats.Dexterity;
 
             movementController.DisableMovement();
 

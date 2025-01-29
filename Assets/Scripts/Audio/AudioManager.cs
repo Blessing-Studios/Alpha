@@ -89,15 +89,15 @@ namespace Blessing.Audio
             return PlaySoundFx(audioClip[rand], sourceTransform, spatialBlend, volume, priority);
         }
 
-        public GameObject PlayUiSound(AudioClip audioClip)
+        public GameObject PlayUiSound(AudioClip audioClip, float volume = 1.0f)
         {
-            return PlaySoundFx(audioClip, gameObject.transform, 1.0f, 1.0f, 128);
+            return PlaySoundFx(audioClip, gameObject.transform, 1.0f, volume, 128);
         }
 
-        public GameObject PlayUiSound(AudioClip[] audioClip)
+        public GameObject PlayUiSound(AudioClip[] audioClip , float volume = 1.0f)
         {
             int rand = Random.Range(0, audioClip.Length);
-            return PlaySoundFx(audioClip[rand], gameObject.transform, 1.0f, 1.0f, 128);
+            return PlayUiSound(audioClip[rand], volume);
         }
     }
 }

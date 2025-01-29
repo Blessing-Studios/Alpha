@@ -44,8 +44,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             gridSizeHeight = Inventory.Height;
 
             rectTransform.sizeDelta = new Vector2(gridSizeWidth * TileSizeWidth, gridSizeHeight * TileSizeHeight);
-            ItemHighlight.SetParent(rectTransform);
-            
+            ItemHighlight.SetParent(rectTransform, false);
+
             RemoveHighlight();
 
             UpdateFromInventory();

@@ -16,7 +16,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public virtual void Initialize(InventoryItem inventoryItem)
         {
-            //
+            Debug.Log("Entrou SO Item Initialize - " + inventoryItem.Item.name);
         }
 
         #if UNITY_EDITOR

@@ -58,6 +58,8 @@ namespace Blessing.Ai
                 inventoryItem.Set(gear);
 
                 spawnedAiCharacter.Gear.AddEquipment(inventoryItem);
+                inventoryItem.transform.SetParent(spawnedAiCharacter.transform, false);
+                inventoryItem.gameObject.SetActive(false);
             }
 
             Inventory lootInventory = spawnedAiCharacter.Gear.Inventory;
@@ -69,6 +71,8 @@ namespace Blessing.Ai
                 inventoryItem.Set(item);
 
                 lootInventory.AddItem(inventoryItem);
+                inventoryItem.transform.SetParent(spawnedAiCharacter.transform, false);
+                inventoryItem.gameObject.SetActive(false);
             }
         }
     }

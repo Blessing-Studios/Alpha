@@ -11,16 +11,23 @@ namespace Blessing.Scene
         public NetworkVariable<bool> HasStarted = new(false);
         void Awake()
         {
+            // Debug.Log(gameObject.name + " Awake");
             GameManager.Singleton.SceneStarter = this;
         }
 
         public override void OnNetworkSpawn()
         {
-            if (!HasStarted.Value)
-            {
-                HasStarted.Value = true;
-                GameManager.Singleton.InitializePlayers();
-            }
+            // if (!HasStarted.Value)
+            // {
+            //     HasStarted.Value = true;
+            //     GameManager.Singleton.InitializePlayers();
+            // }
+            // GameManager.Singleton.InitializePlayers();
+        }
+        
+        void Start()
+        {
+            // Debug.Log(gameObject.name + " Start");
         }
     }
 }

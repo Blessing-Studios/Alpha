@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Blessing.Core.GameEventSystem;
 using Blessing.Gameplay.Characters.Traits;
 using UnityEngine;
 
@@ -19,7 +20,6 @@ namespace Blessing.Characters
     {
         [Header("Character Physical and Mental Attributes")]
         [Space(10)]
-        private bool test123;
         [Tooltip("Measure physical power and carrying capacity")]
         public int Strength;
 
@@ -44,7 +44,7 @@ namespace Blessing.Characters
         [Space(10)]
         [Header("Original Character Stats")]
         [Space(10)]
-        public bool UseBaseStats;
+        // public bool UseBaseStats;
         [Header("Original Character Stats")]
         [Tooltip("Measure physical power and carrying capacity")]
         public int BaseStrength;
@@ -70,6 +70,10 @@ namespace Blessing.Characters
         [Header("Character Traits")]
         public List<Trait> Traits;
 
+        [Header("Events")]
+        public GameEvent OnUpdateAllStats;
+        public GameEvent OnUpdateStat;
+
         void Start()
         {
             UpdateAllStats();
@@ -86,6 +90,10 @@ namespace Blessing.Characters
             }
 
             GetType().GetField(stat.ToString()).SetValue(this, statValue);
+
+            // Raise Events
+            if (OnUpdateStat != null)
+                OnUpdateStat.Raise(this, stat);
         }
 
         public void UpdateAllStats()
@@ -94,6 +102,10 @@ namespace Blessing.Characters
             {
                 UpdateStat(stat);
             }
+
+            // Raise Events
+            if (OnUpdateAllStats != null)
+                OnUpdateAllStats.Raise(this);
         }
 
         public bool AddTrait(Trait trait)

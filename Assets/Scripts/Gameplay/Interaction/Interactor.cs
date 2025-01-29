@@ -6,8 +6,9 @@ namespace Blessing.Gameplay.Interation
 {
     interface IInteractable
     {
-        public Transform transform { get;}
+        public Transform transform { get; }
         public void Interact(Interactor interactor);
+        public bool CanInteract { get;}
     }
 
     public class Interactor : MonoBehaviour
@@ -25,13 +26,18 @@ namespace Blessing.Gameplay.Interation
             Collider[] hitColliders = Physics.OverlapSphere(InteractorSource.position, InteractRange);
             foreach (var hitCollider in hitColliders)
             {
-                if (hitCollider.gameObject.TryGetComponent(out IInteractable other))
-                {
-                    // Can't interact with itself
-                    if (transform == other.transform) continue;
+                // Can't interact with itself
+                if (transform == hitCollider.transform) continue;
 
-                    interactables.Add(other);
+                IInteractable[] result;
+                result = hitCollider.gameObject.GetComponents<IInteractable>();
+
+                foreach (IInteractable interactable in result)
+                {
+                    if (interactable.CanInteract == true)
+                        interactables.Add(interactable);
                 }
+
             }
 
             IInteractable closest = GetClosest(InteractorSource.position, interactables);

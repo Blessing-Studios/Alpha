@@ -25,7 +25,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             pooledObject.gameObject.SetActive(false);
 
-            pooledObject.transform.SetParent(transform);
+            pooledObject.transform.SetParent(transform, false);
         }
         protected override void OnDestroyPooledObject(InventoryItem pooledObject)
         {

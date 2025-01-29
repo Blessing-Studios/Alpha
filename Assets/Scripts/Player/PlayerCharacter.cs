@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 using Blessing.Gameplay.HealthAndDamage;
 using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.TradeAndInventory;
+using NUnit.Framework;
 
 namespace Blessing.Player
 {
@@ -29,22 +30,17 @@ namespace Blessing.Player
         {
             Network = network;
         }
-
-        [field: SerializeField] private InputActionList actionList;
-        [field: SerializeField] private InputDirectionList directionList;
-        public InputActionType TriggerAction { get; private set; }
-        public InputDirectionType TriggerDirection { get; private set; }
         private PlayerInput playerInput;
         public Interactor Interactor { get; private set; }
-        private Dictionary<string, InputActionType> inputActionsDic = new();
-        private Dictionary<string, InputDirectionType> inputDirectionsDic = new();
+        private bool isPlayerCharacterInitialized = false;
         [SerializeField] private bool canGiveInputs = false;
+        public bool CanGiveInputs { get { return  canGiveInputs; } }
         public void SetCanGiveInputs (bool canGiveInputs)
         {
             this.canGiveInputs = canGiveInputs;
         }
         
-        public string GetOwnerName()
+        public string GetPlayerOwnerName()
         {
             if (Network != null)
                 return Network.OwnerName.Value.ToString();
@@ -52,11 +48,12 @@ namespace Blessing.Player
             return "Player1";
         }
 
-        public void SetOwnerName(string name)
+        public void SetPlayerOwnerName(string name)
         {
             if (Network == null) return;
 
-            Network.SetOwnerName(name);    
+            Network.SetPlayerOwnerName(name);
+            if (ShowDebug) Debug.Log(gameObject.name + ": SetPlayerOwnerName");
         }
 
         // public void SetOwnerName(string name) // Mover para PlayerCharacterNetwork
@@ -70,6 +67,7 @@ namespace Blessing.Player
         // }
         protected override void Awake()
         {
+            if (ShowDebug) Debug.Log(gameObject.name + ": Awake");
             base.Awake();
 
             playerInput = GetComponent<PlayerInput>();
@@ -78,100 +76,33 @@ namespace Blessing.Player
 
             Network = GetComponent<PlayerCharacterNetwork>();
 
-            foreach (InputActionType InputAction in actionList.InputActions)
-            {
-                inputActionsDic.Add(InputAction.Name, InputAction);
-            }
-
-            foreach (InputDirectionType InputDirection in directionList.InputDirections)
-            {
-                inputDirectionsDic.Add(InputDirection.Name, InputDirection);
-            }
+            GameManager.Singleton.PlayerCharacterList.Add(this);
         }
 
         protected override void Start()
         {
+            if (ShowDebug) Debug.Log(gameObject.name + ": Start");
             base.Start();
-            // HandleInitialization();
-            
-            canGiveInputs = GameDataManager.Singleton.ValidateOwner(GetOwnerName());
+        }
 
-            if (!HasAuthority && !GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetOwnerName()))
-            {
-                GameManager.Singleton.AddPlayerCharacter(GetOwnerName(), this);
-                GameManager.Singleton.PlayerCharacterList.Add(this);
+        public override void Initialize()
+        {
+            if (isPlayerCharacterInitialized) return;
 
-                gameObject.name = "Char-" + GetOwnerName();
+            isPlayerCharacterInitialized = true;
 
-                // Find Player Controller
-                // foreach (PlayerController player in GameManager.Singleton.PlayerList)
-                // {
-                //     if (player.GetPlayerName() == GetOwnerName())
-                //     {
-                //         player.SetPlayerCharacter(this);
-                //         return;
-                //     }
-                // }
-            }
+            base.Initialize();
+
+            gameObject.name = "Char-" + GetPlayerOwnerName();
+            GameManager.Singleton.AddPlayerCharacter(GetPlayerOwnerName(), this);
+            canGiveInputs = GameDataManager.Singleton.ValidateOwner(GetPlayerOwnerName());
+            if (ShowDebug) Debug.Log(gameObject.name + ": Initialize");
         }
 
         public void Update()
         {
             // PlayerOwnerName = OwnerName.Value.ToString(); // Mover para PlayerCharacterNetwork
         }
-
-        // private void HandleInitialization()
-        // {
-        //     if (HasAuthority)
-        //     {
-        //         IsDisabled.Value = false;
-        //         OwnerName.Value = new FixedString32Bytes(GameDataManager.Singleton.PlayerName);
-
-        //         if (GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetOwnerName()))
-        //         {
-        //             PlayerCharacter originalCharacter = GameManager.Singleton.PlayerCharactersDic[GetOwnerName()];
-
-        //             originalCharacter.GetComponent<NetworkObject>().ChangeOwnership(OwnerClientId);
-
-        //             GameManager.Singleton.VirtualCamera.LookAt = originalCharacter.transform;
-        //             GameManager.Singleton.VirtualCamera.Target.TrackingTarget = originalCharacter.transform;
-
-        //             IsDisabled.Value = true;
-        //         }
-        //         else // This player doesn't have a Char in this session, use this char
-        //         {
-        //             GameManager.Singleton.AddPlayerCharacter(GetOwnerName(), this);
-        //             GameManager.Singleton.PlayerCharacterList.Add(this);
-
-        //             GameManager.Singleton.VirtualCamera.LookAt = transform;
-        //             GameManager.Singleton.VirtualCamera.Target.TrackingTarget = transform;
-        //         }
-        //     }
-
-        //     if (!HasAuthority && !GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetOwnerName()))
-        //     {
-        //         GameManager.Singleton.AddPlayerCharacter(GetOwnerName(), this);
-        //         GameManager.Singleton.PlayerCharacterList.Add(this);
-        //     }
-
-        //     gameObject.name = gameObject.name + "-" + GetOwnerName();
-
-        //     canGiveInputs = GameDataManager.Singleton.PlayerName == GetOwnerName();
-        // }
-
-        // protected override void OnOwnershipChanged(ulong previous, ulong current) // Mover para PlayerCharacterNetwork
-        // {
-        //     if (!HasAuthority) return;
-
-        //     if (GameDataManager.Singleton.PlayerName == GetOwnerName())
-        //         GetComponent<NetworkObject>().SetOwnershipLock(true);
-        //     else
-        //     {
-        //         GetComponent<NetworkObject>().SetOwnershipLock(false);
-        //     }
-
-        //     canGiveInputs = GameDataManager.Singleton.PlayerName == GetOwnerName();
-        // }
 
 
         public void OnAttack(InputAction.CallbackContext context)
@@ -214,16 +145,6 @@ namespace Blessing.Player
             }
         }
 
-        public InputActionType GetAction(string name)
-        {
-            return inputActionsDic[name];
-        }
-
-        public InputDirectionType GetDirection(string name)
-        {
-            return inputDirectionsDic[name];
-        }
-
         public override bool CheckIfActionTriggered(string actionName)
         {
             if (!HasAuthority || !canGiveInputs) return false;
@@ -238,29 +159,13 @@ namespace Blessing.Player
             return false;
         }
 
-        public override void AddBackpack(InventoryItem inventoryItem)
+        public override bool Hit(IHittable target)
         {
-            base.AddBackpack(inventoryItem);
-            
-            // If this is the Local Player, change PlayerInventoryGrid
-            if (HasAuthority)
-            { 
-                GameManager.Singleton.InventoryController.PlayerCharacter = this;
-                GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Gear.Inventory;
-                Gear.Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
-            }
-        }
+            bool baseValue = base.Hit(target);
 
-        public override void RemoveBackpack()
-        {
-            // If this is the Local Player, change PlayerInventoryGrid
-            if (Gear.Inventory != null && HasAuthority)
-            {
-                GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
-                Gear.Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
-            }
+            if (HasAuthority && baseValue) target.GetOwnership();
 
-            base.RemoveBackpack();
+            return baseValue;
         }
     }
 }

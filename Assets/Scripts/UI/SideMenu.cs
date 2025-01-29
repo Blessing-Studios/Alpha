@@ -26,7 +26,7 @@ namespace Blessing.UI
                 if (ShowDebug) Debug.Log("prototypeButton");
 
                 GameDataManager.Singleton.PlayerName = "Player1";
-
+                singlePlayerButton.interactable = false;
                 GameplayEventHandler.SinglePlayerButtonPressed(singlePlayerScene);
             });
 

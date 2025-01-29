@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab3a1f2811799bb44a63b0c7ba892be8, type: 3}
   m_Name: SilverSword
   m_EditorClassIdentifier: 
+  Label: 
   Value: 10
   Width: 2
   Height: 3
+  Weight: 1
   Sprite: {fileID: -409129284, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
-  Id: 6
+  Id: 9
   EquipmentType:
     value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
   Traits:

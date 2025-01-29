@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Interation;
+using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -14,10 +15,11 @@ namespace Blessing.Gameplay.TradeAndInventory
         public int GridSizeHeight = 5;
         [field: SerializeField] public Inventory Inventory { get; private set; }
         public Character Customer;
-        private Guid reservedItemGuid;
+        private FixedString64Bytes reservedItemGuid;
         private Vector2Int reservedItemPosition;
         protected Animator animator;
         protected int isOpenHash;
+        public bool CanInteract { get { return true; } }
 
         // Para debugar
         [SerializeField] private InventoryItem reservedItem;
@@ -165,7 +167,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private void CleanReserveItem()
         {
-            reservedItemGuid = Guid.Empty;
+            reservedItemGuid = Guid.Empty.ToString();
             reservedItemPosition = Vector2Int.zero;
             reservedItem = null;
         }

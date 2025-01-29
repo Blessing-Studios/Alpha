@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Blessing.Audio;
 using Blessing.Gameplay.Characters.InputActions;
 using Blessing.Gameplay.Characters.InputDirections;
 using Blessing.Gameplay.Characters.States;
@@ -13,7 +14,7 @@ namespace Blessing.Gameplay.Characters
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public CharacterState CharacterState { get { return CurrentState as CharacterState;} }
         public IdleState IdleState;
-        public MoveState MoveState;
+        public ComboState ComboState;
         public TakeHitState TakeHitState;
         public DeadState DeadState;
         public List<CharacterState> StateList = new();
@@ -30,8 +31,8 @@ namespace Blessing.Gameplay.Characters
         public NetworkAnimator NetworkAnimator { get; private set; }
         public CharacterController CharacterController { get; protected set; }
         public MovementController MovementController { get; protected set; }
-        public int MoveIndex { get; set; }
-        public int ComboIndex { get; set; }
+        [field: SerializeField] public int MoveIndex { get; set; }
+        [field: SerializeField] public int ComboIndex { get; set; }
         public Move CurrentMove { get; set;}
         [SerializeField] protected Combo[] combos;
 
@@ -54,17 +55,16 @@ namespace Blessing.Gameplay.Characters
             if (MovementController == null)
                 MovementController = GetComponent<MovementController>();
         }
-
         protected override void Start()
         {
             IdleState = new IdleState(this, 0);
-            MoveState = new MoveState(this, 1);
+            ComboState = new ComboState(this, 1);
             TakeHitState = new TakeHitState(this, 2);
             DeadState = new DeadState(this, 3);
 
             // TODO: Automatizar essa parte no futuro
             StateList.Add(IdleState);
-            StateList.Add(MoveState);
+            StateList.Add(ComboState);
             StateList.Add(TakeHitState);
             StateList.Add(DeadState);
 
@@ -116,9 +116,10 @@ namespace Blessing.Gameplay.Characters
                     triggerDirection.Name != "Any" &&
                     triggerDirection == CurrentDirectionAction)
                 {
-                    MoveIndex = 0;
-                    ComboIndex = comboIndex;
-                    SetNextState((CharacterState) MoveState);
+                    // MoveIndex = 0;
+                    // ComboIndex = comboIndex;
+                    SetComboMoveIndex(comboIndex, 0);
+                    SetNextState(ComboState);
                     return;
                 }
             }
@@ -133,18 +134,35 @@ namespace Blessing.Gameplay.Characters
                 if (triggerAction == CurrentAction &&
                     triggerDirection.Name == "Any")
                 {
-                    MoveIndex = 0;
-                    ComboIndex = comboIndex;
-                    SetNextState(MoveState);
+                    // MoveIndex = 0;
+                    // ComboIndex = comboIndex;
+                    SetComboMoveIndex(comboIndex, 0);
+                    SetNextState(ComboState);
                     return;
                 }
             }
             
             SetNextStateToMain();
         }
+
+        public void SetComboMoveIndex(int comboIndex, int moveIndex)
+        {
+            ComboIndex = comboIndex;
+            MoveIndex = moveIndex;
+            Character.SetComboMoveIndex(ComboIndex, MoveIndex);
+        }
+
         public Combo[] GetAllCombos()
         {
             return combos;
+        }
+
+        public void OnAnimationAttack()
+        {
+            AudioClip[] attackAudios = combos[ComboIndex].Moves[MoveIndex].AudioClips;
+
+            if (attackAudios.Length > 0)
+                AudioManager.Singleton.PlaySoundFx(attackAudios, transform);
         }
     }
 }

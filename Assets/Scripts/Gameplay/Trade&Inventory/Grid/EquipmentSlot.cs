@@ -34,7 +34,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             gameObject.SetActive(true);
 
             rectTransform.sizeDelta = new Vector2(gridSizeWidth * TileSizeWidth, gridSizeHeight * TileSizeHeight);
-            ItemHighlight.SetParent(rectTransform);
+            ItemHighlight.SetParent(rectTransform, false);
             RemoveHighlight();
 
             SetCharacterEquipment();

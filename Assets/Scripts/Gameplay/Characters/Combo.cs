@@ -3,6 +3,7 @@ using Blessing.Gameplay.Characters.InputDirections;
 using Blessing.Core.ScriptableObjectDropdown;
 using UnityEngine;
 using System;
+using Unity.Netcode;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -11,6 +12,7 @@ namespace Blessing.Gameplay.Characters
         [SerializeField] public string Name;
         [SerializeField] public string Description;
         [SerializeField] public AnimationClip AnimationClip;
+        [SerializeField] public AudioClip[] AudioClips;
         [SerializeField] public string AnimationParam;
 
         [Tooltip("What button has to be pressed")][ScriptableObjectDropdown(typeof(InputActionType))] public ScriptableObjectReference Action;

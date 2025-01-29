@@ -17,7 +17,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public void SetHighlight(InventoryItem inventoryItem);
         public void SetHighlight(InventoryItem inventoryItem, Vector2Int position);
         public void RemoveHighlight();
-        public Vector2Int GetTileGridPosition(Vector2 mousePosition);
+        public Vector2Int GetTileGridPosition(Vector2 mousePosition, float scaleFactor = 1f);
         public void ToggleGrid();
         public void ExitGrid();
     }

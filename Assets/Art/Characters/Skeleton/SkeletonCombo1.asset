@@ -22,7 +22,7 @@ MonoBehaviour:
     Action:
       value: {fileID: 11400000, guid: 3b288b8291134a14b9d62350cee0c014, type: 2}
     Direction:
-      value: {fileID: 0}
+      value: {fileID: 11400000, guid: 014f2a0cadd64d0448dc036ef1e4305d, type: 2}
     ExitEarlier: 0.1
-    Damage: 5
+    Damage: 15
     Impulse: 60

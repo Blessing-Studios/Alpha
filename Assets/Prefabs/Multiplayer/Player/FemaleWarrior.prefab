@@ -28,6 +28,38 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -1195249109, guid: f7f09f96bfb529646a8680af1541a386, type: 3}
+    - target: {fileID: 2019481482737063504, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -4.94
+      objectReference: {fileID: 0}
+    - target: {fileID: 2019481482737063504, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: combos.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: 'combos.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ce05a5c4064307149a136c930eb2ab88, type: 2}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: 'combos.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: f32f5ba54cc1b9940a96fe0536a4cd31, type: 2}
+    - target: {fileID: 2563118656107095010, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_text
+      value: Owner Id
+      objectReference: {fileID: 0}
+    - target: {fileID: 2620648292840096135, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: OnUpdateStat
+      value: 
+      objectReference: {fileID: 11400000, guid: af93a0ddc9b60fa42b245306d6aa318b, type: 2}
+    - target: {fileID: 2620648292840096135, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: OnUpdateAllStats
+      value: 
+      objectReference: {fileID: 11400000, guid: 492a29ef2224c8746b8d80563e24d76e, type: 2}
     - target: {fileID: 4410562106461084563, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0

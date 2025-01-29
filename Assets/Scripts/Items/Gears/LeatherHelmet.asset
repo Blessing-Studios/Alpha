@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab3a1f2811799bb44a63b0c7ba892be8, type: 3}
   m_Name: LeatherHelmet
   m_EditorClassIdentifier: 
+  Label: 
   Value: 10
   Width: 2
   Height: 2
+  Weight: 1
   Sprite: {fileID: -1401906386, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
   Id: 8
   EquipmentType:
     value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}
   Traits:
   - {fileID: 11400000, guid: 59d4be58543fdfe48947807e27ab8989, type: 2}
-  - {fileID: 11400000, guid: 7422e16d2c5459148a88866b30ba08cf, type: 2}
+  - {fileID: 11400000, guid: a008f4ac6f5870a4bbc9b12c8e5e87cb, type: 2}

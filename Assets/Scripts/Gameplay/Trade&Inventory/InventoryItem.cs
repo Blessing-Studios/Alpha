@@ -1,10 +1,37 @@
 using System;
+using Unity.Collections;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.UI;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
+    [Serializable]
+    public struct InventoryItemData : IEquatable<InventoryItemData>, INetworkSerializeByMemcpy
+    {
+        public FixedString64Bytes Id;
+        public int ItemId;
+        public Vector2Int Position;
+        public bool Rotated;
+
+        public InventoryItemData(FixedString64Bytes id, int itemId, Vector2Int position, bool rotated)
+        {
+            Id = id;
+            ItemId = itemId;
+            Position = position;
+            Rotated = rotated;
+        }
+
+        public bool Equals(InventoryItemData other)
+        {
+            return
+                (this.Id == other.Id) &&
+                (this.ItemId == other.ItemId) &&
+                (this.Position == other.Position) &&
+                (this.Rotated == other.Rotated);
+        }
+    }
     public class InventoryItem : MonoBehaviour
     {
         public Item Item;
@@ -38,6 +65,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private void InitializeItem(Item item)
         {
+            Debug.Log(gameObject.name + ": InitializeItem Item name - " + item.name);
             Item = item;
 
             GetComponent<Image>().sprite = item.Sprite;
@@ -48,15 +76,15 @@ namespace Blessing.Gameplay.TradeAndInventory
         }
         public void Set(Item item)
         {
-            InitializeItem(item);
-            SetData(Guid.NewGuid(), item.Id, Vector2Int.zero, false);
-            item.Initialize(this);
+            string stringGuid = Guid.NewGuid().ToString();
+            Set(item, new InventoryItemData(new FixedString64Bytes(stringGuid), item.Id, Vector2Int.zero, false));
         }
 
         public void Set(Item item, InventoryItemData  data)
         {
             InitializeItem(item);
             SetData(data);
+            item.Initialize(this);
         }
 
         void Awake()
@@ -83,7 +111,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             Data.Rotated = !Data.Rotated;
             Rotate();
         }
-        public void SetData(Guid id, int itemId, Vector2Int position, bool Rotated)
+        public void SetData(FixedString64Bytes id, int itemId, Vector2Int position, bool Rotated)
         {
             Data.Id = id;
             Data.ItemId = itemId;

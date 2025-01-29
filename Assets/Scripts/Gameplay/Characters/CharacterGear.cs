@@ -33,7 +33,7 @@ namespace Blessing.Gameplay.Characters
         public List<InventoryItemData> EquipmentLocalList;
         private bool isEquipmentsInitialized = false;
         private Character looter;
-        public bool CanBeLooted { get { return character.Health.IsDead; } }
+        public bool CanInteract { get { return !character.Health.IsAlive; } }
 
         [Header("Events")]
         public GameEvent OnAddEquipment;
@@ -67,7 +67,7 @@ namespace Blessing.Gameplay.Characters
 
         protected virtual void Update()
         {
-            if (CanBeLooted)
+            if (CanInteract)
                 HandleStopInteraction();
         }
 
@@ -294,37 +294,39 @@ namespace Blessing.Gameplay.Characters
         {
             return GameManager.Singleton.UpdateLocalList(ref localList, networkList);
         }
-
-        public virtual void SetInventory(InventoryItem inventoryItem)
+        public virtual void AddBackpack(InventoryItem inventoryItem)
         {
-            // if (HasAuthority)
-            // {
-            //     // TODO: 
-            //     GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
-            //     Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
-            // }
+            if (inventoryItem != null)
+            {
+                SetInventory(inventoryItem);
+            }
+        }
+        public virtual void RemoveBackpack()
+        {
+            UnequipInventory();
+        }
+
+        protected virtual void SetInventory(InventoryItem inventoryItem)
+        {
             if (inventoryItem.Inventory == null)
             {
-                Debug.Log(gameObject.name + ": inventoryItem.Inventory - " + inventoryItem.Item.name);
+                Debug.Log(gameObject.name + ": inventoryItem.Inventory == null - " + inventoryItem.Item.name);
                 return;
             }
+
+            Debug.Log(gameObject.name + ": inventoryItem.Inventory != null - " + inventoryItem.Item.name);
 
             Inventory = inventoryItem.Inventory;
         }
 
-        public void UnequipInventory()
+        protected void UnequipInventory()
         {
-            // if (Inventory != null && HasAuthority)
-            // {
-            //     GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
-            //     Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
-            // }
-
             Inventory = null;
         }
         public void Interact(Interactor interactor)
         {
-            if (!CanBeLooted) return;
+            Debug.Log(gameObject.name + ": CharacterGear Entrou Interact");
+            if (!CanInteract) return;
 
             if (interactor.gameObject.TryGetComponent(out Character looter))
             {
@@ -341,6 +343,7 @@ namespace Blessing.Gameplay.Characters
                 }
                 else if (GameManager.Singleton.InventoryController.IsGridsOpen)
                 {
+                    Debug.Log(gameObject.name + ": CharacterGear Interact IsGridsOpen = true");
                     GameManager.Singleton.InventoryController.CloseAllGrids();
                 }
             }
@@ -357,7 +360,6 @@ namespace Blessing.Gameplay.Characters
             {
                 looter = null;
                 GameManager.Singleton.InventoryController.CloseAllGrids();
-                GameManager.Singleton.InventoryController.OtherCharacter = null;
             }
         }
     }

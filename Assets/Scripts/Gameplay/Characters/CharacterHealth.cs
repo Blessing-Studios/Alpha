@@ -13,9 +13,7 @@ namespace Blessing.Gameplay.Characters
     {
         // Tentar criar a classe sem usar uma MonoBehaviour
         [field: SerializeField] public bool ShowDebug { get; private set; }
-        public event EventHandler OnHealthChanged;
         public event EventHandler OnTakeDamage;
-        protected IEnumerator coroutine;
 
         [Header("Health Settings")]
         [Tooltip("Current health points of the character.")]
@@ -23,7 +21,8 @@ namespace Blessing.Gameplay.Characters
         [SerializeField]
         protected NetworkVariable<int> health = new NetworkVariable<int>(100,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
+        
+        [SerializeField] protected int constitution;
         // [Tooltip("Maximum health points of the character.")]
         [SerializeField] protected int maxHealth;
         public int CurrentHealth { get { return health.Value; }}
@@ -42,7 +41,7 @@ namespace Blessing.Gameplay.Characters
         [field: SerializeField] public int MaxWounds { get; private set; }
         [SerializeField] protected int woundHealth = 25;
         [SerializeField] protected int wounds;
-        protected Character character;
+        private bool isHealthInitialized = false;
         // Wounds are the subDivision of the HeathPool, they are like block of health
         // If a character loose health equal to woundHealth, the character will loose Max health equal to woundHealth
         // it is like the Character is wounded and will not full recovery
@@ -50,40 +49,60 @@ namespace Blessing.Gameplay.Characters
         // Start is called before the first frame update
         void Awake()
         {
-            // character = GetComponent<Character>();
             OnTakeDamage += HandleOnTakeDamage;
-
-            //MaxWounds = (int)(character.Constitution / 2);
-            //woundHealth = 5 * character.Constitution;
-
-            MaxWounds = 3;
-            woundHealth = 25;
-
-            maxHealth = woundHealth * MaxWounds;
-            OriginalMaxHealth = maxHealth;
-            wounds = MaxWounds;
+        }
+        void Start()
+        {
+        
         }
 
         public override void OnNetworkSpawn()
         {
             health.OnValueChanged += OnNetworkHealthChanged;
+            StartCoroutine(ChangeLifeByTime());
+        }
+        
+        public override void OnNetworkDespawn()
+        {
+            StopAllCoroutines();
+        }
 
+        public void SetHealthParameters(int constitution)
+        {
+            this.constitution = constitution;
+            OriginalMaxHealth = woundHealth * constitution;
+
+            if (maxHealth > OriginalMaxHealth)
+            {
+                maxHealth = OriginalMaxHealth;
+            }
+
+            MaxWounds = constitution;
+
+            if (wounds > MaxWounds)
+            {
+                 wounds = MaxWounds;
+            }
+
+            if (!isHealthInitialized)
+            {
+                Initialize();
+                isHealthInitialized = true;
+            }
+            
+        }
+        public void Initialize()
+        {
+            maxHealth = OriginalMaxHealth;
+            wounds = MaxWounds;
             if (HasAuthority)
             {
                 health.Value = maxHealth;
             }
-
-            OnHealthChanged?.Invoke(this, EventArgs.Empty);
         }
-        void Start()
-        {
-            coroutine = ChangeLifeByTime();
-            StartCoroutine(coroutine);
-        }
-
         public void OnNetworkHealthChanged(int previous, int current)
         {
-            OnHealthChanged?.Invoke(this, EventArgs.Empty);
+            //
         }
 
         public int GetHealth()
@@ -108,14 +127,14 @@ namespace Blessing.Gameplay.Characters
 
         public void SetCharacterAsAlive()
         {
-            StartCoroutine(coroutine);
+            StartCoroutine(ChangeLifeByTime());
             isAlive = true;
         }
 
         public void SetCharacterAsDead()
         {
-            StopCoroutine(coroutine);
-            health.Value = 0;
+            StopAllCoroutines();
+            if (HasAuthority) health.Value = 0;
             isAlive = false;
         }
 
@@ -133,7 +152,7 @@ namespace Blessing.Gameplay.Characters
             healthValue -= damageAmount;
 
             // arrumar essa parte para considerar o netcode
-            if (healthValue <= (wounds - 1) * woundHealth)
+            if (healthValue < (wounds - 1) * woundHealth)
             {
                 wounds--;
                 maxHealth -= woundHealth;
@@ -143,7 +162,7 @@ namespace Blessing.Gameplay.Characters
             if (healthValue < 0) healthValue = 0;
 
             health.Value = healthValue;
-            
+            if (ShowDebug) Debug.Log(gameObject.name + " damageAmount: " + damageAmount);
             if (ShowDebug) Debug.Log(gameObject.name + " healthValue: " + healthValue);
 
             OnTakeDamage?.Invoke(this, EventArgs.Empty);
@@ -188,7 +207,7 @@ namespace Blessing.Gameplay.Characters
         }
         public IEnumerator ChangeLifeByTime()
         {
-            while (isAlive && HasAuthority)
+            while (isAlive)
             {
                 //Put your code before waiting here
 

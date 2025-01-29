@@ -9,23 +9,6 @@ using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    [Serializable]
-    public struct InventoryItemData : IEquatable<InventoryItemData>, INetworkSerializeByMemcpy
-    {
-        public Guid Id;
-        public int ItemId;
-        public Vector2Int Position;
-        public bool Rotated;
-
-        public bool Equals(InventoryItemData other)
-        {
-            return
-                (this.Id == other.Id) &&
-                (this.ItemId == other.ItemId) &&
-                (this.Position == other.Position) &&
-                (this.Rotated == other.Rotated);
-        }
-    }
     public class Inventory : NetworkBehaviour
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
@@ -43,7 +26,6 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private bool isItemsInitialized = false;
         private bool isInitialized = false;
-
         [field: SerializeField] public NetworkVariable<InventoryItemData> OwnerData = new(new InventoryItemData(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public InventoryGrid InventoryGrid;
         public List<InventoryItem> ItemList = new();
@@ -81,7 +63,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (InventoryGrid == null)
                 InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
-            
+
             if (inventoryItem == null) return;
 
             gameObject.name = inventoryItem.Item.name + "-Container";
@@ -95,28 +77,32 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (InventoryGrid == null)
                 InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
-            
+
             Width = GridSize.Value.x;
             Height = GridSize.Value.y;
 
             ItemSlot = new InventoryItem[Width, Height];
 
-            InventoryItem inventoryItem = FindItem(OwnerData.Value);
-
             UpdateLocalList(ref InventoryLocalList, InventoryNetworkList);
 
-            Debug.Log(gameObject.name + ": Initialize isItemsInitialized - " + isItemsInitialized);
             if (!isItemsInitialized)
             {
                 SyncInventoryItems();
             }
 
-            if (inventoryItem != null)
+            // If ItemId is 0, this inventory doesn't need a inventoryItem
+            if (OwnerData.Value.ItemId != 0)
             {
-                gameObject.name = inventoryItem.Item.name + "-Container";
+                InventoryItem inventoryItem = FindItem(OwnerData.Value);
 
-                inventoryItem.Inventory = this;
-                Owner = inventoryItem;
+                if (inventoryItem != null)
+                {
+                    gameObject.name = inventoryItem.Item.name + "-Container";
+
+                    inventoryItem.Inventory = this;
+                    Owner = inventoryItem;
+                    inventoryItem.gameObject.SetActive(false);
+                }
             }
 
             isInitialized = true;
@@ -234,7 +220,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (position == null) return false;
 
-            return AddItem(inventoryItem, (Vector2Int) position);
+            return AddItem(inventoryItem, (Vector2Int)position);
         }
         public bool AddItem(InventoryItem inventoryItem, Vector2Int position)
         {
@@ -249,7 +235,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             return true;
         }
-        
+
         public bool AddInventoryItem(InventoryItem inventoryItem, Vector2Int position)
         {
             if (inventoryItem == null) return false;
@@ -264,7 +250,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             int width = inventoryItem.Width;
             int height = inventoryItem.Height;
 
-            Debug.Log(gameObject.name + ": AddInventoryItem item - " + inventoryItem.name);
+            if (ShowDebug) Debug.Log(gameObject.name + ": AddInventoryItem item - " + inventoryItem.name);
 
             for (int x = 0; x < width; x++)
             {
@@ -278,7 +264,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                 }
             }
             inventoryItem.Data.Position = position;
-            
+
             ItemList.Add(inventoryItem);
 
             return true;
@@ -341,12 +327,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             // if (LocalClientId != OwnerClientId)
             //     ChangeOwnership(LocalClientId);
         }
-
-        public void ChangeOwnership(ulong id)
-        {
-            GetComponent<NetworkObject>().ChangeOwnership(id);
-        }
-
         public bool CheckAvailableSpace(Vector2Int position, int width, int height)
         {
 

@@ -15,6 +15,18 @@ namespace Blessing.Player
                 Debug.LogError(gameObject.name + " InventoryController is missing");
             }
 
+            base.Start();
+            SetGrids();
+        }
+
+        protected override void OnOwnershipChanged(ulong previous, ulong current) // Mover para PlayerCharacterNetwork
+        {
+            base.OnOwnershipChanged(previous, current);
+            SetGrids();
+        }
+
+        private void SetGrids()
+        {
             if (HasAuthority)
             { 
                 GameManager.Singleton.InventoryController.PlayerStatsInfo.CharacterStats = character.CharacterStats;
@@ -30,16 +42,39 @@ namespace Blessing.Player
                     grid.InitializeGrid();
                 }
             }
-
-            base.Start();
         }
 
-        public void SetInventory()
+        private void SetInventory()
         {
             Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
             GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
             Inventory.InventoryGrid.Owner = this.gameObject;
             GameManager.Singleton.InventoryController.PlayerInventoryGrid.InitializeGrid();
+        }
+
+        public override void AddBackpack(InventoryItem inventoryItem)
+        {
+            base.AddBackpack(inventoryItem);
+            
+            // If this is the Local Player, change PlayerInventoryGrid
+            if (HasAuthority)
+            { 
+                GameManager.Singleton.InventoryController.PlayerCharacter = character as PlayerCharacter;
+                GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
+                Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
+            }
+        }
+
+        public override void RemoveBackpack()
+        {
+            // If this is the Local Player, change PlayerInventoryGrid
+            if (Inventory != null && HasAuthority)
+            {
+                GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
+                Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
+            }
+
+            base.RemoveBackpack();
         }
     }
 }

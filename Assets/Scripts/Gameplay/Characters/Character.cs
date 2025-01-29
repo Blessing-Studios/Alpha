@@ -8,6 +8,8 @@ using Unity.Netcode.Components;
 using Blessing.Characters;
 using Blessing.Gameplay.TradeAndInventory;
 using Blessing.Gameplay.Interation;
+using Blessing.Gameplay.Characters.InputActions;
+using Blessing.Gameplay.Characters.InputDirections;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -36,6 +38,12 @@ namespace Blessing.Gameplay.Characters
         [field: SerializeField] public List<IHittable> TargetList { get; private set; }
         public CharacterController CharacterController { get; protected set; }
         public CharacterNetwork CharacterNetwork { get; protected set; }
+        [field: SerializeField] protected InputActionList actionList;
+        [field: SerializeField] protected InputDirectionList directionList;
+        public InputActionType TriggerAction { get; protected set; }
+        public InputDirectionType TriggerDirection { get; protected set; }
+        protected Dictionary<string, InputActionType> inputActionsDic = new();
+        protected Dictionary<string, InputDirectionType> inputDirectionsDic = new();
         public HitInfo HitInfo { get; protected set; }
         // [field: SerializeField] protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(1,
         //     NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner); // Mover para CharacterNetwork
@@ -58,6 +66,12 @@ namespace Blessing.Gameplay.Characters
                 CharacterNetwork.SetStateIndex(stateIndex);
             else
                 this.stateIndex = stateIndex;
+        }
+
+        public void SetComboMoveIndex(int comboIndex, int moveIndex)
+        {
+            if (CharacterNetwork != null)
+                CharacterNetwork.SetComboMoveIndex(comboIndex, moveIndex);
         }
 
         private int stateIndex; // Offline StateIndex
@@ -88,6 +102,16 @@ namespace Blessing.Gameplay.Characters
 
             TargetList = new List<IHittable>();
 
+            foreach (InputActionType InputAction in actionList.InputActions)
+            {
+                inputActionsDic.Add(InputAction.Name, InputAction);
+            }
+
+            foreach (InputDirectionType InputDirection in directionList.InputDirections)
+            {
+                inputDirectionsDic.Add(InputDirection.Name, InputDirection);
+            }
+
             // stateIndex.Value = 0;
         }
 
@@ -99,6 +123,11 @@ namespace Blessing.Gameplay.Characters
                 CharacterController.transform.position = SpawnLocation;
                 CharacterController.enabled = true;
             }
+        }
+
+        public virtual void Initialize()
+        {
+            //
         }
 
         public void ClearTargetList()
@@ -122,7 +151,7 @@ namespace Blessing.Gameplay.Characters
         public virtual bool Hit(IHittable target)
         {
 
-            if ((Character) target == this)
+            if (target as Character == this)
             {
                 // Can't hit itself
                 return false;
@@ -134,6 +163,7 @@ namespace Blessing.Gameplay.Characters
                 return false;
             }
 
+            // If CurrentMove is null, it will throw a error
             HitInfo = new HitInfo(CharacterStateMachine.CurrentMove.Damage);
             TargetList.Add(target);
 
@@ -164,6 +194,20 @@ namespace Blessing.Gameplay.Characters
             MovementController.DisableMovement();
             MovementController.DisableCollision();
         }
+        public void GetOwnership()
+        {
+            CharacterNetwork.GetOwnership();
+        }
+        public InputActionType GetAction(string name)
+        {
+            return inputActionsDic[name];
+        }
+
+        public InputDirectionType GetDirection(string name)
+        {
+            return inputDirectionsDic[name];
+        }
+        public abstract bool CheckIfActionTriggered(string actionName);
 
         // public void Interact(Interactor interactor)
         // {
@@ -202,11 +246,12 @@ namespace Blessing.Gameplay.Characters
         //     }
         // }
 
+        // GameEventListeners
         public void OnAddEquipment(Component component, object data)
         {
             if (component.gameObject != gameObject) return;
 
-            Debug.Log(gameObject.name + ": OnAddEquipment");
+            if (ShowDebug) Debug.Log(gameObject.name + ": OnAddEquipment");
 
             CharacterStats.UpdateAllStats();
 
@@ -218,7 +263,7 @@ namespace Blessing.Gameplay.Characters
 
             if (backpack != null)
             {
-                AddBackpack(inventoryItem);
+                Gear.AddBackpack(inventoryItem);
             }
 
             GameManager.Singleton.InventoryController.SyncGrids();
@@ -228,7 +273,7 @@ namespace Blessing.Gameplay.Characters
         {
             if (component.gameObject != gameObject) return;
 
-            Debug.Log(gameObject.name + ": OnRemoveEquipment");
+            if (ShowDebug) Debug.Log(gameObject.name + ": OnRemoveEquipment");
 
             CharacterStats.UpdateAllStats();
 
@@ -236,28 +281,16 @@ namespace Blessing.Gameplay.Characters
 
             if (characterEquipment.GearSlotType == Gear.BackpackSlot)
             {
-                RemoveBackpack();
+                Gear.RemoveBackpack();
             }
 
             GameManager.Singleton.InventoryController.SyncGrids();
         }
-
-        public virtual void AddBackpack(InventoryItem inventoryItem)
+        public void OnUpdateAllStats(Component component, object data)
         {
-            Debug.Log(gameObject.name + ": OnRemoveBackpack");
-            if (inventoryItem != null)
-            {
-                Gear.SetInventory(inventoryItem);
-            }
-
-                
+            if (component.gameObject != gameObject) return;
+            
+            Health.SetHealthParameters(CharacterStats.Constitution);
         }
-
-        public virtual void RemoveBackpack()
-        {
-            Debug.Log(gameObject.name + ": OnRemoveBackpack");
-            Gear.UnequipInventory();
-        }
-        public abstract bool CheckIfActionTriggered(string actionName);
     }
 }

@@ -12,6 +12,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public int GridSizeHeight = 5;
         private Character looter;
         [field: SerializeField] public Inventory Inventory { get; private set; }
+        public bool CanInteract { get { return true; } }
         void Awake()
         {
             Inventory = GetComponent<Inventory>();
@@ -37,16 +38,15 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (interactor.gameObject.TryGetComponent(out Character looter))
             {
-                this.looter = looter;
-                Inventory.InventoryGrid.Inventory = Inventory;
-
                 if (!GameManager.Singleton.InventoryController.IsGridsOpen)
                 {
-                    GameManager.Singleton.InventoryController.OpenAllGrids();
+                    Debug.Log(gameObject.name + " OpenGrids");
+                    OpenGrids(looter);
                 }
                 else if (GameManager.Singleton.InventoryController.IsGridsOpen)
                 {
-                    GameManager.Singleton.InventoryController.CloseAllGrids();
+                    Debug.Log(gameObject.name + " CloseGrids");
+                    CloseGrids();
                 }
             }
         }
@@ -62,10 +62,26 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (distance > maxDistance)
             {
-                looter = null;
-                GameManager.Singleton.InventoryController.CloseAllGrids();
-                Inventory.InventoryGrid.Inventory = null;
+                CloseGrids();
             }
+        }
+
+        private void OpenGrids(Character looter)
+        {
+            if (Inventory.InventoryGrid.Inventory != Inventory)
+            {
+                CloseGrids();
+                Inventory.InventoryGrid.Inventory = Inventory;
+            }
+            
+            this.looter = looter;
+            GameManager.Singleton.InventoryController.OpenAllGrids();
+        }
+
+        private void CloseGrids()
+        {
+            looter = null;
+            GameManager.Singleton.InventoryController.CloseAllGrids();
         }
     }
 }

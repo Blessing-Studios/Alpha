@@ -20,6 +20,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public string Guid;
         public TextMeshPro GuidText;
         private readonly int deferredDespawnTicks = 4;
+        public bool CanInteract { get { return true; } }
         public override void OnNetworkSpawn()
         {
             if (InventoryItem != null)
@@ -42,6 +43,8 @@ namespace Blessing.Gameplay.TradeAndInventory
                 GuidText.gameObject.SetActive(true);
             else
                 GuidText.gameObject.SetActive(false);
+
+            InventoryItem.gameObject.SetActive(false);
         }
 
         private void InitializeLooseItem()
@@ -74,12 +77,12 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (interactor.gameObject.TryGetComponent(out CharacterGear character))
             {
                 GetOwnership();
+                // Checar se GetOwnership funcionou
 
                 // Try to equip item, if yes, return
                 if (character.AddEquipment(InventoryItem))
                 {
-                    InventoryItem.gameObject.SetActive(true);
-
+                    // InventoryItem.gameObject.SetActive(false);
                     // TODO: criar um sistema de pooling para destruir objetos
                     if (NetworkManager.Singleton.NetworkConfig.NetworkTopology == NetworkTopologyTypes.DistributedAuthority)
                     {

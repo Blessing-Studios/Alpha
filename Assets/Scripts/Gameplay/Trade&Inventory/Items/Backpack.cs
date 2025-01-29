@@ -15,6 +15,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             base.Initialize(inventoryItem);
 
+            Debug.Log("Backpack Initialize - " + inventoryItem.Item.name);
             var container = Instantiate(GameManager.Singleton.ContainerPrefab);
 
             // container.gameObject.name = inventoryItem.Item.name + "-Container";

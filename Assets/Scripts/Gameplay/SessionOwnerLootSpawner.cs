@@ -38,6 +38,11 @@ namespace Blessing.Gameplay
             StopCoroutine(WaitToSpawnLoot());
         }
 
+        public override void OnNetworkDespawn()
+        {
+            StopAllCoroutines();
+        }
+
         private void SpawnLoot()
         {
             if (!HasAuthority) return;
@@ -48,6 +53,8 @@ namespace Blessing.Gameplay
                 inventoryItem.Set(item);
 
                 lootInventory.AddItem(inventoryItem);
+                inventoryItem.transform.SetParent(lootInventory.transform, false);
+                inventoryItem.gameObject.SetActive(false);
             }
         }
     }

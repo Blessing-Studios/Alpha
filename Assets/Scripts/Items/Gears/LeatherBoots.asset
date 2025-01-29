@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab3a1f2811799bb44a63b0c7ba892be8, type: 3}
   m_Name: LeatherBoots
   m_EditorClassIdentifier: 
+  Label: 
   Value: 10
   Width: 2
   Height: 2
+  Weight: 1
   Sprite: {fileID: -522797079, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
-  Id: 9
+  Id: 7
   EquipmentType:
     value: {fileID: 11400000, guid: 0b813e2225fad4e4d9ae3ef58b410c5b, type: 2}
   Traits:

@@ -1,11 +1,14 @@
 # Alpha
 
 ### Atual prioridade
-    Fazer o sistema de status e equipamento
+    Feito Fazer o sistema de status e equipamento
 
-    !!Quando recarrega, o player reconectando pode pegar Autoridade de outros player characters
+    Parece que foi resolvido !!Quando recarrega, o player reconectando pode pegar Autoridade de outros player characters
 
-    Fazer sistema de equipamentos. // Criar tipos de equipamentos
+    Fazer sistema de pooling dos objetos online
+
+    Criar sistema de interação mais complexo, para ter ter a opção de ter mais de um tipo de interação por objeto
+
     
 
 ### Mudanças nas configurações
@@ -14,19 +17,17 @@
             Auto Sync Transforms -> False
 
 ### Observações
+    Atualmente, a UI do inventário do Player e a UI do inventário do resto está separada, tab fecha o inventário do player, e interagir fecha o inventário do resto
 
     Network Animator tem problema para triggar a mesma animação várias vezes, contornar esse problema
-
-    Precisa melhorar o jeito que manda os valores do dano para o personagem sendo atacado
 
     Separar a lógica das NetWorkBehaviors em duas classes, uma que é MonoBehaviors e outra que é NetworkBehaviors
         Exemplo PlayerController, transformar em duas classes
 
     Desacoplar as classes InventoryGrid e Inventory
 
-    Mover CheckAvailableSpace e outros checks do InventoryGrid para Inventory
-
     Criar um sistema de pooling https://docs-multiplayer.unity3d.com/netcode/current/advanced-topics/object-pooling/
+    PS.: foi feito um sistema de pooling para a classe InventoryItem, precisa fazer para as outras
     
 
 ### Bugs para arrumar

@@ -17,18 +17,22 @@ MonoBehaviour:
   Moves:
   - Name: Attack1
     Description: Teste
-    AnimationClip: {fileID: 7400000, guid: 05a643f1c8e942c4fba41abcf1997416, type: 2}
+    AnimationClip: {fileID: 7400000, guid: e2e05601c69f43b4e9bee9af39f2dddb, type: 2}
+    AudioClips:
+    - {fileID: 8300000, guid: 3355fa4050eef7e4483a4f16920ae7e7, type: 3}
     AnimationParam: LightAttack1
     Action:
       value: {fileID: 11400000, guid: 3b288b8291134a14b9d62350cee0c014, type: 2}
     Direction:
       value: {fileID: 11400000, guid: 014f2a0cadd64d0448dc036ef1e4305d, type: 2}
     ExitEarlier: 0.1
-    Damage: 50
+    Damage: 20
     Impulse: 60
   - Name: Attack2
     Description: Teste
     AnimationClip: {fileID: 7400000, guid: a5a60e5147208504c84d3bfa90c51275, type: 2}
+    AudioClips:
+    - {fileID: 8300000, guid: a8343916af5b51e41a3120476a36f422, type: 3}
     AnimationParam: LightAttack2
     Action:
       value: {fileID: 11400000, guid: 3b288b8291134a14b9d62350cee0c014, type: 2}
@@ -36,15 +40,4 @@ MonoBehaviour:
       value: {fileID: 11400000, guid: 014f2a0cadd64d0448dc036ef1e4305d, type: 2}
     ExitEarlier: 0.1
     Damage: 10
-    Impulse: 60
-  - Name: Attack3
-    Description: Teste
-    AnimationClip: {fileID: 7400000, guid: 5bc90903d0929da4fb632a5e8b14f86e, type: 2}
-    AnimationParam: HeavyAttack1
-    Action:
-      value: {fileID: 11400000, guid: 3b288b8291134a14b9d62350cee0c014, type: 2}
-    Direction:
-      value: {fileID: 11400000, guid: ce380c11145837945a5091ed736052e9, type: 2}
-    ExitEarlier: 0.1
-    Damage: 15
     Impulse: 60
