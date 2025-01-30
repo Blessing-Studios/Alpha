@@ -18,6 +18,8 @@ namespace Blessing.Characters
     }
     public class CharacterStats : MonoBehaviour
     {
+        public int Attack;
+
         [Header("Character Physical and Mental Attributes")]
         [Space(10)]
         [Tooltip("Measure physical power and carrying capacity")]
@@ -78,7 +80,10 @@ namespace Blessing.Characters
         {
             UpdateAllStats();
         }
-
+        public int GetStatValue(Stat stat)
+        {
+            return (int) GetType().GetField(stat.ToString()).GetValue(this);
+        }
         public void UpdateStat(Stat stat)
         {
             

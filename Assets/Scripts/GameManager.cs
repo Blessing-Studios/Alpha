@@ -145,9 +145,14 @@ namespace Blessing
             return InventoryItemPool.Get();
         }
 
-        internal InventoryItem FindInventoryItem(InventoryItemData data)
+        public void ReleaseInventoryItem(InventoryItem inventoryItem)
         {
-            return InventoryController.FindInventoryItem(data);
+            InventoryItemPool.Release(inventoryItem);
+        }
+
+        internal InventoryItem FindInventoryItem(InventoryItemData data, bool createNew = true)
+        {
+            return InventoryController.FindInventoryItem(data, createNew);
         }
 
         public void InitializePlayers()

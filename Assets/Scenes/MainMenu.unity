@@ -2134,8 +2134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ab8a687393f374389dbd931fdb9906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectButtonAudioClip: {fileID: 8300000, guid: a8343916af5b51e41a3120476a36f422, type: 3}
-  Volume: 0.15
+  selectButtonAudioClip: {fileID: 8300000, guid: 48c66723c3e91c940a293df6a6488091, type: 3}
+  Volume: 0.05
 --- !u!1 &553959326
 GameObject:
   m_ObjectHideFlags: 0
@@ -4042,8 +4042,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ab8a687393f374389dbd931fdb9906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectButtonAudioClip: {fileID: 8300000, guid: a8343916af5b51e41a3120476a36f422, type: 3}
-  Volume: 0.15
+  selectButtonAudioClip: {fileID: 8300000, guid: 48c66723c3e91c940a293df6a6488091, type: 3}
+  Volume: 0.05
 --- !u!1 &1011449540
 GameObject:
   m_ObjectHideFlags: 0
@@ -5694,8 +5694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ab8a687393f374389dbd931fdb9906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectButtonAudioClip: {fileID: 8300000, guid: a8343916af5b51e41a3120476a36f422, type: 3}
-  Volume: 0.15
+  selectButtonAudioClip: {fileID: 8300000, guid: 48c66723c3e91c940a293df6a6488091, type: 3}
+  Volume: 0.05
 --- !u!1 &1326996966
 GameObject:
   m_ObjectHideFlags: 0
@@ -6605,7 +6605,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectButtonAudioClip: {fileID: 8300000, guid: a8343916af5b51e41a3120476a36f422, type: 3}
-  Volume: 0.15
+  Volume: 0.05
 --- !u!1 &1556676399
 GameObject:
   m_ObjectHideFlags: 0
@@ -7108,8 +7108,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ab8a687393f374389dbd931fdb9906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectButtonAudioClip: {fileID: 8300000, guid: a8343916af5b51e41a3120476a36f422, type: 3}
-  Volume: 0.15
+  selectButtonAudioClip: {fileID: 8300000, guid: 48c66723c3e91c940a293df6a6488091, type: 3}
+  Volume: 0.05
 --- !u!1 &1622887782
 GameObject:
   m_ObjectHideFlags: 0
@@ -8748,8 +8748,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ab8a687393f374389dbd931fdb9906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectButtonAudioClip: {fileID: 8300000, guid: a8343916af5b51e41a3120476a36f422, type: 3}
-  Volume: 0.15
+  selectButtonAudioClip: {fileID: 8300000, guid: 48c66723c3e91c940a293df6a6488091, type: 3}
+  Volume: 0.05
 --- !u!1 &1957676793
 GameObject:
   m_ObjectHideFlags: 0

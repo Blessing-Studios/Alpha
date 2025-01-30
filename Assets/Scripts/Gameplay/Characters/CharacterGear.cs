@@ -277,7 +277,7 @@ namespace Blessing.Gameplay.Characters
         public void ValidateEquipments()
         {
             // TODO:
-            // CharactersEquipments can't repeat
+            // CharactersEquipments can't repeat slots
         }
 
         protected InventoryItem CreateItem(InventoryItemData data)
@@ -323,6 +323,42 @@ namespace Blessing.Gameplay.Characters
         {
             Inventory = null;
         }
+        public Vector2Int GetWeaponDamageAndPen()
+        {
+            // Calculate weapon damage
+            // Find Weapon to get base attack
+
+            Weapon weapon = GetEquippedWeapon();
+            if (weapon == null) return new Vector2Int(character.CharacterStats.Strength * 10, 0);
+
+            // Calculate Damage
+
+            int damage = weapon.Attack;
+
+            foreach(WeaponModifier modifier in weapon.WeaponModifiers)
+            {
+                damage += character.CharacterStats.GetStatValue(modifier.Stat) * modifier.Value;
+            }
+
+            return new Vector2Int(damage, weapon.DamageClass);
+        }
+
+        public Weapon GetEquippedWeapon()
+        {
+            foreach(CharacterEquipment equipment in Equipments)
+            {
+                if (equipment.InventoryItem == null) continue;
+
+                Weapon weapon = equipment.InventoryItem.Item as Weapon;
+                if (weapon != null)
+                {
+                    return weapon;
+                }
+            }
+
+            return null;
+        }
+
         public void Interact(Interactor interactor)
         {
             Debug.Log(gameObject.name + ": CharacterGear Entrou Interact");

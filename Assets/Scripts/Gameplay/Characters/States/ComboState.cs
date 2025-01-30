@@ -19,6 +19,7 @@ namespace Blessing.Gameplay.Characters.States
         public override void OnEnter()
         {
             base.OnEnter();
+            if (!characterStateMachine.Character.HasAuthority) return;
 
             character.ClearTargetList();
             
@@ -33,8 +34,7 @@ namespace Blessing.Gameplay.Characters.States
             movementController.DisableMovement();
 
             // Trigger animation
-            if (characterStateMachine.Character.HasAuthority)
-                animator.SetTrigger(CurrentMove.AnimationParam);
+            animator.SetTrigger(CurrentMove.AnimationParam);
 
             // Zera movementController.AttackMovement
             movementController.AttackMovement = Vector3.zero;
@@ -48,6 +48,7 @@ namespace Blessing.Gameplay.Characters.States
         public override void OnUpdate()
         {
             base.OnUpdate();
+            if (!characterStateMachine.Character.HasAuthority) return;
 
             attackPressedTimer -= Time.deltaTime;
 

@@ -80,7 +80,6 @@ namespace Blessing.Ai.Goap.Actions
         */
         public override bool Perform(GameObject agent)
         {
-            Debug.Log(gameObject.name + ": AttackAction Perform");
             aiAgent.OnActionInput("AttackAction");
             return true;
         }

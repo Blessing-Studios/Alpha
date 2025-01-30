@@ -78,7 +78,7 @@ namespace Blessing.AI.Goap
         // Actions methods
         private void AttackAction()
         {
-            Debug.Log(gameObject.name + ": AttackAction call");
+            if (ShowDebug) Debug.Log(gameObject.name + ": AttackAction call");
             aiCharacter.OnAttack();
         }
     }

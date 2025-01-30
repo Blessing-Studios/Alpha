@@ -67,12 +67,12 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (inventoryItem == null) return;
 
             gameObject.name = inventoryItem.Item.name + "-Container";
-            inventoryItem.Inventory = this;
             Owner = inventoryItem;
             OwnerData.Value = inventoryItem.Data;
         }
         public virtual void Initialize()
         {
+            // Delay Initalize
             if (isInitialized) return;
 
             if (InventoryGrid == null)
@@ -207,7 +207,11 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         protected InventoryItem FindItem(InventoryItemData data)
         {
-            return GameManager.Singleton.FindInventoryItem(data);
+            InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(data, false);
+
+            if (inventoryItem != null) return inventoryItem;
+
+            return GameManager.Singleton.InventoryController.CreateItem(data, this);
         }
 
         protected bool UpdateLocalList(ref List<InventoryItemData> localList, NetworkList<InventoryItemData> networkList)

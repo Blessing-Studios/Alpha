@@ -21,5 +21,8 @@ MonoBehaviour:
   Id: 4
   EquipmentType:
     value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
-  Traits: []
-  Damage: 10
+  Traits:
+  - {fileID: 11400000, guid: 59d4be58543fdfe48947807e27ab8989, type: 2}
+  DamageClass: 1
+  Attack: 90
+  WeaponModifiers: []

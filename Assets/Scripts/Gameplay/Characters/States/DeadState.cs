@@ -16,6 +16,7 @@ namespace Blessing.Gameplay.Characters.States
         public override void OnEnter()
         {
             base.OnEnter();
+            if (!characterStateMachine.Character.HasAuthority) return;
 
             animator.SetTrigger("Die");
 

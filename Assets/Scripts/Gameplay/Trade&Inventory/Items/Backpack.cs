@@ -15,6 +15,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             base.Initialize(inventoryItem);
 
+            if (inventoryItem.Inventory != null) return;
+
             Debug.Log("Backpack Initialize - " + inventoryItem.Item.name);
             var container = Instantiate(GameManager.Singleton.ContainerPrefab);
 
@@ -32,7 +34,10 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             container.Spawn();
 
-            container.GetComponent<Inventory>().SetNetworkVariables(GridSizeWidth, GridSizeHeight, inventoryItem);
+            Inventory inventory = container.GetComponent<Inventory>();
+            inventoryItem.Inventory = inventory;
+
+            inventory.SetNetworkVariables(GridSizeWidth, GridSizeHeight, inventoryItem);
         }
     }
 }

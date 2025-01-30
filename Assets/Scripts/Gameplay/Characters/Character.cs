@@ -35,7 +35,6 @@ namespace Blessing.Gameplay.Characters
         public CharacterHealth Health { get; protected set; }
         public CharacterGear Gear { get; protected set; }
         public CharacterStats CharacterStats { get; protected set; }
-        [field: SerializeField] public List<IHittable> TargetList { get; private set; }
         public CharacterController CharacterController { get; protected set; }
         public CharacterNetwork CharacterNetwork { get; protected set; }
         [field: SerializeField] protected InputActionList actionList;
@@ -44,6 +43,10 @@ namespace Blessing.Gameplay.Characters
         public InputDirectionType TriggerDirection { get; protected set; }
         protected Dictionary<string, InputActionType> inputActionsDic = new();
         protected Dictionary<string, InputDirectionType> inputDirectionsDic = new();
+        [field: SerializeField] public Vector2Int DamageAndPen { get; protected set; }
+        [field: SerializeField] public Vector2Int ArmourAndPenRes { get; protected set; }
+        [field: SerializeField] public List<IHittable> TargetList { get; private set; }
+
         public HitInfo HitInfo { get; protected set; }
         // [field: SerializeField] protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(1,
         //     NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner); // Mover para CharacterNetwork
@@ -143,11 +146,6 @@ namespace Blessing.Gameplay.Characters
         //     TargetList.Clear();
         // }
 
-        /// <summary>
-        /// Add target to target list
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns>false if failed already hit, true if added to TargetList</returns>
         public virtual bool Hit(IHittable target)
         {
 
@@ -164,7 +162,7 @@ namespace Blessing.Gameplay.Characters
             }
 
             // If CurrentMove is null, it will throw a error
-            HitInfo = new HitInfo(CharacterStateMachine.CurrentMove.Damage);
+            HitInfo = new HitInfo(DamageAndPen.x, DamageAndPen.y);
             TargetList.Add(target);
 
             return true;
@@ -176,6 +174,8 @@ namespace Blessing.Gameplay.Characters
 
             // Por enquanto, não pode bater em characters mortos
             if (Health.IsDead) return;
+
+            // Apply Armour Damage Reduction
 
             //Receive Damage
             Health.ReceiveDamage(hitter.HitInfo.Damage);
@@ -291,6 +291,7 @@ namespace Blessing.Gameplay.Characters
             if (component.gameObject != gameObject) return;
             
             Health.SetHealthParameters(CharacterStats.Constitution);
+            DamageAndPen = Gear.GetWeaponDamageAndPen();
         }
     }
 }

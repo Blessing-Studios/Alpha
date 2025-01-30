@@ -259,12 +259,14 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
-        public InventoryItem FindInventoryItem(InventoryItemData data)
+        public InventoryItem FindInventoryItem(InventoryItemData data, bool createNew = true)
         {
             if (inventoryItemDic.ContainsKey(data.Id))
                 return inventoryItemDic[data.Id];
-            else
+            else if (createNew)
                 return CreateItem(data);
+            
+            return null;
         }
 
         public InventoryItem CreateItem(Item item)
@@ -281,7 +283,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         }
 
-        public InventoryItem CreateItem(InventoryItemData data)
+        public InventoryItem CreateItem(InventoryItemData data, Inventory inventory = null)
         {
             if (inventoryItemDic.ContainsKey(data.Id))
                 return FindInventoryItem(data);
@@ -294,6 +296,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             {
                 if (item.Id == data.ItemId)
                 {
+                    if (inventory != null) inventoryItem.Inventory = inventory;
+                    
                     inventoryItem.Set(item, data);
                     inventoryItemDic.Add(inventoryItem.Data.Id, inventoryItem);
 

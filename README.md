@@ -42,6 +42,8 @@ Arrumar a UI para funcionar em todas resoluções
 
 Quando um jogador cai e reconecta a vida buga, o personagem não regenera mais vida
 
+No modo online, se um bot ataca alguém, os players não host mostram erro
+
 SpawnStateException: Object is not spawned
 Unity.Netcode.NetworkSpawnManager.ChangeOwnership (Unity.Netcode.NetworkObject networkObject, System.UInt64 clientId, System.Boolean isAuthorized, System.Boolean isRequestApproval) (at ./Library/PackageCache/com.unity.netcode.gameobjects/Runtime/Spawning/NetworkSpawnManager.cs:623)
 Unity.Netcode.NetworkObject.ChangeOwnership (System.UInt64 newOwnerClientId) (at ./Library/PackageCache/com.unity.netcode.gameobjects/Runtime/Core/NetworkObject.cs:1753)
