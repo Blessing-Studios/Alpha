@@ -19,7 +19,7 @@ namespace Blessing.Gameplay.Characters.States
         {
             base.OnEnter();
 
-            duration = 2.0f / characterStateMachine.Character.CharacterStats.Dexterity;
+            duration = 2.0f / characterStateMachine.Character.Stats.Dexterity;
 
             movementController.DisableMovement();
 

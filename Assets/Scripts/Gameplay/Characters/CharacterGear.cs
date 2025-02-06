@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Blessing.Characters;
 using Blessing.Core.GameEventSystem;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.Characters.Traits;
@@ -29,6 +28,15 @@ namespace Blessing.Gameplay.Characters
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
         public ScriptableObjectReference BackpackSlotType;
         [SerializeField] public EquipmentType BackpackSlot { get { return BackpackSlotType.value as EquipmentType; } }
+        
+        [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
+        public ScriptableObjectReference BodyArmorSlotType;
+        [SerializeField] public EquipmentType BodyArmorSlot { get { return BodyArmorSlotType.value as EquipmentType; } }
+
+        [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
+        public ScriptableObjectReference WeaponSlotType;
+        [SerializeField] public EquipmentType WeaponSlot { get { return WeaponSlotType.value as EquipmentType; } }
+        
         public Inventory Inventory;
         public List<InventoryItemData> EquipmentLocalList;
         private bool isEquipmentsInitialized = false;
@@ -38,9 +46,10 @@ namespace Blessing.Gameplay.Characters
         [Header("Events")]
         public GameEvent OnAddEquipment;
         public GameEvent OnRemoveEquipment;
+        public CharacterStats Stats { get { return character.Stats; } }
         public CharacterStats GetStats()
         {
-            return character.CharacterStats;
+            return character.Stats;
         }
         protected void Awake()
         {
@@ -251,7 +260,7 @@ namespace Blessing.Gameplay.Characters
             Gear gear = equipment.InventoryItem.Item as Gear;
             foreach (Trait trait in gear.Traits)
             {
-                character.CharacterStats.AddTrait(trait);
+                character.Stats.AddTrait(trait);
             }
         }
 
@@ -262,7 +271,7 @@ namespace Blessing.Gameplay.Characters
             Gear gear = equipment.InventoryItem.Item as Gear;
             foreach (Trait trait in gear.Traits)
             {
-                character.CharacterStats.RemoveTrait(trait);
+                character.Stats.RemoveTrait(trait);
             }
         }
 
@@ -314,8 +323,6 @@ namespace Blessing.Gameplay.Characters
                 return;
             }
 
-            Debug.Log(gameObject.name + ": inventoryItem.Inventory != null - " + inventoryItem.Item.name);
-
             Inventory = inventoryItem.Inventory;
         }
 
@@ -325,39 +332,61 @@ namespace Blessing.Gameplay.Characters
         }
         public Vector2Int GetWeaponDamageAndPen()
         {
-            // Calculate weapon damage
-            // Find Weapon to get base attack
+            Vector2Int defaultValue = new Vector2Int(character.Stats.Strength * 10, 0);
 
-            Weapon weapon = GetEquippedWeapon();
-            if (weapon == null) return new Vector2Int(character.CharacterStats.Strength * 10, 0);
+            Gear gear = GetEquippedGearByType(WeaponSlot);
+            if (gear == null) return defaultValue;
 
-            // Calculate Damage
+            Weapon weapon = gear as Weapon;
+            if (weapon == null) return defaultValue;
 
             int damage = weapon.Attack;
 
             foreach(WeaponModifier modifier in weapon.WeaponModifiers)
             {
-                damage += character.CharacterStats.GetStatValue(modifier.Stat) * modifier.Value;
+                damage += character.Stats.GetStatValue(modifier.Stat) * modifier.Value;
             }
 
             return new Vector2Int(damage, weapon.DamageClass);
         }
 
-        public Weapon GetEquippedWeapon()
+        internal Vector2Int GetArmorDefenseAndPen()
+        {
+            Vector2Int defaultValue = new Vector2Int(character.Stats.Constitution * 10, 0);
+
+            Gear gear = GetEquippedGearByType(BodyArmorSlot);
+            if (gear == null) return defaultValue;
+
+            BodyArmor bodyArmor = gear as BodyArmor;
+            if (bodyArmor == null) return defaultValue;
+
+            int defense = bodyArmor.Defense;
+
+            foreach(BodyArmorModifier modifier in bodyArmor.BodyArmorModifiers)
+            {
+                defense += character.Stats.GetStatValue(modifier.Stat) * modifier.Value;
+            }
+
+            return new Vector2Int(defense, bodyArmor.ArmorClass);
+        }
+
+        public Gear GetEquippedGearByType(EquipmentType gearType)
         {
             foreach(CharacterEquipment equipment in Equipments)
             {
                 if (equipment.InventoryItem == null) continue;
 
-                Weapon weapon = equipment.InventoryItem.Item as Weapon;
-                if (weapon != null)
+                Gear gear = equipment.InventoryItem.Item as Gear;
+
+                if (gear.GearType == gearType)
                 {
-                    return weapon;
+                    return gear;
                 }
             }
 
             return null;
         }
+        
 
         public void Interact(Interactor interactor)
         {
@@ -388,7 +417,7 @@ namespace Blessing.Gameplay.Characters
         {
             if (looter == null) return;
 
-            float maxDistance = (float)(looter.CharacterStats.Dexterity + looter.CharacterStats.Luck) / 3;
+            float maxDistance = (float)(looter.Stats.Dexterity + looter.Stats.Luck) / 3;
 
             float distance = Vector3.Distance(transform.position, looter.transform.position);
 

@@ -29,6 +29,7 @@ namespace Blessing.AI.Goap
             base.Start();
             navMashAgent.updatePosition = false;
             navMashAgent.updateRotation = false;
+            navMashAgent.Warp(gameObject.transform.position);
         }
         void OnDrawGizmos()
         {
@@ -63,7 +64,10 @@ namespace Blessing.AI.Goap
 
             if (Target != null)
             {
+                if (ShowDebug) Debug.Log(gameObject.name + ": OnMovementInput Target - " + Target.name);
                 navMashAgent.SetDestination(Target.transform.position);
+                if (ShowDebug) Debug.Log(gameObject.name + ": OnMovementInput Target Position - " + Target.transform.position);
+                if (ShowDebug) Debug.Log(gameObject.name + ": OnMovementInput Velocity - " + navMashAgent.velocity);
                 aiMovementController.HandleAiMovement(new Vector2(navMashAgent.velocity.x, navMashAgent.velocity.z).normalized);
             }
 

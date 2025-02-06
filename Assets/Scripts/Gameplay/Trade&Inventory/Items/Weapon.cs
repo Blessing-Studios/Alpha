@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System;
-using Blessing.Characters;
+using Blessing.Gameplay.Characters;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {

@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 2299523755292424415}
   - component: {fileID: 4503081129959420447}
   - component: {fileID: 2620648292840096135}
+  - component: {fileID: 8228401257819008161}
   - component: {fileID: 655986913388950610}
   - component: {fileID: 2259359815306742575}
   - component: {fileID: 2009963721499363617}
@@ -330,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2843726178
+  GlobalObjectIdHash: 4132590528
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 3
@@ -672,6 +673,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   AttackPressedTimerWindow: 0.2
+  actionList: {fileID: 0}
+  directionList: {fileID: 0}
+  <DamageAndPen>k__BackingField: {x: 0, y: 0}
+  <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
   SpawnLocation: {x: 0, y: 0, z: 0}
   ViewRange: 15
 --- !u!114 &2299523755292424415
@@ -690,6 +695,8 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   stateIndex:
     m_InternalValue: 1
+  comboMoveIndex:
+    m_InternalValue: {x: 0, y: 0}
 --- !u!114 &4503081129959420447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -724,6 +731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c15fa3ae0bd0e4cad31c66f732fcbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Attack: 0
   Strength: 0
   Constitution: 0
   Dexterity: 0
@@ -741,6 +749,22 @@ MonoBehaviour:
   Traits: []
   OnUpdateAllStats: {fileID: 11400000, guid: 492a29ef2224c8746b8d80563e24d76e, type: 2}
   OnUpdateStat: {fileID: 11400000, guid: af93a0ddc9b60fa42b245306d6aa318b, type: 2}
+--- !u!114 &8228401257819008161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69678fbecf5f5bd4b8ec8e14a7e60481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  statsMultiplier: 4
+  manaRegen: 1
+  manaRegenTime: 0.5
 --- !u!114 &655986913388950610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -782,6 +806,8 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
+  <MoveIndex>k__BackingField: 0
+  <ComboIndex>k__BackingField: 0
   combos:
   - {fileID: 11400000, guid: f8d096a5c0289fa4ba19f62f4eb3ed78, type: 2}
 --- !u!114 &2009963721499363617
@@ -817,6 +843,10 @@ MonoBehaviour:
     InventoryItem: {fileID: 0}
   BackpackSlotType:
     value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
+  BodyArmorSlotType:
+    value: {fileID: 0}
+  WeaponSlotType:
+    value: {fileID: 0}
   Inventory: {fileID: 0}
   EquipmentLocalList: []
   OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}

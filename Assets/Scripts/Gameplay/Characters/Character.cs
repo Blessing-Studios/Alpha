@@ -5,11 +5,11 @@ using System;
 using Unity.VisualScripting;
 using System.Collections.Generic;
 using Unity.Netcode.Components;
-using Blessing.Characters;
 using Blessing.Gameplay.TradeAndInventory;
 using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.Characters.InputActions;
 using Blessing.Gameplay.Characters.InputDirections;
+using Blessing.Gameplay.SkillsAndMagic;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -18,6 +18,7 @@ namespace Blessing.Gameplay.Characters
     [RequireComponent(typeof(CharacterHealth))]
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(CharacterGear))]
+    [RequireComponent(typeof(CharacterMana))]
     [RequireComponent(typeof(CharacterStats))]
     public abstract class Character : MonoBehaviour, IHitter, IHittable
     {
@@ -34,7 +35,8 @@ namespace Blessing.Gameplay.Characters
         public CharacterStateMachine CharacterStateMachine { get; protected set; }
         public CharacterHealth Health { get; protected set; }
         public CharacterGear Gear { get; protected set; }
-        public CharacterStats CharacterStats { get; protected set; }
+        public CharacterMana Mana { get; protected set; }
+        public CharacterStats Stats { get; protected set; }
         public CharacterController CharacterController { get; protected set; }
         public CharacterNetwork CharacterNetwork { get; protected set; }
         [field: SerializeField] protected InputActionList actionList;
@@ -44,7 +46,7 @@ namespace Blessing.Gameplay.Characters
         protected Dictionary<string, InputActionType> inputActionsDic = new();
         protected Dictionary<string, InputDirectionType> inputDirectionsDic = new();
         [field: SerializeField] public Vector2Int DamageAndPen { get; protected set; }
-        [field: SerializeField] public Vector2Int ArmourAndPenRes { get; protected set; }
+        [field: SerializeField] public Vector2Int DefenseAndPenRes { get; protected set; }
         [field: SerializeField] public List<IHittable> TargetList { get; private set; }
 
         public HitInfo HitInfo { get; protected set; }
@@ -97,7 +99,8 @@ namespace Blessing.Gameplay.Characters
             CharacterStateMachine = GetComponent<CharacterStateMachine>();
             Health = GetComponent<CharacterHealth>();
             Gear = GetComponent<CharacterGear>();
-            CharacterStats = GetComponent<CharacterStats>();
+            Mana = GetComponent<CharacterMana>();
+            Stats = GetComponent<CharacterStats>();
 
             CharacterController = GetComponent<CharacterController>();
 
@@ -177,8 +180,31 @@ namespace Blessing.Gameplay.Characters
 
             // Apply Armour Damage Reduction
 
+            // Subtrair Pen com PenRes
+            int armorPen = hitter.HitInfo.DamageClass - DefenseAndPenRes.y;
+
+            int damage = hitter.HitInfo.Damage;
+            int defense = DefenseAndPenRes.x;
+
+            if (armorPen < 0)
+            {
+                damage = (int) (damage * ( 1 - armorPen * 0.25f));
+                damage = damage < 0 ? 0 : damage;
+            }
+
+            if (armorPen > 0)
+            {
+                defense = (int) (defense * ( 1 - armorPen * 0.25f));
+                defense = defense < 0 ? 0 : defense;
+            }
+
+            int appliedDamage = damage - defense;
+            appliedDamage = appliedDamage < 0 ? 0 : appliedDamage;
+
+            Debug.Log(gameObject.name + ": appliedDamage - " + appliedDamage);
+
             //Receive Damage
-            Health.ReceiveDamage(hitter.HitInfo.Damage);
+            Health.ReceiveDamage(appliedDamage);
 
             int health = Health.CurrentHealth;
             if (health > 0)
@@ -253,7 +279,7 @@ namespace Blessing.Gameplay.Characters
 
             if (ShowDebug) Debug.Log(gameObject.name + ": OnAddEquipment");
 
-            CharacterStats.UpdateAllStats();
+            Stats.UpdateAllStats();
 
             CharacterEquipment characterEquipment = data as CharacterEquipment;
 
@@ -275,7 +301,7 @@ namespace Blessing.Gameplay.Characters
 
             if (ShowDebug) Debug.Log(gameObject.name + ": OnRemoveEquipment");
 
-            CharacterStats.UpdateAllStats();
+            Stats.UpdateAllStats();
 
             CharacterEquipment characterEquipment = data as CharacterEquipment;
 
@@ -290,8 +316,15 @@ namespace Blessing.Gameplay.Characters
         {
             if (component.gameObject != gameObject) return;
             
-            Health.SetHealthParameters(CharacterStats.Constitution);
+            // Update Health on Stats Change
+            Health.SetHealthParameters(Stats.Constitution);
+
+            // Update Damage and Defense on Stats Change
             DamageAndPen = Gear.GetWeaponDamageAndPen();
+            DefenseAndPenRes = Gear.GetArmorDefenseAndPen();
+
+            // Update Mana on Stats Change
+            Mana.SetManaParameters(Stats);
         }
     }
 }

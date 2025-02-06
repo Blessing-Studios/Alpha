@@ -11,7 +11,6 @@ namespace Blessing.Ai
     {
         [SerializeField] private Item[] items;
         [SerializeField] private Gear[] gears;
-        [SerializeField] private Backpack backpack;
 
         AiCharacter spawnedAiCharacter;
         protected NetworkVariable<int> m_TickToSpawnLoot = new NetworkVariable<int>();

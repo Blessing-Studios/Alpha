@@ -1,7 +1,6 @@
 using Blessing.Gameplay.TradeAndInventory;
 using Blessing.Gameplay.Characters;
 using UnityEngine;
-using Blessing.Characters;
 
 namespace Blessing.Player
 {
@@ -29,7 +28,7 @@ namespace Blessing.Player
         {
             if (HasAuthority)
             { 
-                GameManager.Singleton.InventoryController.PlayerStatsInfo.CharacterStats = character.CharacterStats;
+                GameManager.Singleton.InventoryController.PlayerStatsInfo.CharacterStats = character.Stats;
                 GameManager.Singleton.InventoryController.PlayerStatsInfo.Initialize();
 
                 if (Inventory != null)

@@ -18,7 +18,7 @@ MonoBehaviour:
   Height: 3
   Weight: 1
   Sprite: {fileID: -1390211479, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
-  Id: 5
+  Id: 6
   EquipmentType:
     value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
   Traits:

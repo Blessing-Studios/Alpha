@@ -1,5 +1,4 @@
 using System;
-using Blessing.Characters;
 using Blessing.Gameplay.Characters;
 using TMPro;
 using UnityEngine;
@@ -27,7 +26,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (CharacterStats == null)
             {
-                Debug.Log(gameObject.name + " CharacterStats is missing for non player characters");
+                // Debug.Log(gameObject.name + " CharacterStats is missing for non player characters");
                 return;
             }
 

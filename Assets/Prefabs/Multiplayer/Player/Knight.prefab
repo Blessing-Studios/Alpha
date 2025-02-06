@@ -347,11 +347,13 @@ GameObject:
   - component: {fileID: 8376207516185148171}
   - component: {fileID: 4936700350840750799}
   - component: {fileID: 1336789277861539600}
+  - component: {fileID: 4065250881899869995}
   - component: {fileID: 2620648292840096135}
+  - component: {fileID: 8228401257819008161}
   - component: {fileID: 655986913388950610}
   - component: {fileID: 2259359815306742575}
-  - component: {fileID: 4065250881899869995}
   - component: {fileID: -6873965126545705189}
+  - component: {fileID: 2959266363100497720}
   m_Layer: 3
   m_Name: Knight
   m_TagString: Player
@@ -735,6 +737,8 @@ MonoBehaviour:
   AttackPressedTimerWindow: 0.2
   actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
+  <DamageAndPen>k__BackingField: {x: 0, y: 0}
+  <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
   SpawnLocation: {x: 0, y: 0, z: 0}
   <Network>k__BackingField: {fileID: 0}
   canGiveInputs: 0
@@ -754,6 +758,8 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   stateIndex:
     m_InternalValue: 1
+  comboMoveIndex:
+    m_InternalValue: {x: 0, y: 0}
   OwnerName:
     m_InternalValue:
       utf8LengthInBytes: 0
@@ -817,6 +823,51 @@ MonoBehaviour:
   CanMove: 0
   canGiveInputs: 0
   <IsOffline>k__BackingField: 0
+--- !u!114 &4065250881899869995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce370b78f1603df4ab7742db0364c7a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  gold: 100
+  Equipments:
+  - Name: Helm
+    SlotType:
+      value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}
+    InventoryItem: {fileID: 0}
+  - Name: Chest
+    SlotType:
+      value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
+    InventoryItem: {fileID: 0}
+  - Name: Boots
+    SlotType:
+      value: {fileID: 11400000, guid: 0b813e2225fad4e4d9ae3ef58b410c5b, type: 2}
+    InventoryItem: {fileID: 0}
+  - Name: Weapon
+    SlotType:
+      value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
+    InventoryItem: {fileID: 0}
+  - Name: Back
+    SlotType:
+      value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
+    InventoryItem: {fileID: 0}
+  BackpackSlotType:
+    value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
+  BodyArmorSlotType:
+    value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
+  WeaponSlotType:
+    value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
+  Inventory: {fileID: 0}
+  EquipmentLocalList: []
+  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
+  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &2620648292840096135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -829,6 +880,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c15fa3ae0bd0e4cad31c66f732fcbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Attack: 0
   Strength: 0
   Constitution: 0
   Dexterity: 0
@@ -846,6 +898,26 @@ MonoBehaviour:
   Traits: []
   OnUpdateAllStats: {fileID: 0}
   OnUpdateStat: {fileID: 0}
+--- !u!114 &8228401257819008161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69678fbecf5f5bd4b8ec8e14a7e60481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  manaReserve:
+    manas: []
+  reserveMax:
+    manas: []
+  statsMultiplier: 5
+  manaRegen: 1
+  manaRegenTime: 0.5
 --- !u!114 &655986913388950610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -887,49 +959,10 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
+  <MoveIndex>k__BackingField: 0
+  <ComboIndex>k__BackingField: 0
   combos:
   - {fileID: 11400000, guid: f8d096a5c0289fa4ba19f62f4eb3ed78, type: 2}
---- !u!114 &4065250881899869995
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6028631068472643565}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce370b78f1603df4ab7742db0364c7a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  gold: 100
-  Equipments:
-  - Name: Helm
-    SlotType:
-      value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}
-    InventoryItem: {fileID: 0}
-  - Name: Chest
-    SlotType:
-      value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
-    InventoryItem: {fileID: 0}
-  - Name: Boots
-    SlotType:
-      value: {fileID: 11400000, guid: 0b813e2225fad4e4d9ae3ef58b410c5b, type: 2}
-    InventoryItem: {fileID: 0}
-  - Name: Weapon
-    SlotType:
-      value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
-    InventoryItem: {fileID: 0}
-  - Name: Back
-    SlotType:
-      value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
-    InventoryItem: {fileID: 0}
-  BackpackSlotType:
-    value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
-  Inventory: {fileID: 0}
-  EquipmentLocalList: []
-  OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
-  OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
 --- !u!114 &-6873965126545705189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -945,6 +978,27 @@ MonoBehaviour:
   InteractorSource: {fileID: 6370903744886762439}
   InteractRange: 2
   MaxDistance: 5
+--- !u!114 &2959266363100497720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8772b7e38b81b7f409bc79b3cc25e32d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  target: {fileID: 6370903744886762439}
+  fadedAlpha: 0.33
+  retainShadows: 1
+  targetPositionOffset: {x: 0, y: 1, z: 0}
+  fadeSpeed: 1
+  objectsBlockingView: []
 --- !u!1 &6737046069800503288
 GameObject:
   m_ObjectHideFlags: 0

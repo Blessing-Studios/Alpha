@@ -577,6 +577,8 @@ MonoBehaviour:
   AttackPressedTimerWindow: 0.2
   actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
+  <DamageAndPen>k__BackingField: {x: 0, y: 0}
+  <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
   SpawnLocation: {x: 0, y: 0, z: 0}
   ViewRange: 15
 --- !u!114 &2299523755292424415
@@ -595,6 +597,8 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   stateIndex:
     m_InternalValue: 1
+  comboMoveIndex:
+    m_InternalValue: {x: 0, y: 0}
 --- !u!114 &4503081129959420447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -650,6 +654,10 @@ MonoBehaviour:
     InventoryItem: {fileID: 0}
   BackpackSlotType:
     value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
+  BodyArmorSlotType:
+    value: {fileID: 0}
+  WeaponSlotType:
+    value: {fileID: 0}
   Inventory: {fileID: 0}
   EquipmentLocalList: []
   OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
@@ -685,6 +693,74 @@ MonoBehaviour:
   numActionsInQueue: 0
   Customer: {fileID: 0}
   <MinRange>k__BackingField: {x: 0, y: 0, z: 0}
+  reservedItemGuid:
+    utf8LengthInBytes: 0
+    bytes:
+      offset0000:
+        byte0000: 0
+        byte0001: 0
+        byte0002: 0
+        byte0003: 0
+        byte0004: 0
+        byte0005: 0
+        byte0006: 0
+        byte0007: 0
+        byte0008: 0
+        byte0009: 0
+        byte0010: 0
+        byte0011: 0
+        byte0012: 0
+        byte0013: 0
+        byte0014: 0
+        byte0015: 0
+      offset0016:
+        byte0000: 0
+        byte0001: 0
+        byte0002: 0
+        byte0003: 0
+        byte0004: 0
+        byte0005: 0
+        byte0006: 0
+        byte0007: 0
+        byte0008: 0
+        byte0009: 0
+        byte0010: 0
+        byte0011: 0
+        byte0012: 0
+        byte0013: 0
+        byte0014: 0
+        byte0015: 0
+      offset0032:
+        byte0000: 0
+        byte0001: 0
+        byte0002: 0
+        byte0003: 0
+        byte0004: 0
+        byte0005: 0
+        byte0006: 0
+        byte0007: 0
+        byte0008: 0
+        byte0009: 0
+        byte0010: 0
+        byte0011: 0
+        byte0012: 0
+        byte0013: 0
+        byte0014: 0
+        byte0015: 0
+      byte0048: 0
+      byte0049: 0
+      byte0050: 0
+      byte0051: 0
+      byte0052: 0
+      byte0053: 0
+      byte0054: 0
+      byte0055: 0
+      byte0056: 0
+      byte0057: 0
+      byte0058: 0
+      byte0059: 0
+      byte0060: 0
+      byte0061: 0
   reservedItem: {fileID: 0}
 --- !u!114 &5403675160440229388
 MonoBehaviour:
@@ -718,6 +794,8 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
+  <MoveIndex>k__BackingField: 0
+  <ComboIndex>k__BackingField: 0
   combos:
   - {fileID: 11400000, guid: 44ce49ae2cf51c94eabc66d0fcf161a4, type: 2}
 --- !u!114 &2620648292840096135
@@ -732,6 +810,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c15fa3ae0bd0e4cad31c66f732fcbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Attack: 0
   Strength: 0
   Constitution: 0
   Dexterity: 0
@@ -801,7 +880,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b16e29ad7a0ed049a8ad62e1f77a1a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <ShowDebug>k__BackingField: 1
+  <ShowDebug>k__BackingField: 0
   SensorUpdateTime: 2
   CloseEnemyList: []
   CloseAllyList: []

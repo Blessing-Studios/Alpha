@@ -65,7 +65,6 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private void InitializeItem(Item item)
         {
-            Debug.Log(gameObject.name + ": InitializeItem Item name - " + item.name);
             Item = item;
 
             GetComponent<Image>().sprite = item.Sprite;

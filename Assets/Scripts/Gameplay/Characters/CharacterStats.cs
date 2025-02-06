@@ -4,7 +4,7 @@ using Blessing.Core.GameEventSystem;
 using Blessing.Gameplay.Characters.Traits;
 using UnityEngine;
 
-namespace Blessing.Characters
+namespace Blessing.Gameplay.Characters
 {
     public enum Stat 
     {

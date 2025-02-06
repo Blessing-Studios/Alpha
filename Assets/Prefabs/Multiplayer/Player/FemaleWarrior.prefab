@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: Gravity
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 1336789277861539600, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSpeed
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1511698797570248328, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -60,6 +64,10 @@ PrefabInstance:
       propertyPath: OnUpdateAllStats
       value: 
       objectReference: {fileID: 11400000, guid: 492a29ef2224c8746b8d80563e24d76e, type: 2}
+    - target: {fileID: 2959266363100497720, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: layerMask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 4410562106461084563, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
@@ -74,7 +82,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5369011401359272698, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 1584435594
+      value: 410790043
       objectReference: {fileID: 0}
     - target: {fileID: 5369011401359272698, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash

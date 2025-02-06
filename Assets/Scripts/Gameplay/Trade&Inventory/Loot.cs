@@ -56,7 +56,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (!Inventory.InventoryGrid.IsOpen) return;
 
-            float maxDistance = (float ) (looter.CharacterStats.Dexterity + looter.CharacterStats.Luck) / 3;
+            float maxDistance = (float ) (looter.Stats.Dexterity + looter.Stats.Luck) / 3;
 
             float distance = Vector3.Distance(transform.position, looter.transform.position);
 

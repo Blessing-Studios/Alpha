@@ -12,6 +12,8 @@ using Blessing.Gameplay.HealthAndDamage;
 using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.TradeAndInventory;
 using NUnit.Framework;
+using Unity.Cinemachine;
+using Unity.VisualScripting;
 
 namespace Blessing.Player
 {

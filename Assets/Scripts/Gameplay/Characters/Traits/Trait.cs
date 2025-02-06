@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Blessing.Characters;
 using UnityEngine;
 
 namespace Blessing.Gameplay.Characters.Traits
