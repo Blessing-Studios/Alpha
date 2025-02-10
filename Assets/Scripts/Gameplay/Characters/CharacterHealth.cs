@@ -28,10 +28,13 @@ namespace Blessing.Gameplay.Characters
         public int CurrentHealth { get { return health.Value; }}
         [SerializeField] public int OriginalMaxHealth { get; private set; }
 
-        [Tooltip("Life Regeneration by time")]
-        [SerializeField] protected int lifeRegen = 1;
+        [Tooltip("Base Life Regeneration by time")] // TODO: Fazer life regen depender da mana verde
+        [SerializeField] protected int baseRegen = 1;
+        [Tooltip("Base Damage over Time")]
+        [SerializeField] protected int baseDecay = 0;
+        [Tooltip("Life Regeneration by time")][SerializeField] protected int regen;
         [Tooltip("Damage over Time")]
-        [SerializeField] protected int damageOverTime = 0;
+        [SerializeField] protected int decay;
         [Tooltip("Time to wait for health change ove time")]
         [SerializeField] protected float waitTime = 0.5f;
         [SerializeField] protected bool isAlive = true;
@@ -67,7 +70,7 @@ namespace Blessing.Gameplay.Characters
             StopAllCoroutines();
         }
 
-        public void SetHealthParameters(int constitution)
+        public void SetHealthParameters(int constitution, List<Trait> traits)
         {
             this.constitution = constitution;
             OriginalMaxHealth = woundHealth * constitution;
@@ -88,6 +91,16 @@ namespace Blessing.Gameplay.Characters
             {
                 Initialize();
                 isHealthInitialized = true;
+            }
+
+            regen = baseRegen;
+            decay = baseDecay;
+
+            // Apply Traits
+            foreach (Trait trait in traits)
+            {
+                regen += trait.GetHealthRegenChange();
+                decay += trait.GetHealthDecayChange();
             }
             
         }
@@ -211,8 +224,8 @@ namespace Blessing.Gameplay.Characters
             {
                 //Put your code before waiting here
 
-                ReceiveHeal(lifeRegen);
-                ReceiveBleed(damageOverTime);
+                ReceiveHeal(regen);
+                ReceiveBleed(decay);
 
                 yield return new WaitForSeconds(waitTime);
 

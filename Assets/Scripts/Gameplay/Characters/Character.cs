@@ -10,6 +10,7 @@ using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.Characters.InputActions;
 using Blessing.Gameplay.Characters.InputDirections;
 using Blessing.Gameplay.SkillsAndMagic;
+using System.Collections;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -47,6 +48,7 @@ namespace Blessing.Gameplay.Characters
         protected Dictionary<string, InputDirectionType> inputDirectionsDic = new();
         [field: SerializeField] public Vector2Int DamageAndPen { get; protected set; }
         [field: SerializeField] public Vector2Int DefenseAndPenRes { get; protected set; }
+        public List<Trait> Traits;
         [field: SerializeField] public List<IHittable> TargetList { get; private set; }
 
         public HitInfo HitInfo { get; protected set; }
@@ -272,14 +274,60 @@ namespace Blessing.Gameplay.Characters
         //     }
         // }
 
+        public bool AddTrait(Trait trait)
+        {
+            // Check if Trait can be added
+
+            Traits.Add(trait);
+            UpdateParameters();
+            return true;
+        }
+
+        public bool RemoveTrait(Trait trait)
+        {
+            // Check if Trait can be removed
+            
+            Traits.Remove(trait);
+            UpdateParameters();
+            return true;
+        }
+
+        public void ApplyBuff(Buff buff)
+        {
+            StartCoroutine(HandleBuff(buff));
+        }
+
+        private IEnumerator HandleBuff(Buff buff)
+        {
+            AddTrait(buff);
+
+            yield return new WaitForSeconds(buff.Duration);
+
+            RemoveTrait(buff);
+        }
+
+        public void UpdateParameters()
+        {
+            // Update Stats
+            Stats.UpdateAllStats(Traits);
+
+            // Update Health
+            Health.SetHealthParameters(Stats.Constitution, Traits);
+
+            // Update Damage and Defense
+            DamageAndPen = Gear.GetWeaponDamageAndPen(Traits);
+            DefenseAndPenRes = Gear.GetArmorDefenseAndPen(Traits);
+
+            // Update Mana
+            Mana.SetManaParameters(Stats, Traits);
+        }
+
         // GameEventListeners
         public void OnAddEquipment(Component component, object data)
         {
             if (component.gameObject != gameObject) return;
 
             if (ShowDebug) Debug.Log(gameObject.name + ": OnAddEquipment");
-
-            Stats.UpdateAllStats();
 
             CharacterEquipment characterEquipment = data as CharacterEquipment;
 
@@ -301,8 +349,6 @@ namespace Blessing.Gameplay.Characters
 
             if (ShowDebug) Debug.Log(gameObject.name + ": OnRemoveEquipment");
 
-            Stats.UpdateAllStats();
-
             CharacterEquipment characterEquipment = data as CharacterEquipment;
 
             if (characterEquipment.GearSlotType == Gear.BackpackSlot)
@@ -311,20 +357,6 @@ namespace Blessing.Gameplay.Characters
             }
 
             GameManager.Singleton.InventoryController.SyncGrids();
-        }
-        public void OnUpdateAllStats(Component component, object data)
-        {
-            if (component.gameObject != gameObject) return;
-            
-            // Update Health on Stats Change
-            Health.SetHealthParameters(Stats.Constitution);
-
-            // Update Damage and Defense on Stats Change
-            DamageAndPen = Gear.GetWeaponDamageAndPen();
-            DefenseAndPenRes = Gear.GetArmorDefenseAndPen();
-
-            // Update Mana on Stats Change
-            Mana.SetManaParameters(Stats);
         }
     }
 }

@@ -97,6 +97,11 @@ namespace Blessing
             {
                 GameDataManager.Singleton.SaveGame();
             }
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                InventoryController.ConsumeSelectedItem();
+            }
             
 
             time += Time.deltaTime;

@@ -329,6 +329,11 @@ namespace Blessing.Gameplay.TradeAndInventory
             return GameManager.Singleton.GetInventoryItem();
         }
 
+        private void ReleaseInventoryItem(InventoryItem inventoryItem)
+        {
+            GameManager.Singleton.ReleaseInventoryItem(inventoryItem);
+        }
+
         private void LeftMouseButtonPress() // Organizar
         {
             if (SelectedGrid == null && selectedItem != null)
@@ -402,6 +407,29 @@ namespace Blessing.Gameplay.TradeAndInventory
             inventoryItem.gameObject.SetActive(false);
 
             selectedItem = null;
+        }
+
+        public void ConsumeSelectedItem()
+        {
+            if (selectedItem == null) return;
+            
+            // Check if item can be consumed
+            Consumable consumable = selectedItem.Item as Consumable;
+            if (consumable == null) return;
+
+            // Apply item buff to Player Character
+            foreach (Buff buff in consumable.Buffs)
+            {
+                PlayerCharacter.ApplyBuff(buff);
+            }
+
+            // Send inventory Item back to pool
+            InventoryItem inventoryItem = selectedItem;
+            
+            ReleaseInventoryItem(inventoryItem);
+
+            selectedItem = null;
+
         }
     }
 }

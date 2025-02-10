@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     [CreateAssetMenu(fileName = "Item", menuName = "Scriptable Objects/Item")]
     public class Item : ScriptableObject
     {
+        [Header("Item Info")]
         public string Label;
         public int Value = 10;
         public int Width = 1;
@@ -19,10 +21,10 @@ namespace Blessing.Gameplay.TradeAndInventory
             //
         }
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         public void Awake()
         {
-            string[] guids = AssetDatabase.FindAssets("t:item", new[] {"Assets/Scripts/Items"});
+            string[] guids = AssetDatabase.FindAssets("t:item", new[] { "Assets/Items" });
 
             if (Id == 0)
                 Id = guids.Length;
@@ -30,10 +32,10 @@ namespace Blessing.Gameplay.TradeAndInventory
 
 
         [MenuItem("Blessing/GameData/Items/Generate Items Ids")]
-        static void GenerateItemsIds()
+        public static void GenerateItemsIds()
         {
             // Find all Texture2Ds that have 'co' in their filename, that are labelled with 'architecture' and are placed in 'MyAwesomeProps' folder
-            string[] guids = AssetDatabase.FindAssets("t:item", new[] {"Assets/Scripts/Items"});
+            string[] guids = AssetDatabase.FindAssets("t:item", new[] { "Assets/Items" });
 
             int incrementId = 1;
 
@@ -42,8 +44,8 @@ namespace Blessing.Gameplay.TradeAndInventory
                 Debug.Log(AssetDatabase.GUIDToAssetPath(guid));
 
                 string path = AssetDatabase.GUIDToAssetPath(guid);
-                Item item = (Item)AssetDatabase.LoadAssetAtPath(path, typeof(Item));
-                
+                Item item = (Item) AssetDatabase.LoadAssetAtPath(path, typeof(Item));
+
                 item.Id = incrementId;
 
                 Debug.Log(item.name + " New Id: " + incrementId);
@@ -53,12 +55,56 @@ namespace Blessing.Gameplay.TradeAndInventory
                 EditorUtility.SetDirty(item);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-
-                // Debug.Log("Create new Asset");
-                // yourObject = ScriptableObject.CreateInstance<Item>();
-                // AssetDatabase.CreateAsset(yourObject, @"Assets\SavedAsset.asset");
             }
         }
-        #endif
+
+        public static List<Dictionary<string, object>> GetItemsListFromCSV()
+        {
+            if (Selection.activeObject == null)
+            {
+                Debug.LogWarning("Need to Select a CSV file.");
+                return null;
+            };
+
+            string path = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), AssetDatabase.GetAssetPath(Selection.activeObject));
+
+            if (!IsCSVFile(path))
+            {
+                Debug.LogWarning("Not a CSV file.");
+                return null;
+            }
+
+            List<Dictionary<string, object>> rawCSVData = CSVReading.CSVReader.Read(path);
+
+            if (rawCSVData.Count == 0)
+            {
+                Debug.LogWarning("No entries read from CSV");
+                return null;
+            }
+
+            return rawCSVData;
+        }
+
+        static List<T> GetAll<T>() where T : Item
+        {
+            string typeName = typeof(T).Name;
+            string[] guids = AssetDatabase.FindAssets($"t:{typeName}", new[] { "Assets/Items" });
+
+            List<T> items = new();
+
+            foreach (string guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                items.Add((T) AssetDatabase.LoadAssetAtPath(path, typeof(T)));
+            }
+
+            return items;
+        }
+
+        private static bool IsCSVFile(string fullPath)
+        {
+            return fullPath.ToLower().EndsWith(".csv");
+        }
+#endif
     }
 }

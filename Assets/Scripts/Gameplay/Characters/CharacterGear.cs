@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Blessing.Core.GameEventSystem;
 using Blessing.Core.ScriptableObjectDropdown;
-using Blessing.Gameplay.Characters.Traits;
 using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.TradeAndInventory;
 using NUnit.Framework;
@@ -46,7 +45,6 @@ namespace Blessing.Gameplay.Characters
         [Header("Events")]
         public GameEvent OnAddEquipment;
         public GameEvent OnRemoveEquipment;
-        public CharacterStats Stats { get { return character.Stats; } }
         public CharacterStats GetStats()
         {
             return character.Stats;
@@ -260,7 +258,7 @@ namespace Blessing.Gameplay.Characters
             Gear gear = equipment.InventoryItem.Item as Gear;
             foreach (Trait trait in gear.Traits)
             {
-                character.Stats.AddTrait(trait);
+                character.AddTrait(trait);
             }
         }
 
@@ -271,7 +269,7 @@ namespace Blessing.Gameplay.Characters
             Gear gear = equipment.InventoryItem.Item as Gear;
             foreach (Trait trait in gear.Traits)
             {
-                character.Stats.RemoveTrait(trait);
+                character.RemoveTrait(trait);
             }
         }
 
@@ -330,7 +328,7 @@ namespace Blessing.Gameplay.Characters
         {
             Inventory = null;
         }
-        public Vector2Int GetWeaponDamageAndPen()
+        public Vector2Int GetWeaponDamageAndPen(List<Trait> traits)
         {
             Vector2Int defaultValue = new Vector2Int(character.Stats.Strength * 10, 0);
 
@@ -347,10 +345,15 @@ namespace Blessing.Gameplay.Characters
                 damage += character.Stats.GetStatValue(modifier.Stat) * modifier.Value;
             }
 
+            foreach (Trait trait in traits)
+            {
+                damage += trait.GetAttackChange();
+            }
+
             return new Vector2Int(damage, weapon.DamageClass);
         }
 
-        internal Vector2Int GetArmorDefenseAndPen()
+        internal Vector2Int GetArmorDefenseAndPen(List<Trait> traits)
         {
             Vector2Int defaultValue = new Vector2Int(character.Stats.Constitution * 10, 0);
 
@@ -365,6 +368,11 @@ namespace Blessing.Gameplay.Characters
             foreach(BodyArmorModifier modifier in bodyArmor.BodyArmorModifiers)
             {
                 defense += character.Stats.GetStatValue(modifier.Stat) * modifier.Value;
+            }
+
+            foreach (Trait trait in traits)
+            {
+                defense += trait.GetDefenseChange();
             }
 
             return new Vector2Int(defense, bodyArmor.ArmorClass);

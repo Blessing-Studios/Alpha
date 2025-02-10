@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Const+1
   m_EditorClassIdentifier: 
   Name: Const+1
-  StatChanges:
-  - Stat: 1
-    Value: 1
+  Label: 
+  Description: 
+  Effects: []

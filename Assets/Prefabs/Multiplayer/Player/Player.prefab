@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1058430401
+  GlobalObjectIdHash: 2519379525
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -77,6 +77,7 @@ MonoBehaviour:
   CharacterToSpawn: {fileID: 6907878382742480730, guid: e98472db6134ef84e8ec86d64f9a8e1b, type: 3}
   SpawnLocation: {x: 0, y: 0, z: 0}
   <PlayerCharacter>k__BackingField: {fileID: 0}
+  SpawnTime: 2
   PlayerName:
     m_InternalValue:
       utf8LengthInBytes: 0

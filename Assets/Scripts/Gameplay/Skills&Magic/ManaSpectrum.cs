@@ -32,9 +32,20 @@ namespace Blessing.Gameplay.SkillsAndMagic
 
                 return totalValue; 
             }
-        } 
+        }
 
-        public int GetValue( ManaColor color )
+        public Mana GetMana(ManaColor color)
+        {
+            foreach ( Mana mana in manas )
+            {
+                if ( mana.Color == color )
+                    return mana;
+            }
+
+            return manas[0];
+        }
+
+        public int GetValue(ManaColor color)
         {
             foreach ( Mana mana in manas )
             {
@@ -45,7 +56,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
             return 0;
         }
 
-        public void SetValue( ManaColor color, int value )
+        public void SetValue(ManaColor color, int value)
         {
             // Mana value can't be less than 0
             if (value < 0) value = 0;
@@ -54,6 +65,45 @@ namespace Blessing.Gameplay.SkillsAndMagic
             {
                 if ( manas[i].Color == color)
                     manas[i].Value = value;
+            }
+        }
+
+        public int GetRegen(ManaColor color)
+        {
+            foreach ( Mana mana in manas )
+            {
+                if ( mana.Color == color )
+                    return mana.Regen;
+            }
+
+            return 0;
+        }
+
+        public void SetRegen(ManaColor color, int regen)
+        {
+            for ( int i = 0; i < manas.Length; i++)
+            {
+                if ( manas[i].Color == color)
+                    manas[i].Regen = regen;
+            }
+        }
+        public int GetDecay(ManaColor color)
+        {
+            foreach ( Mana mana in manas )
+            {
+                if ( mana.Color == color )
+                    return mana.Decay;
+            }
+
+            return 0;
+        }
+
+        public void SetDecay(ManaColor color, int decay)
+        {
+            for ( int i = 0; i < manas.Length; i++)
+            {
+                if ( manas[i].Color == color)
+                    manas[i].Decay = decay;
             }
         }
     }

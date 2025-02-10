@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using Blessing.Core.GameEventSystem;
-using Blessing.Gameplay.Characters.Traits;
+using Unity.Properties;
 using UnityEngine;
 
 namespace Blessing.Gameplay.Characters
 {
     public enum Stat 
     {
-        Strength, 
-        Constitution, 
-        Dexterity, 
-        Intelligence, 
-        Wisdom, 
-        Charisma, 
+        Strength,
+        Constitution,
+        Dexterity,
+        Intelligence,
+        Wisdom,
+        Charisma,
         Luck
     }
     public class CharacterStats : MonoBehaviour
@@ -67,10 +67,7 @@ namespace Blessing.Gameplay.Characters
         public int BaseCharisma;
         [Tooltip("Measure force of luck, can influence the random events")]
         public int BaseLuck;
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-
-        [Header("Character Traits")]
-        public List<Trait> Traits;
+        public Trait[] Traits;
 
         [Header("Events")]
         public GameEvent OnUpdateAllStats;
@@ -78,18 +75,30 @@ namespace Blessing.Gameplay.Characters
 
         void Start()
         {
-            UpdateAllStats();
+            // UpdateAllStats();
         }
         public int GetStatValue(Stat stat)
         {
             return (int) GetType().GetField(stat.ToString()).GetValue(this);
         }
-        public void UpdateStat(Stat stat)
+
+        public void UpdateAllStats(List<Trait> traits)
         {
-            
+            foreach (Stat stat in Enum.GetValues(typeof(Stat)))
+            {
+                UpdateStat(stat, traits);
+            }
+
+            // Raise Events
+            if (OnUpdateAllStats != null)
+                OnUpdateAllStats.Raise(this);
+        }
+
+        public void UpdateStat(Stat stat, List<Trait> traits)
+        {
             int statValue = (int) GetType().GetField("Base" + stat.ToString()).GetValue(this);
 
-            foreach (Trait trait in Traits)
+            foreach (Trait trait in traits)
             {
                 statValue += trait.GetStatChange(stat);
             }
@@ -100,34 +109,5 @@ namespace Blessing.Gameplay.Characters
             if (OnUpdateStat != null)
                 OnUpdateStat.Raise(this, stat);
         }
-
-        public void UpdateAllStats()
-        {
-            foreach (Stat stat in Enum.GetValues(typeof(Stat)))
-            {
-                UpdateStat(stat);
-            }
-
-            // Raise Events
-            if (OnUpdateAllStats != null)
-                OnUpdateAllStats.Raise(this);
-        }
-
-        public bool AddTrait(Trait trait)
-        {
-            // Check if Trait can be added
-
-            Traits.Add(trait);
-            return true;
-        }
-
-        public bool RemoveTrait(Trait trait)
-        {
-            // Check if Trait can be removed
-            
-            Traits.Remove(trait);
-            return true;
-        }
-
     }
 }

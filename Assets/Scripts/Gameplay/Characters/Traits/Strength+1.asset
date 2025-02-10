@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Strength+1
   m_EditorClassIdentifier: 
   Name: Strength+1
-  StatChanges:
-  - Stat: 0
-    Value: 2
-  - Stat: 2
-    Value: 1
+  Label: 
+  Description: 
+  Effects:
+  - {fileID: 11400000, guid: 828a4a68eaba3d145a845f99afe7d1f9, type: 2}

@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: Charism+1
   m_EditorClassIdentifier: 
   Name: Charism+1
-  StatChanges:
-  - Stat: 5
-    Value: 2
-  - Stat: 6
-    Value: 1
+  Label: 
+  Description: 
+  Effects: []

@@ -56,18 +56,6 @@ PrefabInstance:
       propertyPath: m_text
       value: Owner Id
       objectReference: {fileID: 0}
-    - target: {fileID: 2620648292840096135, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: OnUpdateStat
-      value: 
-      objectReference: {fileID: 11400000, guid: af93a0ddc9b60fa42b245306d6aa318b, type: 2}
-    - target: {fileID: 2620648292840096135, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: OnUpdateAllStats
-      value: 
-      objectReference: {fileID: 11400000, guid: 492a29ef2224c8746b8d80563e24d76e, type: 2}
-    - target: {fileID: 2959266363100497720, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: layerMask.m_Bits
-      value: 128
-      objectReference: {fileID: 0}
     - target: {fileID: 4410562106461084563, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0

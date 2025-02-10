@@ -31,7 +31,6 @@ Transform:
   m_Children:
   - {fileID: 2660219163199609914}
   - {fileID: 4632989939359819636}
-  - {fileID: 7735924055635758396}
   m_Father: {fileID: 6370903744886762439}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1511698797570248328
@@ -268,66 +267,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!1 &4765076954880624606
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7735924055635758396}
-  - component: {fileID: 5610268648452784142}
-  m_Layer: 3
-  m_Name: OnUpdateAllStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7735924055635758396
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4765076954880624606}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1583196315626289370}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5610268648452784142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4765076954880624606}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc0a02ec4aba6a549a7caff2b62c61b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GameEvent: {fileID: 11400000, guid: 492a29ef2224c8746b8d80563e24d76e, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8376207516185148171}
-        m_TargetAssemblyTypeName: Blessing.Gameplay.Characters.Character, Assembly-CSharp
-        m_MethodName: OnUpdateAllStats
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &6028631068472643565
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,7 +294,7 @@ GameObject:
   - component: {fileID: -6873965126545705189}
   - component: {fileID: 2959266363100497720}
   m_Layer: 3
-  m_Name: Knight
+  m_Name: BaseChar
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -739,6 +678,7 @@ MonoBehaviour:
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
+  Traits: []
   SpawnLocation: {x: 0, y: 0, z: 0}
   <Network>k__BackingField: {fileID: 0}
   canGiveInputs: 0
@@ -896,8 +836,8 @@ MonoBehaviour:
   BaseCharisma: 5
   BaseLuck: 5
   Traits: []
-  OnUpdateAllStats: {fileID: 0}
-  OnUpdateStat: {fileID: 0}
+  OnUpdateAllStats: {fileID: 11400000, guid: 492a29ef2224c8746b8d80563e24d76e, type: 2}
+  OnUpdateStat: {fileID: 11400000, guid: af93a0ddc9b60fa42b245306d6aa318b, type: 2}
 --- !u!114 &8228401257819008161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -916,8 +856,8 @@ MonoBehaviour:
   reserveMax:
     manas: []
   statsMultiplier: 5
-  manaRegen: 1
-  manaRegenTime: 0.5
+  manaChange: 2
+  manaChangeTime: 0.5
 --- !u!114 &655986913388950610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -936,8 +876,10 @@ MonoBehaviour:
     m_InternalValue: 100
   constitution: 0
   maxHealth: 0
-  lifeRegen: 1
-  damageOverTime: 0
+  baseRegen: 1
+  baseDecay: 0
+  regen: 0
+  decay: 0
   waitTime: 0.5
   isAlive: 1
   <MaxWounds>k__BackingField: 0
@@ -992,7 +934,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   target: {fileID: 6370903744886762439}
   fadedAlpha: 0.33
   retainShadows: 1

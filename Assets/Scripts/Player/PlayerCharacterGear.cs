@@ -28,6 +28,7 @@ namespace Blessing.Player
         {
             if (HasAuthority)
             { 
+                GameManager.Singleton.InventoryController.PlayerCharacter = character as PlayerCharacter;
                 GameManager.Singleton.InventoryController.PlayerStatsInfo.CharacterStats = character.Stats;
                 GameManager.Singleton.InventoryController.PlayerStatsInfo.Initialize();
 
@@ -58,7 +59,6 @@ namespace Blessing.Player
             // If this is the Local Player, change PlayerInventoryGrid
             if (HasAuthority)
             { 
-                GameManager.Singleton.InventoryController.PlayerCharacter = character as PlayerCharacter;
                 GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
                 Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
             }

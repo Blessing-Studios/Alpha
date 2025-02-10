@@ -9,13 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17e48c604c7fdbc44919839bd4d195bb, type: 3}
-  m_Name: Potion
+  m_Script: {fileID: 11500000, guid: 86453d32483f8e14faa62807995d2d8a, type: 3}
+  m_Name: ManaRege+1
   m_EditorClassIdentifier: 
+  Name: Damage+10
   Label: 
-  Value: 5
-  Width: 1
-  Height: 2
-  Weight: 1
-  Sprite: {fileID: 21300000, guid: 8041233e0a2ed5448ac69ae24a07e7c5, type: 3}
-  Id: 11
+  Description: Teste
+  Effects:
+  - {fileID: 11400000, guid: 35db0ddab8de2e14cb64bedaf07e5bda, type: 2}
