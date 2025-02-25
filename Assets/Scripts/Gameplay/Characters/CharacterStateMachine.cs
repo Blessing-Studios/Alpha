@@ -31,9 +31,10 @@ namespace Blessing.Gameplay.Characters
         public NetworkAnimator NetworkAnimator { get; private set; }
         public CharacterController CharacterController { get; protected set; }
         public MovementController MovementController { get; protected set; }
-        [field: SerializeField] public int MoveIndex { get; set; }
-        [field: SerializeField] public int ComboIndex { get; set; }
-        public Move CurrentMove { get; set;}
+        public int ComboIndex { get { return ComboMoveIndex.x;} }
+        public int MoveIndex { get { return ComboMoveIndex.y;} }
+        [field: SerializeField] public Vector2Int ComboMoveIndex { get; set; }
+        [field: SerializeField] public Move CurrentMove { get; set;}
         [SerializeField] protected Combo[] combos;
 
         protected override void Awake()
@@ -78,6 +79,8 @@ namespace Blessing.Gameplay.Characters
             {
                 SetNextStateByIndex(Character.StateIndex);
             }
+
+            UpdateCurrentMove();
         }
 
         public new void SetNextStateToMain()
@@ -113,6 +116,7 @@ namespace Blessing.Gameplay.Characters
 
                 // Tenta achar um golpe considerando a ação e a direção do input
                 if (triggerAction == CurrentAction &&
+                    triggerDirection != null &&
                     triggerDirection.Name != "Any" &&
                     triggerDirection == CurrentDirectionAction)
                 {
@@ -132,7 +136,7 @@ namespace Blessing.Gameplay.Characters
 
                 // Caso o não consiga achar um golpe considerando a ação e a direção, tenta achar consierando apenas a ação
                 if (triggerAction == CurrentAction &&
-                    triggerDirection.Name == "Any")
+                    (triggerDirection == null || triggerDirection.Name == "Any"))
                 {
                     // MoveIndex = 0;
                     // ComboIndex = comboIndex;
@@ -147,9 +151,8 @@ namespace Blessing.Gameplay.Characters
 
         public void SetComboMoveIndex(int comboIndex, int moveIndex)
         {
-            ComboIndex = comboIndex;
-            MoveIndex = moveIndex;
-            Character.SetComboMoveIndex(ComboIndex, MoveIndex);
+            ComboMoveIndex = new Vector2Int(comboIndex, moveIndex);
+            Character.SetComboMoveIndex(ComboMoveIndex);
         }
 
         public Combo[] GetAllCombos()
@@ -157,12 +160,22 @@ namespace Blessing.Gameplay.Characters
             return combos;
         }
 
-        public void OnAnimationAttack()
-        {
-            AudioClip[] attackAudios = combos[ComboIndex].Moves[MoveIndex].AudioClips;
+        // public void OnAnimationAttack()
+        // {
+        //     AudioClip[] attackAudios = combos[ComboIndex].Moves[MoveIndex].AudioClips;
 
-            if (attackAudios.Length > 0)
-                AudioManager.Singleton.PlaySoundFx(attackAudios, transform);
+        //     if (combos[ComboIndex].Moves[MoveIndex].SkillSlot != 0)
+        //     {
+        //         // Trigger Skill
+        //     }
+
+        //     if (attackAudios.Length > 0)
+        //         AudioManager.Singleton.PlaySoundFx(attackAudios, transform);
+        // }
+
+        public void UpdateCurrentMove()
+        {
+            CurrentMove = combos[ComboMoveIndex.x].Moves[ComboMoveIndex.y];
         }
     }
 }

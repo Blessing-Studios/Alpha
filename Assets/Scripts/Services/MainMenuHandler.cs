@@ -8,8 +8,12 @@ namespace Blessing.Services
 {
     class MainMenuHandler : MonoBehaviour
     {
+        // [ScriptableObjectDropdown(typeof(SceneReference))] public ScriptableObjectReference SinglePlayerScene;
+        // private SceneReference singlePlayerScene { get { return SinglePlayerScene.value as SceneReference; } }
+        // public SceneReference FirstSinglePlayerScene { get { return singlePlayerScene;}}
         [ScriptableObjectDropdown(typeof(SceneReference))] public ScriptableObjectReference MultiplayerScene;
         private SceneReference multiplayerScene { get { return MultiplayerScene.value as SceneReference; } }
+        
         void Start()
         {
             GameplayEventHandler.OnConnectToSessionCompleted += OnConnectToSessionCompleted;

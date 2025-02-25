@@ -32,6 +32,8 @@ namespace Blessing.Ai
             spawnable.Init(this);
             m_IsRespawning.Value = false;
 
+            spawnedAiCharacter.Initialize();
+
             if (HasAuthority)
             {
                 StartCoroutine(WaitToSpawnGear());

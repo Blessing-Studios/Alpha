@@ -113,8 +113,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.12
-  m_Height: 0.68
+  m_Radius: 0.1
+  m_Height: 0.5
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2698016808825057512
@@ -317,6 +317,7 @@ Transform:
   - {fileID: 6931712906820337884}
   - {fileID: 4410562106461084563}
   - {fileID: 5143992474855496680}
+  - {fileID: 3334433750886424618}
   - {fileID: 1583196315626289370}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -627,9 +628,37 @@ MonoBehaviour:
     m_ActionId: 48864c35-1e89-4235-b54f-36e7e5c75417
     m_ActionName: 'Player/AttackHold[/Mouse/leftButton]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnSpecial
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 83e19d13-cf0d-4459-b966-ca83e2e41e73
     m_ActionName: 'Player/Special[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnHoldSpecial
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b2aceb90-75d6-4663-9e90-915795d9f064
+    m_ActionName: 'Player/HoldSpecial[/Mouse/rightButton]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -678,7 +707,10 @@ MonoBehaviour:
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
-  Traits: []
+  CharacterTraits: []
+  Skills: []
+  <ActiveSkill>k__BackingField: {fileID: 0}
+  <SkillOrigin>k__BackingField: {fileID: 6931712906820337884}
   SpawnLocation: {x: 0, y: 0, z: 0}
   <Network>k__BackingField: {fileID: 0}
   canGiveInputs: 0
@@ -700,6 +732,7 @@ MonoBehaviour:
     m_InternalValue: 1
   comboMoveIndex:
     m_InternalValue: {x: 0, y: 0}
+  TraitDataLocalList: []
   OwnerName:
     m_InternalValue:
       utf8LengthInBytes: 0
@@ -820,7 +853,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c15fa3ae0bd0e4cad31c66f732fcbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Attack: 0
   Strength: 0
   Constitution: 0
   Dexterity: 0
@@ -885,6 +917,7 @@ MonoBehaviour:
   <MaxWounds>k__BackingField: 0
   woundHealth: 25
   wounds: 0
+  OnReceiveDamage: {fileID: 0}
 --- !u!114 &2259359815306742575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -941,6 +974,37 @@ MonoBehaviour:
   targetPositionOffset: {x: 0, y: 1, z: 0}
   fadeSpeed: 1
   objectsBlockingView: []
+--- !u!1 &6275102321004740793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3334433750886424618}
+  m_Layer: 3
+  m_Name: ProjectileOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3334433750886424618
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6275102321004740793}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6370903744886762439}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6737046069800503288
 GameObject:
   m_ObjectHideFlags: 0

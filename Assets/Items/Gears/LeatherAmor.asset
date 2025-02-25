@@ -23,10 +23,9 @@ MonoBehaviour:
     value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
   Traits:
   - {fileID: 11400000, guid: 15bea58770d94cb4cbdf0b4f876975d1, type: 2}
-  - {fileID: 11400000, guid: 63e85b96a447e844587b50535aa2c106, type: 2}
   - {fileID: 11400000, guid: e8b59c76655bb3a428c784a1a866e1d9, type: 2}
   ArmorClass: 1
-  Defense: 50
+  Defense: 100
   BodyArmorModifiers:
   - Stat: 1
-    Value: 5
+    Value: 10

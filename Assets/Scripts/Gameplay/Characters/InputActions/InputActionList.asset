@@ -15,3 +15,4 @@ MonoBehaviour:
   InputActions:
   - {fileID: 11400000, guid: 3b288b8291134a14b9d62350cee0c014, type: 2}
   - {fileID: 11400000, guid: df30155075d255d43a986149f69875d9, type: 2}
+  - {fileID: 11400000, guid: fdcc0e9ac944fbb42a48e8f3dc2a131a, type: 2}

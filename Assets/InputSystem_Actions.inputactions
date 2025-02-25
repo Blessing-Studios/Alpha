@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "AttackHold",
+                    "name": "HoldAttack",
                     "type": "Button",
                     "id": "48864c35-1e89-4235-b54f-36e7e5c75417",
                     "expectedControlType": "",
@@ -45,6 +45,15 @@
                     "name": "Special",
                     "type": "Button",
                     "id": "83e19d13-cf0d-4459-b966-ca83e2e41e73",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "HoldSpecial",
+                    "type": "Button",
+                    "id": "b2aceb90-75d6-4663-9e90-915795d9f064",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -328,23 +337,12 @@
                 },
                 {
                     "name": "",
-                    "id": "b3c1c7f0-bd20-4ee7-a0f1-899b24bca6d7",
-                    "path": "<Keyboard>/enter",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "798d391a-813c-47df-ae32-9748eb2dd198",
                     "path": "<Gamepad>/buttonWest",
                     "interactions": "Hold",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "AttackHold",
+                    "action": "HoldAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -355,14 +353,14 @@
                     "interactions": "Hold",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "AttackHold",
+                    "action": "HoldAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "275d15a6-4790-4e94-99fc-77eb08ee19a3",
-                    "path": "<Gamepad>/buttonWest",
+                    "path": "<Gamepad>/buttonNorth",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
@@ -378,6 +376,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Special",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "99878da6-1f09-4a48-b894-ea2e13c02c02",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "HoldSpecial",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "61493d70-2d35-459e-b004-6f3c6ae8b9fc",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "HoldSpecial",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

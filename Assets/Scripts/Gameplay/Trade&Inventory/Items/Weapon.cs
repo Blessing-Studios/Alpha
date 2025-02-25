@@ -2,13 +2,12 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using Blessing.Gameplay.Characters;
-using UnityEditor.VersionControl;
 using System.Collections.Generic;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
     [Serializable]
-    public class WeaponModifier
+    public struct WeaponModifier
     {
         public Stat Stat;
         public int Value;
@@ -144,6 +143,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             weapon.WeaponModifiers = modifiers.ToArray();
             return weapon;
         }
-    }
+    
 #endif
+    }
 }

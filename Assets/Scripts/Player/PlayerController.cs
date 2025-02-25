@@ -121,7 +121,7 @@ namespace Blessing.Player
         {
             if (ShowDebug) Debug.Log("Entrou FindPlayerCharacter()");
             PlayerCharacter = GameManager.Singleton.PlayerCharactersDic[GetPlayerName()];
-            PlayerCharacter.GetOwnership();
+            PlayerCharacter.GetPlayerCharacterOwnership();
         }
 
         private void SpawnPlayerCharacter()
@@ -138,7 +138,7 @@ namespace Blessing.Player
             PlayerCharacter.SpawnLocation = SpawnLocation;
             PlayerCharacter.SetPlayerOwnerName(GetPlayerName());
 
-            PlayerCharacter.Initialize();
+            PlayerCharacter.InitializePlayerChar();
 
             m_TickToSpawnLoot.Value = SpawnTime;
 
@@ -219,7 +219,6 @@ namespace Blessing.Player
             playerData.Name = GetPlayerName();
 
             gears = new();
-
             foreach (CharacterEquipment equipment in PlayerCharacter.Gear.Equipments)
             {
                 if (equipment.InventoryItem != null)
@@ -228,12 +227,15 @@ namespace Blessing.Player
 
             playerData.Gears = gears;
 
+
+
             items = new();
 
-            foreach (InventoryItem inventoryItem in PlayerCharacter.Gear.Inventory.ItemList)
-            {
-                items.Add(inventoryItem.Data);
-            }
+            if (PlayerCharacter.Gear.Inventory != null)
+                foreach (InventoryItem inventoryItem in PlayerCharacter.Gear.Inventory.ItemList)
+                {
+                    items.Add(inventoryItem.Data);
+                }
 
             playerData.Items = items;
 

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb386f820726cf54a9abf4082e23f9ae, type: 3}
+  m_Name: FireBall
+  m_EditorClassIdentifier: 
+  Name: FireBall
+  Label: 
+  Description: 
+  Type: 2
+  Modifiers: []
+  Attack: 50
+  DamageClass: 1
+  Buffs:
+  - {fileID: 11400000, guid: 4818bba7395347949a7a09dc3da8c664, type: 2}
+  <AfterSkill>k__BackingField: {fileID: 11400000, guid: cacadd9ceb6a1894ba4cdaec7da93971, type: 2}
+  ManaCost:
+    manas:
+    - Color: 0
+      Value: 5
+      Regen: 0
+      Decay: 0
+    - Color: 3
+      Value: 5
+      Regen: 0
+      Decay: 0
+  projectilePrefab: {fileID: -7124258646236613839, guid: 5d487b4c40060e44baef7783b577d327, type: 3}
+  <Speed>k__BackingField: 15
+  <IsDestroyedOnHit>k__BackingField: 1
+  <LifeTime>k__BackingField: 3

@@ -11,6 +11,12 @@ using Blessing.Gameplay.Characters.InputActions;
 using Blessing.Gameplay.Characters.InputDirections;
 using Blessing.Gameplay.SkillsAndMagic;
 using System.Collections;
+using Blessing.Gameplay.Characters.States;
+using Blessing.Audio;
+using Blessing.Gameplay.Characters.Traits;
+using Blessing.VFX;
+using System.Linq;
+using UnityEngine.VFX;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -21,7 +27,7 @@ namespace Blessing.Gameplay.Characters
     [RequireComponent(typeof(CharacterGear))]
     [RequireComponent(typeof(CharacterMana))]
     [RequireComponent(typeof(CharacterStats))]
-    public abstract class Character : MonoBehaviour, IHitter, IHittable
+    public abstract class Character : MonoBehaviour, IHitter, IHittable, ISkillTrigger
     {
         protected string characterName;
         public string CharacterName
@@ -29,7 +35,7 @@ namespace Blessing.Gameplay.Characters
             get => characterName;
             protected set => characterName = value;
         }
-        
+
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public float AttackPressedTimerWindow = 0.2f;
         public MovementController MovementController { get; protected set; }
@@ -38,6 +44,7 @@ namespace Blessing.Gameplay.Characters
         public CharacterGear Gear { get; protected set; }
         public CharacterMana Mana { get; protected set; }
         public CharacterStats Stats { get; protected set; }
+        public Dictionary<Stat, int> ValueByStat { get { return Stats.ValueByStat;} }
         public CharacterController CharacterController { get; protected set; }
         public CharacterNetwork CharacterNetwork { get; protected set; }
         [field: SerializeField] protected InputActionList actionList;
@@ -48,8 +55,19 @@ namespace Blessing.Gameplay.Characters
         protected Dictionary<string, InputDirectionType> inputDirectionsDic = new();
         [field: SerializeField] public Vector2Int DamageAndPen { get; protected set; }
         [field: SerializeField] public Vector2Int DefenseAndPenRes { get; protected set; }
-        public List<Trait> Traits;
-        [field: SerializeField] public List<IHittable> TargetList { get; private set; }
+
+        // Unificar CharacterTraits e CharacterBuffs quando acabar de testar
+        public List<CharacterTrait> CharacterTraits = new();
+        
+         // Teste, temporário
+        public List<CharacterSkill> CharacterSkills;
+        [field: SerializeField] public Skill ActiveSkill { get; set; }
+        public HashSet<PassiveSkill> PassiveSkills = new();
+        [field: SerializeField] public Transform SkillOrigin { get; protected set; }
+        protected Vector3 skillDirection = Vector3.right;
+        public Vector3 SkillDirection { get { return skillDirection; }}
+        
+        public List<IHittable> TargetList { get; private set; }
 
         public HitInfo HitInfo { get; protected set; }
         // [field: SerializeField] protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(1,
@@ -57,9 +75,9 @@ namespace Blessing.Gameplay.Characters
 
         // public int StateIndex { get { return stateIndex.Value; }}
 
-        public int StateIndex 
-        { 
-            get 
+        public int StateIndex
+        {
+            get
             {
                 if (CharacterNetwork != null)
                     return CharacterNetwork.StateIndex;
@@ -69,30 +87,30 @@ namespace Blessing.Gameplay.Characters
         }
         public void SetStateIndex(int stateIndex) // Gambiarra para funcionar tanto online quanto offline
         {
-            if (CharacterNetwork != null) 
+            if (CharacterNetwork != null)
                 CharacterNetwork.SetStateIndex(stateIndex);
             else
                 this.stateIndex = stateIndex;
         }
 
-        public void SetComboMoveIndex(int comboIndex, int moveIndex)
+        public void SetComboMoveIndex(Vector2Int comboMoveIndex)
         {
             if (CharacterNetwork != null)
-                CharacterNetwork.SetComboMoveIndex(comboIndex, moveIndex);
+                CharacterNetwork.SetComboMoveIndex(comboMoveIndex);
         }
 
         private int stateIndex; // Offline StateIndex
         public Vector3 SpawnLocation;
 
-        public bool HasAuthority 
-        { 
-            get 
+        public bool HasAuthority
+        {
+            get
             {
                 if (CharacterNetwork != null)
                     return CharacterNetwork.HasAuthority;
                 else
                     return true;
-            } 
+            }
         }
 
         protected virtual void Awake()
@@ -123,7 +141,7 @@ namespace Blessing.Gameplay.Characters
             // stateIndex.Value = 0;
         }
 
-        protected virtual void Start() 
+        protected virtual void Start()
         {
             if (HasAuthority)
             {
@@ -131,18 +149,76 @@ namespace Blessing.Gameplay.Characters
                 CharacterController.transform.position = SpawnLocation;
                 CharacterController.enabled = true;
             }
+
+            // Invoke(nameof(Initialize), 2.0f);
         }
 
         public virtual void Initialize()
         {
-            //
+
+            if (ShowDebug) Debug.Log(gameObject.name + ": Initialize");
+
+            StopAllCoroutines();
+            StartCoroutine(ChangeByTime());
+
+            SynchTraits();
         }
 
+        private void SynchTraits()
+        {
+            CharacterTraits.Clear();
+            GameManager.Singleton.UpdateLocalList(ref CharacterNetwork.TraitDataLocalList, CharacterNetwork.TraitDataNetworkList);
+
+            foreach (TraitData traitData in CharacterNetwork.TraitDataLocalList)
+            {
+                foreach (Trait trait in GameManager.Singleton.AllTraits.Traits)
+                {
+                    if (trait.Id == traitData.TraitId)
+                    {
+                        Buff buff = trait as Buff;
+
+                        if (buff != null)
+                        {
+                            CharacterBuff characterBuff = new(buff) { Data = traitData };
+                            CharacterTraits.Add(characterBuff);
+                        }
+                        else
+                        {
+                            CharacterTrait characterTrait = new(trait) { Data = traitData };
+                            CharacterTraits.Add(characterTrait);
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            UpdateParameters();
+        }
+
+        public IEnumerator ChangeByTime()
+        {
+            while (Health.IsAlive)
+            {
+                if (HasAuthority)
+                {
+                    HandlePassiveSkills();
+                    HandleBuffs();
+                    Health.ChangeByTime();
+                    Mana.ChangeByTime();
+                }
+
+                yield return new WaitForSeconds(Mana.ChangeTime);
+
+                //Put code after waiting here
+
+                //You can put more yield return new WaitForSeconds(1); in one coroutine
+            }
+        }
         public void ClearTargetList()
         {
-            // if (!HasAuthority) return;
-            
-            TargetList.Clear();
+            if (HasAuthority)
+                CharacterNetwork.ClearTargetListRpc();
         }
 
         // [Rpc(SendTo.Everyone)]
@@ -153,7 +229,6 @@ namespace Blessing.Gameplay.Characters
 
         public virtual bool Hit(IHittable target)
         {
-
             if (target as Character == this)
             {
                 // Can't hit itself
@@ -167,7 +242,23 @@ namespace Blessing.Gameplay.Characters
             }
 
             // If CurrentMove is null, it will throw a error
-            HitInfo = new HitInfo(DamageAndPen.x, DamageAndPen.y);
+
+            // ApplySkill
+            if (ActiveSkill != null)
+            {
+                // Calculate damage from skill
+                int skillDamage = ActiveSkill.GetSkillDamage(Stats.ValueByStat);
+
+                // O dano soma com o do ataque normal e a Penetração é trocada pela pen da skill
+                HitInfo = new HitInfo(DamageAndPen.x + skillDamage, ActiveSkill.DamageClass, ActiveSkill.Buffs);
+
+                ActiveSkill = null;
+            }
+            else
+            {
+                HitInfo = new HitInfo(DamageAndPen.x, DamageAndPen.y);
+            }
+
             TargetList.Add(target);
 
             return true;
@@ -175,12 +266,19 @@ namespace Blessing.Gameplay.Characters
 
         public virtual void GotHit(IHitter hitter)
         {
+            if (ShowDebug) Debug.Log(gameObject.name + ": Entrou GotHit HitInfo Damage - " + hitter.HitInfo.Damage);
+
             if (!HasAuthority) return;
 
             // Por enquanto, não pode bater em characters mortos
             if (Health.IsDead) return;
 
-            // Apply Armour Damage Reduction
+            // Apply Skill buffs
+            if (hitter.HitInfo.Buffs != null)
+                foreach (Buff buff in hitter.HitInfo.Buffs)
+                {
+                    ApplyBuff(buff);
+                }
 
             // Subtrair Pen com PenRes
             int armorPen = hitter.HitInfo.DamageClass - DefenseAndPenRes.y;
@@ -190,20 +288,21 @@ namespace Blessing.Gameplay.Characters
 
             if (armorPen < 0)
             {
-                damage = (int) (damage * ( 1 - armorPen * 0.25f));
+                damage = (int)(damage * (1 - armorPen * 0.25f));
                 damage = damage < 0 ? 0 : damage;
             }
 
             if (armorPen > 0)
             {
-                defense = (int) (defense * ( 1 - armorPen * 0.25f));
+                defense = (int)(defense * (1 - armorPen * 0.25f));
                 defense = defense < 0 ? 0 : defense;
             }
 
             int appliedDamage = damage - defense;
-            appliedDamage = appliedDamage < 0 ? 0 : appliedDamage;
 
-            Debug.Log(gameObject.name + ": appliedDamage - " + appliedDamage);
+            if (ShowDebug) Debug.Log(gameObject.name + ": Entrou GotHit appliedDamage - " + appliedDamage);
+
+            appliedDamage = appliedDamage < 0 ? 0 : appliedDamage;
 
             //Receive Damage
             Health.ReceiveDamage(appliedDamage);
@@ -222,7 +321,7 @@ namespace Blessing.Gameplay.Characters
             MovementController.DisableMovement();
             MovementController.DisableCollision();
         }
-        public void GetOwnership()
+        public virtual void GetOwnership()
         {
             CharacterNetwork.GetOwnership();
         }
@@ -236,90 +335,189 @@ namespace Blessing.Gameplay.Characters
             return inputDirectionsDic[name];
         }
         public abstract bool CheckIfActionTriggered(string actionName);
-
-        // public void Interact(Interactor interactor)
-        // {
-        //     if (Health.IsAlive) return;
-
-        //     if (interactor.gameObject.TryGetComponent(out Character looter))
-        //     {
-        //         this.looter = looter;
-
-        //         Gear.Inventory.InventoryGrid.Inventory = Gear.Inventory;
-        //         if (!Gear.Inventory.InventoryGrid.IsOpen)
-        //         {
-        //             Gear.Inventory.GetOwnership();
-        //             Gear.Inventory.InventoryGrid.ToggleGrid();
-        //         }
-        //         else if (Gear.Inventory.InventoryGrid.IsOpen)
-        //         {
-        //             Gear.Inventory.InventoryGrid.ToggleGrid();
-        //         }
-        //     }
-        // }
-        // private void HandleStopInteraction()
-        // {
-        //     if (looter == null) return;
-
-        //     if (!Gear.Inventory.InventoryGrid.IsOpen) return;
-
-        //     float maxDistance = (float ) (looter.CharacterStats.Dexterity + looter.CharacterStats.Luck) / 3;
-
-        //     float distance = Vector3.Distance(transform.position, looter.transform.position);
-
-        //     if (distance > maxDistance)
-        //     {
-        //         looter = null;
-        //         Gear.Inventory.InventoryGrid.CloseGrid();
-        //     }
-        // }
-
-        public bool AddTrait(Trait trait)
+        public void AddTrait(Trait trait)
         {
+            if (ShowDebug) Debug.Log(gameObject.name + ": AddTrait trait name - " + trait.name);
             // Check if Trait can be added
+            if (!HasAuthority) return;
 
-            Traits.Add(trait);
-            UpdateParameters();
-            return true;
+            // Check if this Trade Can Stack
+            if (trait.CanStack == false)
+            {
+                foreach(CharacterTrait cTrait in CharacterTraits)
+                {
+                    if (cTrait.Trait == trait) return;
+                }
+            }
+
+            // Apply Visual Effect
+            if (trait.VisualEffect != null)
+            {   
+                // VisualEffectManager.Singleton.PlayVFX(buff.VisualEffect, transform.position);
+                VisualEffect visualEffect = Instantiate(trait.VisualEffect, transform.position, Quaternion.identity);
+            
+                visualEffect.Play();
+
+                Destroy(visualEffect.gameObject, visualEffect.GetFloat("LifeTime"));
+            }
+
+            TraitData data;
+
+            Buff buff = trait as Buff;
+            if (buff != null)
+            {
+                CharacterBuff characterBuff = new(buff);
+                CharacterTraits.Add(characterBuff);
+                data = characterBuff.Data;
+            }
+            else
+            {
+                CharacterTrait characterTrait = new(trait);
+                CharacterTraits.Add(characterTrait);
+                data = characterTrait.Data;
+            }
+
+            CharacterNetwork.TraitDataNetworkList.Add(data);
+            CharacterNetwork.TraitDataLocalList.Add(data);
+
+            UpdateParameters();   
         }
 
-        public bool RemoveTrait(Trait trait)
+        public void AddTrait(TraitData traitData)
         {
-            // Check if Trait can be removed
-            
-            Traits.Remove(trait);
+            foreach (Trait trait in GameManager.Singleton.AllTraits.Traits)
+            {
+                if (trait.Id == traitData.TraitId)
+                {
+                    Buff buff = trait as Buff;
+
+                    if (buff != null)
+                    {
+                        CharacterBuff characterBuff = new(buff) { Data = traitData };
+                        CharacterTraits.Add(characterBuff);
+                    }
+                    else
+                    {
+                        CharacterTrait characterTrait = new(trait) { Data = traitData };
+                        CharacterTraits.Add(characterTrait);
+                    }
+
+                    break;
+                }
+            }
+
             UpdateParameters();
-            return true;
+
+            if (!HasAuthority) return;
+
+            CharacterNetwork.TraitDataNetworkList.Add(traitData);
+            CharacterNetwork.TraitDataLocalList.Add(traitData);
+        }
+
+        public void RemoveTrait(Trait trait)
+        {
+            if (ShowDebug) Debug.Log(gameObject.name + ": RemoveTrait trait name - " + trait.name);
+
+            // Check if Trait can be removed
+            if (!HasAuthority) return;
+
+            // Melhorar lógica
+            Buff buff = trait as Buff;
+
+            TraitData dataToRemove;
+
+            CharacterTrait traitToRemove = CharacterTraits.Where(item => item.Trait == trait).OrderByDescending(item => item.Data.Duration).FirstOrDefault();
+
+            if (traitToRemove == null) return;
+
+            dataToRemove = traitToRemove.Data;
+            CharacterTraits.Remove(traitToRemove);
+
+            UpdateParameters();
+
+            CharacterNetwork.TraitDataNetworkList.Remove(dataToRemove);
+            CharacterNetwork.TraitDataLocalList.Remove(dataToRemove);
+        }
+        public void RemoveTrait(TraitData traitData)
+        {
+            int indexToRemove = -1;
+            for (int i = 0; i < CharacterTraits.Count; i++)
+            {
+                if (CharacterTraits[i].Data.Equals(traitData))
+                {
+                    indexToRemove = i;
+                }
+            }
+
+            CharacterTraits.RemoveAt(indexToRemove);
+
+            UpdateParameters();
+
+            if (!HasAuthority) return;
+
+            CharacterNetwork.TraitDataNetworkList.Remove(traitData);
+            CharacterNetwork.TraitDataLocalList.Remove(traitData);
         }
 
         public void ApplyBuff(Buff buff)
         {
-            StartCoroutine(HandleBuff(buff));
+            AddTrait(buff);          
         }
 
-        private IEnumerator HandleBuff(Buff buff)
+        private void HandleBuffs()
         {
-            AddTrait(buff);
+            if (CharacterTraits.OfType<CharacterBuff>().ToList().Count == 0) return;
 
-            yield return new WaitForSeconds(buff.Duration);
+            // Traits will have duration 0 as by default, so only Buffs will be subtract
+            CharacterTraits.ForEach(buff => { if (buff.Data.Duration > 0) buff.Data.Duration--; });
 
-            RemoveTrait(buff);
+            // Updating TraitDataNetworkList so it can subtract Duration
+            TraitData[] datas = CharacterNetwork.TraitDataLocalList.ToArray();
+            for (int i = 0; i < datas.Length; i++)
+            {
+                if (datas[i].Duration > 0)
+                {
+                    CharacterNetwork.TraitDataNetworkList.Remove(datas[i]);
+                    CharacterNetwork.TraitDataLocalList.Remove(datas[i]);
+
+                    datas[i].Duration--;
+
+                    CharacterNetwork.TraitDataNetworkList.Add(datas[i]);
+                    CharacterNetwork.TraitDataLocalList.Add(datas[i]);
+                }
+            }
+
+            List<CharacterBuff> buffsToRemove = CharacterTraits.OfType<CharacterBuff>().Where(buff => buff.Data.Duration <= 0).ToList();
+
+            List<TraitData> datasToRemove = new();
+            foreach (CharacterBuff characterBuff in buffsToRemove)
+            {
+                datasToRemove.Add(characterBuff.Data);
+                if (characterBuff.Buff.SideBuff != null)
+                    ApplyBuff(characterBuff.Buff.SideBuff);
+            }
+
+            foreach (TraitData data in datasToRemove)
+            {
+                RemoveTrait(data);
+            }
         }
 
         public void UpdateParameters()
         {
+            if (ShowDebug) Debug.Log(gameObject.name + ": UpdateParameters");
             // Update Stats
-            Stats.UpdateAllStats(Traits);
+            Stats.UpdateAllStats(CharacterTraits);
 
             // Update Health
-            Health.SetHealthParameters(Stats.Constitution, Traits);
+            Health.SetHealthParameters(Stats.Constitution, CharacterTraits);
 
             // Update Damage and Defense
-            DamageAndPen = Gear.GetWeaponDamageAndPen(Traits);
-            DefenseAndPenRes = Gear.GetArmorDefenseAndPen(Traits);
+            DamageAndPen = Gear.GetWeaponDamageAndPen(CharacterTraits);
+            DefenseAndPenRes = Gear.GetArmorDefenseAndPen(CharacterTraits);
 
             // Update Mana
-            Mana.SetManaParameters(Stats, Traits);
+            Mana.SetManaParameters(Stats, CharacterTraits);
         }
 
         // GameEventListeners
@@ -340,6 +538,8 @@ namespace Blessing.Gameplay.Characters
                 Gear.AddBackpack(inventoryItem);
             }
 
+            UpdateParameters();
+
             GameManager.Singleton.InventoryController.SyncGrids();
         }
 
@@ -356,7 +556,88 @@ namespace Blessing.Gameplay.Characters
                 Gear.RemoveBackpack();
             }
 
+            UpdateParameters();
+
             GameManager.Singleton.InventoryController.SyncGrids();
+        }
+
+        public void OnAnimationAttack()
+        {
+            // TODO: create logic to select Skill with combo
+            // if (!HasAuthority) return; 
+            
+            if (CharacterStateMachine.CurrentMove.CanUseSkill == true)
+            {
+                foreach (CharacterSkill characterSkill in CharacterSkills)
+                {
+                    if (characterSkill.IsActive && characterSkill.ComboMoveIndex == CharacterStateMachine.ComboMoveIndex)
+                    {
+                        HandleSkill(characterSkill.Skill);
+                    }
+                }   
+            }
+
+            // Handle Attack Sound
+            AudioClip[] attackAudios = CharacterStateMachine.CurrentMove.AudioClips;
+
+            if (attackAudios.Length > 0)
+                AudioManager.Singleton.PlaySoundFx(attackAudios, transform);
+        }
+
+        public void HandleSkill(Skill skill)
+        {
+            // Spent Mana to trigger skill
+            if (Mana.SpendManaSpectrum(skill.ManaCost))
+            {
+                skill.Trigger(this);
+
+                // Add/Remove Passive Skill
+                PassiveSkill activePassiveSkill = skill as PassiveSkill;
+                if (activePassiveSkill != null)
+                {
+                    if (!PassiveSkills.Add(activePassiveSkill))
+                    {
+                        PassiveSkills.Remove(activePassiveSkill);
+                        foreach(Buff buff in activePassiveSkill.Buffs)
+                        {
+                            RemoveTrait(buff);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void HandlePassiveSkills()
+        {
+            if (PassiveSkills.Count == 0) return;
+
+            // Debug.Log(gameObject.name + ": entrou HandlePassiveSkills -  PassiveSkills.Count" + PassiveSkills.Count);
+
+            foreach (PassiveSkill passive in PassiveSkills)
+            {
+                // Spend Mana
+
+                if (Mana.SpendManaSpectrum(passive.PassiveManaCost))
+                {
+                    foreach(Buff buff in passive.Buffs)
+                    {
+                        ApplyBuff(buff);
+                    }
+
+                    if (passive.AfterSkill != null)
+                        passive.AfterSkill.Trigger(this);
+                }
+                else
+                {
+                    PassiveSkills.Remove(passive);
+                    foreach(Buff buff in passive.Buffs)
+                    {
+                        RemoveTrait(buff);
+                    }
+                }
+            }
+
+            // Gastar mana e checar duração das passivas
         }
     }
 }

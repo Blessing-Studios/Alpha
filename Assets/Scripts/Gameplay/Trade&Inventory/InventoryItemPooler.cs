@@ -7,7 +7,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 {
     public class InventoryItemPooler : AbstractObjectPooler<InventoryItem>
     {
-        public GameObject InventoryItemPrefab { get { return GameManager.Singleton.InventoryItemPrefab; } }
+        public GameObject InventoryItemPrefab;
 
         protected override InventoryItem CreateObject()
         {

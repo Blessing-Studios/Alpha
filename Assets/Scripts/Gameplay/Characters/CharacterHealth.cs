@@ -6,6 +6,8 @@ using UnityEngine;
 using Unity.Netcode;
 using System;
 using NUnit.Framework;
+using Blessing.Gameplay.Characters.Traits;
+using Blessing.Core.GameEventSystem;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -18,8 +20,7 @@ namespace Blessing.Gameplay.Characters
         [Header("Health Settings")]
         [Tooltip("Current health points of the character.")]
         // [SerializeField] protected int health;
-        [SerializeField]
-        protected NetworkVariable<int> health = new NetworkVariable<int>(100,
+        [SerializeField] protected NetworkVariable<int> health = new NetworkVariable<int>(100,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         
         [SerializeField] protected int constitution;
@@ -37,13 +38,18 @@ namespace Blessing.Gameplay.Characters
         [SerializeField] protected int decay;
         [Tooltip("Time to wait for health change ove time")]
         [SerializeField] protected float waitTime = 0.5f;
-        [SerializeField] protected bool isAlive = true;
-        public bool IsAlive { get { return isAlive;}}
-        public bool IsDead { get { return !isAlive;}}
+        // [SerializeField] protected bool isAlive = true;
+        [SerializeField] protected NetworkVariable<bool> isAlive = new NetworkVariable<bool>(true,
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public bool IsAlive { get { return isAlive.Value;}}
+        public bool IsDead { get { return !isAlive.Value;}}
         // [SerializeField] protected int _maxWounds = 4;
         [field: SerializeField] public int MaxWounds { get; private set; }
         [SerializeField] protected int woundHealth = 25;
         [SerializeField] protected int wounds;
+
+        [Header("Events")]
+        public GameEvent OnReceiveDamage;
         private bool isHealthInitialized = false;
         // Wounds are the subDivision of the HeathPool, they are like block of health
         // If a character loose health equal to woundHealth, the character will loose Max health equal to woundHealth
@@ -62,7 +68,7 @@ namespace Blessing.Gameplay.Characters
         public override void OnNetworkSpawn()
         {
             health.OnValueChanged += OnNetworkHealthChanged;
-            StartCoroutine(ChangeLifeByTime());
+            // StartCoroutine(ChangeLifeByTime());
         }
         
         public override void OnNetworkDespawn()
@@ -70,7 +76,7 @@ namespace Blessing.Gameplay.Characters
             StopAllCoroutines();
         }
 
-        public void SetHealthParameters(int constitution, List<Trait> traits)
+        public void SetHealthParameters(int constitution, List<CharacterTrait> traits)
         {
             this.constitution = constitution;
             OriginalMaxHealth = woundHealth * constitution;
@@ -97,10 +103,10 @@ namespace Blessing.Gameplay.Characters
             decay = baseDecay;
 
             // Apply Traits
-            foreach (Trait trait in traits)
+            foreach (CharacterTrait characterTrait in traits)
             {
-                regen += trait.GetHealthRegenChange();
-                decay += trait.GetHealthDecayChange();
+                regen += characterTrait.Trait.GetHealthRegenChange();
+                decay += characterTrait.Trait.GetHealthDecayChange();
             }
             
         }
@@ -140,15 +146,17 @@ namespace Blessing.Gameplay.Characters
 
         public void SetCharacterAsAlive()
         {
-            StartCoroutine(ChangeLifeByTime());
-            isAlive = true;
+            // StartCoroutine(ChangeLifeByTime());
+            isAlive.Value = true;
         }
 
         public void SetCharacterAsDead()
         {
             StopAllCoroutines();
+
             if (HasAuthority) health.Value = 0;
-            isAlive = false;
+
+            isAlive.Value = false;
         }
 
         public void ReceiveDamage(int damageAmount)
@@ -179,6 +187,10 @@ namespace Blessing.Gameplay.Characters
             if (ShowDebug) Debug.Log(gameObject.name + " healthValue: " + healthValue);
 
             OnTakeDamage?.Invoke(this, EventArgs.Empty);
+
+            // Raise Events
+            if (OnReceiveDamage != null)
+                OnReceiveDamage.Raise(this, damageAmount);
         }
 
         public void HandleOnTakeDamage(object sender, System.EventArgs eventArgs)
@@ -220,7 +232,7 @@ namespace Blessing.Gameplay.Characters
         }
         public IEnumerator ChangeLifeByTime()
         {
-            while (isAlive)
+            while (IsAlive)
             {
                 //Put your code before waiting here
 
@@ -233,6 +245,11 @@ namespace Blessing.Gameplay.Characters
 
                 //You can put more yield return new WaitForSeconds(1); in one coroutine
             }
+        }
+        public void ChangeByTime()
+        {
+            ReceiveHeal(regen);
+            ReceiveBleed(decay);
         }
     }
 }

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51d38269a08f6d1429bc37bac53ad6b1, type: 3}
+  m_Name: BurnArea
+  m_EditorClassIdentifier: 
+  Name: AreaTeste
+  Label: 
+  Description: 
+  Type: 0
+  Modifiers: []
+  Attack: 55
+  DamageClass: 0
+  Buffs:
+  - {fileID: 11400000, guid: 4818bba7395347949a7a09dc3da8c664, type: 2}
+  <AfterSkill>k__BackingField: {fileID: 0}
+  ManaCost:
+    manas: []
+  Radius: 5
+  MaxTargets: 4
+  AreaEffect: {fileID: 6719624405347540645, guid: 2f5ea9e35d9c3f14f82fa139bf133017, type: 3}

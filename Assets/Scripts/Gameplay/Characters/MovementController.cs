@@ -1,13 +1,14 @@
 using UnityEngine;
 using Unity.Netcode;
+using Blessing;
 
 [RequireComponent(typeof(CharacterController))]
 public abstract class MovementController : NetworkBehaviour
 {
     // protected ClientNetworkTransform clientNetworkTransform;
     public float CharacterSpeed = 2.0f;
-    public float Gravity = -2.0f;
-    public float GroundedGravity = -0.5f;
+    public float Gravity;
+    public float GroundedGravity;
     public Vector3 AttackMovement = Vector3.zero;
     public Vector2 direction; // Talvez deletar essa variável
     protected bool canMove;
@@ -59,6 +60,10 @@ public abstract class MovementController : NetworkBehaviour
         speedHash = Animator.StringToHash("Speed");
 
         canMove = true;
+
+        GroundedGravity = GameManager.Singleton.GroundGravity;
+        Gravity = GameManager.Singleton.Gravity;
+
     }
 
     // Update is called once per frame
@@ -90,7 +95,7 @@ public abstract class MovementController : NetworkBehaviour
         if (characterController.isGrounded) 
             currentMovement.y = GroundedGravity;
         else 
-            currentMovement.y += Gravity * Time.deltaTime;
+            currentMovement.y = Gravity;
     }
 
     protected virtual void HandleMovement(bool canMove)
@@ -106,7 +111,12 @@ public abstract class MovementController : NetworkBehaviour
         direction.x = currentMovement.x;
         direction.y = currentMovement.z;
 
-        characterController.Move(currentMovement * Time.deltaTime * CharacterSpeed);
+        characterController.Move( new Vector3
+        (
+            currentMovement.x * Time.deltaTime * CharacterSpeed,
+            currentMovement.y,
+            currentMovement.z * Time.deltaTime * CharacterSpeed
+        ));
 
         characterSpeed = characterController.velocity.magnitude;
         animator.SetFloat(speedHash , characterController.velocity.magnitude);

@@ -4,13 +4,16 @@ using Blessing.Scene;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine.EventSystems;
-using UnityEngine.PlayerLoop;
 using Blessing.Gameplay.TradeAndInventory;
-using Unity.VisualScripting;
 using Unity.Netcode;
 using UnityEngine.Pool;
 using TMPro;
 using Blessing.GameData;
+using System;
+using Blessing.Gameplay.Characters.Traits;
+using Blessing.Gameplay.HealthAndDamage;
+using Blessing.Gameplay.SkillsAndMagic;
+using UnityEngine.VFX;
 
 namespace Blessing
 {
@@ -20,6 +23,7 @@ namespace Blessing
         public Camera MainCamera;
         public CinemachineCamera VirtualCamera;
         public TextMeshProUGUI FpsDisplay;
+        public TraitList AllTraits;
         public List<PlayerCharacter> PlayerCharacterList;
         [field: SerializeField] public List<PlayerController> PlayerList { get; private set; }
         public List<Transform> PlayerSpawnLocations;
@@ -27,11 +31,20 @@ namespace Blessing
         public Dictionary<string, PlayerCharacter> PlayerCharactersDic { get { return playerCharactersDic; } }
         public SceneStarter SceneStarter;
         public InventoryController InventoryController;
-        public InventoryItemPooler InventoryItemPooler;
-        public IObjectPool<InventoryItem> InventoryItemPool;
-        [field: SerializeField] public GameObject InventoryItemPrefab { get; private set; }
         [field: SerializeField] public NetworkObject ContainerPrefab { get; private set; }
         [field: SerializeField] public NetworkObject LooseItemPrefab { get; private set; }
+        [Header("Pooling")]
+        public InventoryItemPooler InventoryItemPooler;
+        public IObjectPool<InventoryItem> InventoryItemPool;
+        public DamageNumberPooler DamageNumberPooler;
+        public IObjectPool<DamageNumber> DamageNumberPool;
+        public ProjectilePooler ProjectilePooler;
+        public IObjectPool<Projectile> ProjectilePool;
+        [Header("Multiplayer")]
+        public bool PlayerConnected = false;
+        [Header("Misc")]
+        public float GroundGravity = -0.2f;
+        public float Gravity = -0.8f;
         protected virtual void Awake()
         {
             if (Singleton != null && Singleton != this)
@@ -65,7 +78,15 @@ namespace Blessing
             if (InventoryItemPooler == null)
                 Debug.LogError(gameObject.name + ": Missing InventoryItemPooler");
 
+            if (DamageNumberPooler == null)
+                Debug.LogError(gameObject.name + ": Missing DamageNumberPooler");
+
+            // if (ProjectilePooler == null)
+            //     Debug.LogError(gameObject.name + ": Missing ProjectilePooler");
+
             InventoryItemPool = InventoryItemPooler.Pool;
+            DamageNumberPool = DamageNumberPooler.Pool;
+            // ProjectilePool = ProjectilePooler.Pool;
         }
 
         private float pollingTime = 0.5f;
@@ -117,6 +138,12 @@ namespace Blessing
             
         }
 
+        public void OnClientConnected(ulong clientId)
+        {
+            Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
+            PlayerConnected = true;
+        }
+
         public void SetSelectedGameObject(GameObject gameObject)
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
@@ -136,23 +163,13 @@ namespace Blessing
         }
         public Vector3 GetPlayerSpawnPosition()
         {
-            int index = Random.Range(0, PlayerSpawnLocations.Count);
+            int index = UnityEngine.Random.Range(0, PlayerSpawnLocations.Count);
             return PlayerSpawnLocations[index].position;
         }
 
         public Transform GetPlayerSpawn(int index)
         {
             return PlayerSpawnLocations[index];
-        }
-
-        public InventoryItem GetInventoryItem()
-        {
-            return InventoryItemPool.Get();
-        }
-
-        public void ReleaseInventoryItem(InventoryItem inventoryItem)
-        {
-            InventoryItemPool.Release(inventoryItem);
         }
 
         internal InventoryItem FindInventoryItem(InventoryItemData data, bool createNew = true)
@@ -164,7 +181,7 @@ namespace Blessing
         {
             foreach(PlayerCharacter playerCharacter in PlayerCharacterList)
             {
-                playerCharacter.Initialize();
+                playerCharacter.InitializePlayerChar();
             }
 
             foreach (PlayerController player in PlayerList)
@@ -190,10 +207,10 @@ namespace Blessing
                 networkObject.ChangeOwnership(LocalClientId);
         }
 
-        public bool UpdateLocalList(ref List<InventoryItemData> localList, NetworkList<InventoryItemData> networkList)
+        public bool UpdateLocalList<T>(ref List<T> localList, NetworkList<T> networkList) where T : unmanaged, IEquatable<T>
         {
-            List<InventoryItemData> tempList = new();
-            foreach (InventoryItemData data in networkList)
+            List<T> tempList = new();
+            foreach (T data in networkList)
             {
                 tempList.Add(data);
             }
@@ -231,6 +248,37 @@ namespace Blessing
 
             return true;
         }
+
+        // ## ObjectPooling ##
+
+        public InventoryItem GetInventoryItem()
+        {
+            return InventoryItemPool.Get();
+        }
+
+        public void ReleaseInventoryItem(InventoryItem pooledObject)
+        {
+            InventoryItemPool.Release(pooledObject);
+        }
+
+        public DamageNumber GetDamageNumber(Vector3 position, int damage, float disappearTimer = 2f, float fadeOutSpeed = 1f, float moveUpSpeed = 1f)
+        {
+            return DamageNumberPool.Get().Initialize(position, damage, disappearTimer, fadeOutSpeed, moveUpSpeed);
+        }
+
+        public void ReleaseDamageNumber(DamageNumber pooledObject)
+        {
+            DamageNumberPool.Release(pooledObject);
+        }
+        // public Projectile GetProjectile()
+        // {
+        //     return ProjectilePool.Get();
+        // }
+
+        // public void ReleaseProjectile(Projectile pooledObject)
+        // {
+        //     ProjectilePool.Release(pooledObject);
+        // }
     }
 }
 

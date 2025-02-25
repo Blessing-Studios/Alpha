@@ -23,16 +23,52 @@ namespace Blessing.Gameplay.TradeAndInventory
         public bool CanInteract { get { return true; } }
         public override void OnNetworkSpawn()
         {
+            // If Player alrealdy connected, call InitializeLooseItem
+            if (GameManager.Singleton.PlayerConnected)
+                InitializeLooseItem();
+
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
+        }
+
+        private void OnClientConnectedCallback(ulong clientId)
+        {
+            if (NetworkManager.Singleton.LocalClientId == clientId)
+            {
+                InitializeLooseItem();
+            }
+        }
+
+        private void InitializeLooseItem()
+        {
             if (InventoryItem != null)
                 data.Value = InventoryItem.Data;
 
             if (InventoryItem == null)
             {
-                InitializeLooseItem();
+                if (HasAuthority)
+                {
+                    if (Item == null) Debug.LogError(gameObject.name + ": Item is missing");
+
+                    if (Item != null) // Item spawned from LooseItemSpawner Class
+                    {
+                        InventoryItem = GameManager.Singleton.InventoryController.CreateItem(Item);
+                    }
+
+                    data.Value = InventoryItem.Data;
+                }
+
+                if (!HasAuthority)
+                {
+                    InventoryItem = GameManager.Singleton.InventoryController.CreateItem(data.Value);
+
+                    if (InventoryItem == null)
+                    {
+                        Debug.LogError(gameObject.name + ": Não conseguiu criar InventoryItem");
+                    }
+                }
             }
 
             GetComponent<SpriteRenderer>().sprite = InventoryItem.Item.Sprite;
-
             GetComponent<SphereCollider>().radius = GetComponent<SpriteRenderer>().bounds.size.magnitude / 4;
 
             // Para debugar
@@ -45,31 +81,6 @@ namespace Blessing.Gameplay.TradeAndInventory
                 GuidText.gameObject.SetActive(false);
 
             InventoryItem.gameObject.SetActive(false);
-        }
-
-        private void InitializeLooseItem()
-        {
-            if (HasAuthority)
-            {
-                if (Item == null) Debug.LogError(gameObject.name + ": Item is missing");
-
-                if (Item != null) // Item spawned from LooseItemSpawner Class
-                {
-                    InventoryItem = GameManager.Singleton.InventoryController.CreateItem(Item);
-                }
-
-                data.Value = InventoryItem.Data;
-            }
-
-            if (!HasAuthority)
-            {
-                InventoryItem = GameManager.Singleton.InventoryController.CreateItem(data.Value);
-
-                if (InventoryItem == null)
-                {
-                    Debug.LogError(gameObject.name + ": Não conseguiu criar InventoryItem");
-                }
-            }
         }
         public void Interact(Interactor interactor)
         {

@@ -1,7 +1,7 @@
 using Blessing.Gameplay.Characters;
+using Blessing.Gameplay.Characters.Traits;
 using Blessing.Gameplay.TradeAndInventory.Containers;
 using Blessing.Player;
-using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Netcode;
@@ -25,7 +25,6 @@ namespace Blessing.Gameplay.TradeAndInventory
         public IGrid SelectedGrid;
 
         [SerializeField] public ItemList SpawnableItems;
-        public GameObject ItemPrefab { get { return GameManager.Singleton.InventoryItemPrefab; } }
         public NetworkObject LooseItemPrefab { get { return GameManager.Singleton.LooseItemPrefab; } }
         private Transform canvasTransform { get { return InventoryCanvas.transform; } }
         [SerializeField] private InventoryItem selectedItem;

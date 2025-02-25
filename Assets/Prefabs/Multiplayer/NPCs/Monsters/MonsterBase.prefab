@@ -29,6 +29,7 @@ Transform:
   m_LocalScale: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 315142650283635606}
   - {fileID: 2660219163199609914}
   - {fileID: 4632989939359819636}
   - {fileID: 9000417631202641727}
@@ -268,6 +269,52 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &4994416566072479034
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5125652765454616283}
+  - component: {fileID: 6807761231272755238}
+  m_Layer: 3
+  m_Name: DamageNumber
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5125652765454616283
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4994416566072479034}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.168, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6370903744886762439}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6807761231272755238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4994416566072479034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 292ce531602b3f640bfffdc838a5b7ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ShowDebug>k__BackingField: 1
+  owner: {fileID: 655986913388950610}
 --- !u!1 &6028631068472643565
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,6 +342,7 @@ GameObject:
   - component: {fileID: -6873965126545705189}
   - component: {fileID: 9197522367180269322}
   - component: {fileID: 5877992701568407557}
+  - component: {fileID: 8228401257819008161}
   m_Layer: 3
   m_Name: MonsterBase
   m_TagString: Monster
@@ -318,6 +366,7 @@ Transform:
   - {fileID: 6931712906820337884}
   - {fileID: 4410562106461084563}
   - {fileID: 5143992474855496680}
+  - {fileID: 5125652765454616283}
   - {fileID: 1583196315626289370}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -333,7 +382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3178431240
+  GlobalObjectIdHash: 397283245
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 3
@@ -517,6 +566,8 @@ MonoBehaviour:
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
+  CharacterTraits: []
+  Skills: []
   SpawnLocation: {x: 0, y: 0, z: 0}
   ViewRange: 15
 --- !u!114 &2299523755292424415
@@ -532,11 +583,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  <ShowDebug>k__BackingField: 0
+  <ShowDebug>k__BackingField: 1
   stateIndex:
     m_InternalValue: 1
   comboMoveIndex:
     m_InternalValue: {x: 0, y: 0}
+  TraitDataLocalList: []
 --- !u!114 &4503081129959420447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -714,13 +766,16 @@ MonoBehaviour:
     m_InternalValue: 100
   constitution: 0
   maxHealth: 0
-  lifeRegen: 0
-  damageOverTime: 0
+  baseRegen: 1
+  baseDecay: 0
+  regen: 0
+  decay: 0
   waitTime: 0.5
   isAlive: 1
   <MaxWounds>k__BackingField: 0
   woundHealth: 25
   wounds: 0
+  OnReceiveDamage: {fileID: 11400000, guid: 6fc6e6b241d183940ad504bd2b7324d6, type: 2}
 --- !u!114 &-6873965126545705189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -775,6 +830,87 @@ NavMeshAgent:
   m_BaseOffset: 0.17599998
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &8228401257819008161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69678fbecf5f5bd4b8ec8e14a7e60481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  manaReserve:
+    manas: []
+  reserveMax:
+    manas: []
+  statsMultiplier: 5
+  manaChange: 2
+  manaChangeTime: 0.5
+--- !u!1 &6340068001389868510
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 315142650283635606}
+  - component: {fileID: 3450079312327943165}
+  m_Layer: 3
+  m_Name: OnReceiveDamage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &315142650283635606
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6340068001389868510}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1583196315626289370}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3450079312327943165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6340068001389868510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc0a02ec4aba6a549a7caff2b62c61b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameEvent: {fileID: 11400000, guid: 6fc6e6b241d183940ad504bd2b7324d6, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6807761231272755238}
+        m_TargetAssemblyTypeName: Blessing.Gameplay.HealthAndDamage.DamageNumberHandler,
+          Assembly-CSharp
+        m_MethodName: OnReceiveDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6620107337957478008
 GameObject:
   m_ObjectHideFlags: 0

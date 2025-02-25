@@ -45,11 +45,11 @@ namespace Blessing.Gameplay.TradeAndInventory
         protected virtual void Awake()
         {
             InventoryNetworkList = new NetworkList<InventoryItemData>
-                (
-                    new List<InventoryItemData>(),
-                    NetworkVariableReadPermission.Everyone,
-                    NetworkVariableWritePermission.Owner
-                );
+            (
+                new List<InventoryItemData>(),
+                NetworkVariableReadPermission.Everyone,
+                NetworkVariableWritePermission.Owner
+            );
         }
         // Initialize Inventory, Where inventoryItem is the item containing this inventory
         public void SetNetworkVariables(int gridWidth, int gridHeight, InventoryItem inventoryItem = null)
@@ -174,7 +174,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (changeEvent.Type == NetworkListEvent<InventoryItemData>.EventType.Remove)
             {
-                for (int i = 0; i < ItemList.Count; i++)
+                for (int i = ItemList.Count - 1; i >= 0; i--)
                 {
                     InventoryItem item = ItemList[i];
                     if (item.Data.Id == changeEvent.Value.Id)

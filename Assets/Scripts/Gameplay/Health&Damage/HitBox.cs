@@ -103,7 +103,7 @@ namespace Blessing.Gameplay.HealthAndDamage
                 {
                     if (Owner.Hit(hurtBox.Owner))
                     {
-                        // Pegar informação do dano e mantar para o target
+                        // Pegar informação do dano e mandar para o target
                         hurtBox.Owner.GotHit(Owner);
                     }
                 }

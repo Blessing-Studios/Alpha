@@ -331,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4132590528
+  GlobalObjectIdHash: 2843726178
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 3
@@ -677,6 +677,10 @@ MonoBehaviour:
   directionList: {fileID: 0}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
+  Traits: []
+  CharacterTraits: []
+  CharacterBuffs: []
+  Skills: []
   SpawnLocation: {x: 0, y: 0, z: 0}
   ViewRange: 15
 --- !u!114 &2299523755292424415
@@ -697,6 +701,7 @@ MonoBehaviour:
     m_InternalValue: 1
   comboMoveIndex:
     m_InternalValue: {x: 0, y: 0}
+  TraitDataLocalList: []
 --- !u!114 &4503081129959420447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -762,9 +767,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  manaReserve:
+    manas: []
+  reserveMax:
+    manas: []
   statsMultiplier: 4
-  manaRegen: 1
-  manaRegenTime: 0.5
+  manaChange: 2
+  manaChangeTime: 0.5
 --- !u!114 &655986913388950610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -783,8 +792,10 @@ MonoBehaviour:
     m_InternalValue: 100
   constitution: 0
   maxHealth: 0
-  lifeRegen: 1
-  damageOverTime: 0
+  baseRegen: 1
+  baseDecay: 0
+  regen: 0
+  decay: 0
   waitTime: 0.5
   isAlive: 1
   <MaxWounds>k__BackingField: 0

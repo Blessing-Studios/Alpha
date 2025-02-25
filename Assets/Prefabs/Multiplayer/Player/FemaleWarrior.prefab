@@ -20,10 +20,6 @@ PrefabInstance:
       propertyPath: CharacterSpeed
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 1511698797570248328, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1646976488681774380, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Controller
       value: 
@@ -42,7 +38,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: combos.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: 'combos.Array.data[0]'
@@ -52,6 +48,14 @@ PrefabInstance:
       propertyPath: 'combos.Array.data[1]'
       value: 
       objectReference: {fileID: 11400000, guid: f32f5ba54cc1b9940a96fe0536a4cd31, type: 2}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: 'combos.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: f72dbf3a831984a45aa21489a88841ac, type: 2}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: 'combos.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 468d36430bfd6a74e84525993c6af3c4, type: 2}
     - target: {fileID: 2563118656107095010, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_text
       value: Owner Id
@@ -167,6 +171,58 @@ PrefabInstance:
     - target: {fileID: 6931712906820337884, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.006
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: Skills.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: 'Skills.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 0b35bd7dff00727448e840fb0c02c905, type: 2}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: <ShowDebug>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSkills.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterTraits.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSkills.Array.data[0].Skill
+      value: 
+      objectReference: {fileID: 11400000, guid: 8205196bfbd0fc148a20ec8bf648ac98, type: 2}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSkills.Array.data[1].Skill
+      value: 
+      objectReference: {fileID: 11400000, guid: 1c7fcc1fc9ee6cd44849e0de7e65c91e, type: 2}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSkills.Array.data[0].IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSkills.Array.data[1].IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSkills.Array.data[0].ComboMoveIndex.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSkills.Array.data[0].ComboMoveIndex.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSkills.Array.data[1].ComboMoveIndex.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterSkills.Array.data[1].ComboMoveIndex.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

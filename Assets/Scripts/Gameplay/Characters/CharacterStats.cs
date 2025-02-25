@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Blessing.Core.GameEventSystem;
+using Blessing.Gameplay.Characters.Traits;
 using Unity.Properties;
 using UnityEngine;
 
@@ -18,7 +19,15 @@ namespace Blessing.Gameplay.Characters
     }
     public class CharacterStats : MonoBehaviour
     {
-        public int Attack;
+        public Dictionary<Stat, int> ValueByStat = new() {
+            { Stat.Strength, 0 },
+            { Stat.Constitution, 0 },
+            { Stat.Dexterity, 0 },
+            { Stat.Intelligence, 0 },
+            { Stat.Wisdom, 0 },
+            { Stat.Charisma, 0 },
+            { Stat.Luck, 0 }
+        };
 
         [Header("Character Physical and Mental Attributes")]
         [Space(10)]
@@ -68,6 +77,10 @@ namespace Blessing.Gameplay.Characters
         [Tooltip("Measure force of luck, can influence the random events")]
         public int BaseLuck;
         public Trait[] Traits;
+        [Header("Sub-Stats")]
+
+        [Tooltip("Radius of passive skills and other distance check")]
+        public float AreaOfInfluence { get { return Charisma / 2.0f; }}
 
         [Header("Events")]
         public GameEvent OnUpdateAllStats;
@@ -82,7 +95,7 @@ namespace Blessing.Gameplay.Characters
             return (int) GetType().GetField(stat.ToString()).GetValue(this);
         }
 
-        public void UpdateAllStats(List<Trait> traits)
+        public void UpdateAllStats(List<CharacterTrait> traits)
         {
             foreach (Stat stat in Enum.GetValues(typeof(Stat)))
             {
@@ -94,16 +107,17 @@ namespace Blessing.Gameplay.Characters
                 OnUpdateAllStats.Raise(this);
         }
 
-        public void UpdateStat(Stat stat, List<Trait> traits)
+        public void UpdateStat(Stat stat, List<CharacterTrait> traits)
         {
             int statValue = (int) GetType().GetField("Base" + stat.ToString()).GetValue(this);
 
-            foreach (Trait trait in traits)
+            foreach (CharacterTrait characterTrait in traits)
             {
-                statValue += trait.GetStatChange(stat);
+                statValue += characterTrait.Trait.GetStatChange(stat);
             }
 
             GetType().GetField(stat.ToString()).SetValue(this, statValue);
+            ValueByStat[stat] = statValue;
 
             // Raise Events
             if (OnUpdateStat != null)

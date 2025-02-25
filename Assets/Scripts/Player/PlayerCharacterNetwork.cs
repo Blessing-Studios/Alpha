@@ -42,7 +42,7 @@ namespace Blessing.Player
             // Will set the values on the Clients that don't Have Authority
             if (HasAuthority) return;
 
-            PlayerCharacter.Initialize();
+            PlayerCharacter.InitializePlayerChar();
 
             // string ownerName = newValue.ToString();
 

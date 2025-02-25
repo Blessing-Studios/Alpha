@@ -240,7 +240,7 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   singlePlayerButton: {fileID: 1005815133}
   SinglePlayerScene:
-    value: {fileID: 11400000, guid: 3ade8dd594746db4a9781a057a8b4035, type: 2}
+    value: {fileID: 11400000, guid: e4afcdbd91bd92f49bce65bed4362104, type: 2}
   multiplayerButton: {fileID: 1589634251}
   multiplayerPanel: {fileID: 1028802672}
   optionsButton: {fileID: 546308407}
@@ -1965,7 +1965,7 @@ GameObject:
   - component: {fileID: 468666534}
   - component: {fileID: 468666533}
   m_Layer: 0
-  m_Name: MainMenuHandler
+  m_Name: MultiplayerMenuHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1984,7 +1984,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MultiplayerScene:
-    value: {fileID: 11400000, guid: 3ade8dd594746db4a9781a057a8b4035, type: 2}
+    value: {fileID: 11400000, guid: e4afcdbd91bd92f49bce65bed4362104, type: 2}
 --- !u!4 &468666534
 Transform:
   m_ObjectHideFlags: 0

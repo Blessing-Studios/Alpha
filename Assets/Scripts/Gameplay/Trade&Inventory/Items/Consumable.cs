@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.Characters;
+using Blessing.Gameplay.Characters.Traits;
 using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory

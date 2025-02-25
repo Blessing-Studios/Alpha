@@ -37,7 +37,6 @@ namespace Blessing.Gameplay.Interation
                     if (interactable.CanInteract == true)
                         interactables.Add(interactable);
                 }
-
             }
 
             IInteractable closest = GetClosest(InteractorSource.position, interactables);

@@ -87,20 +87,26 @@ namespace Blessing.Player
             base.Start();
         }
 
-        public override void Initialize()
+        public void InitializePlayerChar()
         {
             if (isPlayerCharacterInitialized) return;
 
             isPlayerCharacterInitialized = true;
 
-            base.Initialize();
-
             gameObject.name = "Char-" + GetPlayerOwnerName();
             GameManager.Singleton.AddPlayerCharacter(GetPlayerOwnerName(), this);
             canGiveInputs = GameDataManager.Singleton.ValidateOwner(GetPlayerOwnerName());
-            if (ShowDebug) Debug.Log(gameObject.name + ": Initialize");
+            if (ShowDebug) Debug.Log(gameObject.name + ": InitializePlayerChar");
         }
 
+        public void GetPlayerCharacterOwnership()
+        {
+            base.GetOwnership();
+        }
+        public override void GetOwnership()
+        {
+            // TODO: mudar lógica para não passar Ownership
+        }
         public void Update()
         {
             // PlayerOwnerName = OwnerName.Value.ToString(); // Mover para PlayerCharacterNetwork
@@ -109,14 +115,66 @@ namespace Blessing.Player
 
         public void OnAttack(InputAction.CallbackContext context)
         {
+            // if (!HasAuthority || !canGiveInputs) return;
+
+            // if (context.performed)
+            // {
+            //     TriggerAction = GetAction("Attack");
+            //     CharacterStateMachine.CharacterState.OnTrigger(TriggerAction, TriggerDirection);
+            // }
+
+            HandleActionInput(context);
+        }
+
+        public void OnSpecial(InputAction.CallbackContext context)
+        {
+            
+            // if (!HasAuthority || !canGiveInputs) return;
+
+            // // Checar se tem alguma Spell em quick spell slot
+
+            // // Caso não tenha um spell em quick spell, tratar special como trigger de combo
+            // if (context.performed)
+            // {
+            //     TriggerAction = GetAction("Special");
+            //     CharacterStateMachine.CharacterState.OnTrigger(TriggerAction, TriggerDirection);
+            // }
+
+            HandleActionInput(context);
+        }
+
+        public void OnHoldSpecial(InputAction.CallbackContext context)
+        {
+            // Precisa arrumar o Hold
+
+            // if (!HasAuthority || !canGiveInputs) return;
+
+            // // Checar se tem alguma Spell em quick spell slot
+
+            // // Caso não tenha um spell em quick spell, tratar special como trigger de combo
+            // if (context.performed)
+            // {
+            //     TriggerAction = GetAction("HoldSpecial");
+            //     CharacterStateMachine.CharacterState.OnTrigger(TriggerAction, TriggerDirection);
+            // }
+
+            HandleActionInput(context);
+        }
+
+        private void HandleActionInput(InputAction.CallbackContext context)
+        {
             if (!HasAuthority || !canGiveInputs) return;
 
+            // Checar se tem alguma Spell em quick spell slot
+
+            // Caso não tenha um spell em quick spell, tratar special como trigger de combo
             if (context.performed)
             {
-                TriggerAction = GetAction("Attack");
+                TriggerAction = GetAction(context.action.name);
                 CharacterStateMachine.CharacterState.OnTrigger(TriggerAction, TriggerDirection);
             }
         }
+        
         public void OnMove(InputAction.CallbackContext context)
         {
             if (!HasAuthority || !canGiveInputs) return;
@@ -168,6 +226,11 @@ namespace Blessing.Player
             if (HasAuthority && baseValue) target.GetOwnership();
 
             return baseValue;
+        }
+
+        public override void GotHit(IHitter hitter)
+        {
+            base.GotHit(hitter);
         }
     }
 }

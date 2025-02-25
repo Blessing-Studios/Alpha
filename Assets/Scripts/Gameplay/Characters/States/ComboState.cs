@@ -24,8 +24,10 @@ namespace Blessing.Gameplay.Characters.States
             character.ClearTargetList();
             
             combos = characterStateMachine.GetAllCombos();
-            moveIndex = characterStateMachine.MoveIndex;
-            comboIndex = characterStateMachine.ComboIndex;
+            
+            comboIndex = characterStateMachine.ComboMoveIndex.x;
+            moveIndex = characterStateMachine.ComboMoveIndex.y;
+            
             CurrentMove = combos[comboIndex].Moves[moveIndex];
 
             // Save move in characterStateMachine

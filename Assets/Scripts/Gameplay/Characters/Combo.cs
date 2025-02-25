@@ -4,6 +4,7 @@ using Blessing.Core.ScriptableObjectDropdown;
 using UnityEngine;
 using System;
 using Unity.Netcode;
+using Blessing.Gameplay.SkillsAndMagic;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -20,8 +21,7 @@ namespace Blessing.Gameplay.Characters
         [Tooltip("What direction button need to be pressed")][ScriptableObjectDropdown(typeof(InputDirectionType))] public ScriptableObjectReference Direction;
         [SerializeField] public InputDirectionType TriggerDirection { get { return Direction.value as InputDirectionType; } }
         [SerializeField] public float ExitEarlier = 0.1f;
-        [SerializeField] public int Damage = 10;
-        [SerializeField] public int Impulse = 60;
+        [SerializeField] public bool CanUseSkill = false; // Teste
     }
 
     [CreateAssetMenu(fileName = "Combo", menuName = "Scriptable Objects/Combo")]

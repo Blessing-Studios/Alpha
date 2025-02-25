@@ -1,13 +1,19 @@
 # Alpha
 
 ### Atual prioridade
-    Feito Fazer o sistema de status e equipamento
+    Sistema de Traits por equipamento quebrou, precisa arrumar
 
     Parece que foi resolvido !!Quando recarrega, o player reconectando pode pegar Autoridade de outros player characters
 
     Fazer sistema de pooling dos objetos online
 
     Criar sistema de interação mais complexo, para ter ter a opção de ter mais de um tipo de interação por objeto
+
+    Quando um Personagem morrer, desligar as principais funções para ele não pesar no processamento
+
+    Unificar o relógio interno do personagen para melhor controlar Buffs e Mana/Life Regen
+
+    Arrumar lógica de personagens acertarem/aplicarem buffs  outros personagens (IA e Player acertando uns aos outros)
 
     
 
@@ -41,6 +47,8 @@ Criar lógica para checar se item foi duplicado
 Arrumar a UI para funcionar em todas resoluções
 
 Quando um jogador cai e reconecta a vida buga, o personagem não regenera mais vida
+
+Personagens que já morreram bugam na Client do Player que entrou na partida depois que ele morreu
 
 No modo online, se um bot ataca alguém, os players não host mostram erro
 

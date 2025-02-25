@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    [CreateAssetMenu(fileName = "Item", menuName = "Scriptable Objects/Item")]
+    [CreateAssetMenu(fileName = "Item", menuName = "Scriptable Objects/Items/Item")]
     public class Item : ScriptableObject
     {
         [Header("Item Info")]

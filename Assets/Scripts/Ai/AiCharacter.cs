@@ -23,6 +23,15 @@ namespace Blessing.Ai
         {
             return true;
         }
+        public override bool Hit(IHittable target)
+        {
+            bool baseValue = base.Hit(target);
+
+            // A IA que bateu vai passar autoridade para o player que tomou o hit
+            if (!HasAuthority && target.HasAuthority && baseValue) GetOwnership();
+
+            return baseValue;
+        }
         public override void GotHit(IHitter hitter)
         {
             base.GotHit(hitter);
