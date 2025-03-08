@@ -77,7 +77,7 @@ MonoBehaviour:
   CharacterToSpawn: {fileID: 6907878382742480730, guid: e98472db6134ef84e8ec86d64f9a8e1b, type: 3}
   SpawnLocation: {x: 0, y: 0, z: 0}
   <PlayerCharacter>k__BackingField: {fileID: 0}
-  SpawnTime: 2
+  SpawnTime: 10
   PlayerName:
     m_InternalValue:
       utf8LengthInBytes: 0

@@ -15,6 +15,8 @@ namespace Blessing.Gameplay.SkillsAndMagic
         [field: SerializeField] public float LifeTime { get; protected set; }
         public override void Trigger(ISkillTrigger skillTrigger)
         {
+            base.Trigger(skillTrigger);
+            
             Projectile projectile = PoolManager.Singleton.Get(projectilePrefab) as Projectile;
             projectile.Initialize(this, skillTrigger);
         }

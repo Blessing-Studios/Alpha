@@ -16,7 +16,6 @@ namespace Blessing.Gameplay
 
             var spawnable = spawnedNetworkObject.GetComponent<ISpawnable>();
             spawnable.Init(this);
-            m_IsRespawning.Value = false;
         }
     }
 }

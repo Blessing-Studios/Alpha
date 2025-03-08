@@ -1,3 +1,4 @@
+using Blessing.Audio;
 using Blessing.Core.ObjectPooling;
 using UnityEngine;
 
@@ -9,9 +10,10 @@ namespace Blessing.Gameplay.SkillsAndMagic
         public float Radius = 2.0f;
         public int MaxTargets = 4;
         public AreaEffect AreaEffect;
-
         public override void Trigger(ISkillTrigger skillTrigger)
         {
+            base.Trigger(skillTrigger);
+            
             AreaEffect areaEffect = PoolManager.Singleton.Get(AreaEffect) as AreaEffect;
             areaEffect.Initialize(this, skillTrigger);
         }

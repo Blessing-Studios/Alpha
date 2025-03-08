@@ -21,7 +21,6 @@ namespace Blessing.UI
 
                 // TODO: validar playerName e sessionName
                 startButton.interactable = false;
-                GameDataManager.Singleton.PlayerName = playerName;
                 GameplayEventHandler.StartButtonPressed(playerName, sessionName);
             });
         }

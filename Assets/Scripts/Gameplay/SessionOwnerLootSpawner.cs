@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Blessing.GameData;
 using Blessing.Gameplay.TradeAndInventory;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Blessing.Gameplay
     {
         [SerializeField] private Item[] items;
         private Inventory lootInventory;
-        protected NetworkVariable<int> m_TickToSpawnLoot = new NetworkVariable<int>();
+        protected int m_TickToSpawnLoot;
         public int SpawnTime = 2;
         public override void Spawn()
         {
@@ -18,35 +19,32 @@ namespace Blessing.Gameplay
 
             spawnedNetworkObject.Spawn();
 
-            m_TickToSpawnLoot.Value = SpawnTime;
+            m_TickToSpawnLoot = SpawnTime;
 
             var spawnable = spawnedNetworkObject.GetComponent<ISpawnable>();
             spawnable.Init(this);
-            m_IsRespawning.Value = false;
 
             lootInventory = spawnedNetworkObject.GetComponent<Inventory>();
 
-            if (HasAuthority)
+            if (GameDataManager.Singleton.IsHost)
                 StartCoroutine(WaitToSpawnLoot());
         }
         IEnumerator WaitToSpawnLoot()
         {
-            yield return new WaitUntil(() => NetworkManager.NetworkTickSystem.ServerTime.Tick > m_TickToSpawnLoot.Value);
+            yield return new WaitUntil(() => NetworkManager.Singleton.NetworkTickSystem.ServerTime.Tick > m_TickToSpawnLoot);
 
             SpawnLoot();
         
             StopCoroutine(WaitToSpawnLoot());
         }
 
-        public override void OnNetworkDespawn()
+        public void OnDestroy()
         {
             StopAllCoroutines();
         }
 
         private void SpawnLoot()
         {
-            if (!HasAuthority) return;
-
             foreach(Item item in items)
             {
                 InventoryItem inventoryItem = GameManager.Singleton.GetInventoryItem();

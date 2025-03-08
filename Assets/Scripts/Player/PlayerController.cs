@@ -5,6 +5,7 @@ using Blessing.DataPersistence;
 using Blessing.GameData;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.TradeAndInventory;
+using Blessing.Gameplay.Transition;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,8 +20,16 @@ namespace Blessing.Player
         [field: SerializeField] public PlayerCharacter PlayerCharacter { get; private set; }
         protected NetworkVariable<int> m_TickToSpawnLoot = new NetworkVariable<int>();
         public int SpawnTime = 20;
-        private List<InventoryItemData> gears = new();
+        [field: SerializeField] private List<InventoryItemData> gears = new();
         private List<InventoryItemData> items = new();
+        [Header("Map Travel Info ")]
+        public NetworkList<MapTravelData> SceneSessionNetworkList = new NetworkList<MapTravelData>
+            (
+                new List<MapTravelData>(),
+                NetworkVariableReadPermission.Everyone,
+                NetworkVariableWritePermission.Owner
+            );
+        public List<MapTravelData> SceneSessionLocalList = new();
 
         public void SetPlayerCharacter(PlayerCharacter playerCharacter)
         {
@@ -49,15 +58,16 @@ namespace Blessing.Player
         {
             if (ShowDebug) Debug.Log(gameObject.name + " On Network Spawn");
             PlayerName.OnValueChanged += OnPlayerNameValueChanged;
+            SceneSessionNetworkList.OnListChanged += OnSceneSessionNetworkListChanged;
 
             // Initialization();
 
             // SetNetworkVariables(GameDataManager.Singleton.PlayerName);
         }
-
         public override void OnNetworkDespawn()
         {
             PlayerName.OnValueChanged -= OnPlayerNameValueChanged;
+            SceneSessionNetworkList.OnListChanged -= OnSceneSessionNetworkListChanged;
             StopAllCoroutines();
         }
 
@@ -65,17 +75,22 @@ namespace Blessing.Player
         {
             gameObject.name = "Player-" + newValue.ToString();
         }
+        private void OnSceneSessionNetworkListChanged(NetworkListEvent<MapTravelData> changeEvent)
+        {
+            GameDataManager.Singleton.UpdateSceneSessionDic(changeEvent.Value);
+
+            if (!UpdateLocalList(ref SceneSessionLocalList, SceneSessionNetworkList)) return;
+        }
+        protected bool UpdateLocalList(ref List<MapTravelData> localList, NetworkList<MapTravelData> networkList)
+        {
+            return GameManager.Singleton.UpdateLocalList(ref localList, networkList);
+        }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Awake()
         {
             if (ShowDebug) Debug.Log(gameObject.name + " Awake");
             GameManager.Singleton.AddPlayer(this);
-
-            // if (GameManager.Singleton.SceneStarter.HasStarted.Value)
-            // {
-            //     Initialization();
-            // }
         }
 
         void Start()
@@ -84,8 +99,10 @@ namespace Blessing.Player
             if (HasAuthority)
             {
                 // Teste DataSystem
+                
                 GameDataManager.Singleton.UpdatePersistenceObjectsList();
                 GameDataManager.Singleton.LoadGame();
+                GameManager.Singleton.PlayerController = this;
                 GameManager.Singleton.InitializePlayers();
             }
 
@@ -100,10 +117,12 @@ namespace Blessing.Player
 
                 if (GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetPlayerName()))
                 {
+                    Debug.Log(gameObject.name + ": Found Player");
                     FindPlayerCharacter();
                 }
                 else // This player doesn't have a Char in this session, Spawn a new Char
                 {
+                    Debug.Log(gameObject.name + ": Spawn Player");
                     SpawnPlayerCharacter();
                 }
 
@@ -167,32 +186,28 @@ namespace Blessing.Player
 
             GameDataManager.Singleton.LoadGame();
 
-            if (gears != null)
+            Debug.Log(gameObject.name + ": SpawnGear");
+
+            foreach (InventoryItemData gear in gears)
             {
-                foreach (InventoryItemData gear in gears)
-                {
-                    InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(gear);
+                InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(gear);
 
-                    PlayerCharacter.Gear.AddEquipment(inventoryItem);
-                    inventoryItem.transform.SetParent(PlayerCharacter.transform, false);
-                    inventoryItem.gameObject.SetActive(false);
-                }
+                PlayerCharacter.Gear.AddEquipment(inventoryItem);
+                inventoryItem.transform.SetParent(PlayerCharacter.transform, false);
+                inventoryItem.gameObject.SetActive(false);
             }
-
 
             Inventory lootInventory = PlayerCharacter.Gear.Inventory;
             if (lootInventory == null) return;
 
-            if (items != null)
+            
+            foreach (InventoryItemData item in items)
             {
-                foreach (InventoryItemData item in items)
-                {
-                    InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(item);
+                InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(item);
 
-                    lootInventory.AddItem(inventoryItem);
-                    inventoryItem.transform.SetParent(PlayerCharacter.transform, false);
-                    inventoryItem.gameObject.SetActive(false);
-                }
+                lootInventory.AddItem(inventoryItem);
+                inventoryItem.transform.SetParent(PlayerCharacter.transform, false);
+                inventoryItem.gameObject.SetActive(false);
             }
         }
 
@@ -253,6 +268,23 @@ namespace Blessing.Player
             items = playerData.Items;
 
             if (ShowDebug) Debug.Log(gameObject.name + " playerData.Name " + playerData.Name);
+        }
+
+        public void UpdateSceneSessionList(SceneReference scene, string session)
+        {
+            for (int i = 0; i < SceneSessionNetworkList.Count; i++)
+            {
+                if (SceneSessionNetworkList[i].Scene == scene.SceneName)
+                {
+                    SceneSessionNetworkList.RemoveAt(i);
+                    SceneSessionLocalList.RemoveAt(i);
+                    break;
+                }
+            }
+
+            MapTravelData data = new(scene.SceneName, session);
+            SceneSessionNetworkList.Add(data);
+            SceneSessionLocalList.Add(data);
         }
     }
 }

@@ -88,15 +88,22 @@ namespace Blessing.Gameplay.TradeAndInventory
         public bool PlaceItem(InventoryItem inventoryItem, Vector2Int position)
         {
             // Mudar quem tem autoridade para poder fazer a mudança online
+            Debug.Log(gameObject.name + ": PlaceItem 1 - " + inventoryItem.name);
 
             if (!CheckGearType(inventoryItem))
                 return false;
+
+            Debug.Log(gameObject.name + ": PlaceItem 2 - " + inventoryItem.name);
             
             if (!CheckAvailableSpace())
                 return false;
 
+            Debug.Log(gameObject.name + ": PlaceItem 3 - " + inventoryItem.name);
+
             if (!BoundaryCheck(position, inventoryItem.Width, inventoryItem.Height))
                 return false;
+
+            Debug.Log(gameObject.name + ": PlaceItem 4 - " + inventoryItem.name);
 
             //Rotate Item to the right side
             if (inventoryItem.Rotated)

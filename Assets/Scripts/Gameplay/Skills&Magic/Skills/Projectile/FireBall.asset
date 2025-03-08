@@ -15,7 +15,11 @@ MonoBehaviour:
   Name: FireBall
   Label: 
   Description: 
+  AudioClips:
+  - {fileID: 8300000, guid: edfabfb764216ef4d8af0e24578e661b, type: 3}
+  - {fileID: 8300000, guid: 6e9123060bd197641811b78f9c90c7b7, type: 3}
   Type: 2
+  ActiveSkillOnHit: 0
   Modifiers: []
   Attack: 50
   DamageClass: 1

@@ -315,6 +315,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 1
   owner: {fileID: 655986913388950610}
+  DamageNumberPrefab: {fileID: 7362988212876210717, guid: f1c32115ba5da82488c3697a5b1235d4, type: 3}
 --- !u!1 &6028631068472643565
 GameObject:
   m_ObjectHideFlags: 0
@@ -562,12 +563,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   AttackPressedTimerWindow: 0.2
+  characterHitAudios: []
   actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
   CharacterTraits: []
-  Skills: []
+  CharacterSkills: []
+  <ActiveSkill>k__BackingField: {fileID: 0}
+  <SkillOrigin>k__BackingField: {fileID: 0}
   SpawnLocation: {x: 0, y: 0, z: 0}
   ViewRange: 15
 --- !u!114 &2299523755292424415
@@ -714,8 +718,19 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
-  <MoveIndex>k__BackingField: 0
-  <ComboIndex>k__BackingField: 0
+  <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
+  <CurrentMove>k__BackingField:
+    Name: 
+    Description: 
+    AnimationClip: {fileID: 0}
+    AudioClips: []
+    AnimationParam: 
+    Action:
+      value: {fileID: 0}
+    Direction:
+      value: {fileID: 0}
+    ExitEarlier: 0.1
+    CanUseSkill: 0
   combos:
   - {fileID: 11400000, guid: 44ce49ae2cf51c94eabc66d0fcf161a4, type: 2}
 --- !u!114 &2620648292840096135
@@ -730,7 +745,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c15fa3ae0bd0e4cad31c66f732fcbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Attack: 0
   Strength: 0
   Constitution: 0
   Dexterity: 0
@@ -771,7 +785,8 @@ MonoBehaviour:
   regen: 0
   decay: 0
   waitTime: 0.5
-  isAlive: 1
+  isAlive:
+    m_InternalValue: 1
   <MaxWounds>k__BackingField: 0
   woundHealth: 25
   wounds: 0

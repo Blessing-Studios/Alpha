@@ -191,6 +191,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textMesh: {fileID: 1051196573611317387}
   textColor: {r: 1, g: 0.7647059, b: 0, a: 1}
-  disappearTimer: 0.5
-  fadeOutSpeed: 5
-  moveUpSpeed: 0
+  disappearTime: 1
+  fadeOutSpeed: 1
+  moveUpSpeed: 1

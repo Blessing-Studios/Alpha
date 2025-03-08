@@ -44,5 +44,14 @@ namespace Blessing.Core.ObjectPooling
             // TODO: Tratar erro caso não encontre o Pooler no Dic
             PoolerDic[pooledObject.name].Pool.Release(pooledObject);
         }
+
+        public void ClearAllPools()
+        {
+            // It will only clean the pools, not destroy the poolers
+            foreach(GenericObjectPooler pooler in Poolers)
+            {
+                pooler.Pool.Clear();
+            }
+        }
     }
 }

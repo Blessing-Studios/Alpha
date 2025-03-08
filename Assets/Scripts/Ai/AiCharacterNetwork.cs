@@ -12,7 +12,7 @@ namespace Blessing.Ai
 
         public void Init(SessionOwnerNetworkObjectSpawner spawner)
         {
-            m_SessionOwnerNetworkObjectSpawner.Value = new NetworkBehaviourReference(spawner);
+            
         }
     }
 }

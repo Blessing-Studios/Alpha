@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Blessing.Core;
+using Blessing.Core.ObjectPooling;
 using Blessing.GameData;
 using Unity.Netcode;
 using Unity.Services.Authentication;
@@ -8,11 +9,13 @@ using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using Unity.Services.Vivox;
 using UnityEngine;
+using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace Blessing.Services
 {
     class ServicesHelper : MonoBehaviour
     {
+        public static ServicesHelper Singleton { get; private set; }
         [SerializeField]
         bool m_InitiateVivoxOnAuthentication;
 
@@ -21,11 +24,20 @@ namespace Blessing.Services
         Task m_SessionTask;
 
         ISession m_CurrentSession;
+        public ISession CurrentSession { get { return m_CurrentSession;}}
         bool m_IsLeavingSession;
 
         void Awake()
         {
-            DontDestroyOnLoad(this);
+            if (Singleton != null && Singleton != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                Singleton = this;
+            }
         }
 
         async void Start()
@@ -41,9 +53,11 @@ namespace Blessing.Services
             NetworkManager.Singleton.OnClientStopped += OnClientStopped;
 
             GameplayEventHandler.OnStartButtonPressed += OnStartButtonPressed;
+            GameplayEventHandler.OnMapTravelTriggered += OnMapTravelTriggered;
             GameplayEventHandler.OnSinglePlayerButtonPressed += OnSinglePlayerButtonPressed;
             GameplayEventHandler.OnReturnToMainMenuButtonPressed += OnReturnToMainMenuButtonPressed;
             GameplayEventHandler.OnQuitGameButtonPressed += OnQuitGameButtonPressed;
+            GameplayEventHandler.OnExitedSession += OnExitedSession;
         }
 
         void OnClientStopped(bool obj)
@@ -59,9 +73,11 @@ namespace Blessing.Services
             }
 
             GameplayEventHandler.OnStartButtonPressed -= OnStartButtonPressed;
+            GameplayEventHandler.OnMapTravelTriggered -= OnMapTravelTriggered;
             GameplayEventHandler.OnSinglePlayerButtonPressed -= OnSinglePlayerButtonPressed;
             GameplayEventHandler.OnReturnToMainMenuButtonPressed -= OnReturnToMainMenuButtonPressed;
             GameplayEventHandler.OnQuitGameButtonPressed -= OnQuitGameButtonPressed;
+            GameplayEventHandler.OnExitedSession -= OnExitedSession;
         }
 
         async void OnStartButtonPressed(string playerName, string sessionName)
@@ -69,6 +85,51 @@ namespace Blessing.Services
             var connectTask = ConnectToSession(playerName, sessionName);
             await connectTask;
             GameplayEventHandler.ConnectToSessionComplete(connectTask);
+        }
+
+        async void OnMapTravelTriggered(string playerName, string sessionName, SceneReference scene)
+        {
+            // await Awaitable.WaitForSecondsAsync(1);
+
+            if (m_CurrentSession != null && !m_IsLeavingSession)
+            {
+                try
+                {
+                    m_IsLeavingSession = true;
+                    await m_CurrentSession.LeaveAsync();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                    throw;
+                }
+                finally
+                {
+                    m_IsLeavingSession = false;
+                    ExitedSession();
+                }
+            }
+
+            // Descarregar a scene anterior
+            // SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
+
+            // await Awaitable.WaitForSecondsAsync(1);
+            await UnitySceneManager.UnloadSceneAsync(SceneManager.Singleton.CurrentScene.SceneName);
+
+            // Connect to new session
+            // await Awaitable.WaitForSecondsAsync(1);
+            var connectTask = ConnectToSession(playerName, sessionName);
+            await connectTask;
+
+            // If host load new scene
+            // await Awaitable.WaitForSecondsAsync(2);
+            if (GameDataManager.Singleton.IsHost)
+            {
+                // Quando host carregar a cena, todos os clientes carregarão junto.
+                SceneManager.Singleton.LoadAsync(scene);
+            }            
+
+            GameplayEventHandler.ConnectToNewMapComplete(connectTask);
         }
 
         async void OnSinglePlayerButtonPressed(SceneReference scene)
@@ -98,6 +159,10 @@ namespace Blessing.Services
         {
             LeaveSession();
             Application.Quit();
+        }
+         void OnExitedSession()
+        {
+            GameManager.Singleton.ClearGameStates();
         }
 
         async void LeaveSession()
@@ -197,6 +262,7 @@ namespace Blessing.Services
             }
 
             await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
+            GameDataManager.Singleton.PlayerName = playerName;
 
             if (string.IsNullOrEmpty(sessionName))
             {
@@ -223,6 +289,7 @@ namespace Blessing.Services
 
                 Debug.Log("IsHost: " + m_CurrentSession.IsHost);
                 GameDataManager.Singleton.IsHost = m_CurrentSession.IsHost;
+
 
                 Debug.Log("MaxPlayers: " + m_CurrentSession.MaxPlayers);
             }

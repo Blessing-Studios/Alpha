@@ -11,10 +11,12 @@ namespace Blessing.Services
         internal static event Action<NetworkObject> OnNetworkObjectDespawned;
         internal static event Action<NetworkObject, ulong, ulong> OnNetworkObjectOwnershipChanged;
         internal static event Action<string, string> OnStartButtonPressed;
+        internal static event Action<string, string, SceneReference> OnMapTravelTriggered;
         internal static event Action<SceneReference> OnSinglePlayerButtonPressed;
         internal static event Action OnReturnToMainMenuButtonPressed;
         internal static event Action OnQuitGameButtonPressed;
         internal static event Action<Task> OnConnectToSessionCompleted;
+        internal static event Action<Task> OnConnectToNewMapCompleted;
         internal static event Action OnExitedSession;
 
         internal static void NetworkObjectDespawned(NetworkObject networkObject)
@@ -30,6 +32,11 @@ namespace Blessing.Services
         internal static void StartButtonPressed(string playerName, string sessionName)
         {
             OnStartButtonPressed?.Invoke(playerName, sessionName);
+        }
+
+        internal static void MapTravelTriggered(string playerName, string sessionName, SceneReference scene)
+        {
+            OnMapTravelTriggered?.Invoke(playerName, sessionName, scene);
         }
 
         internal static void SinglePlayerButtonPressed(SceneReference scene)
@@ -52,25 +59,13 @@ namespace Blessing.Services
             OnConnectToSessionCompleted?.Invoke(task);
         }
 
+        internal static void ConnectToNewMapComplete(Task task)
+        {
+            OnConnectToNewMapCompleted?.Invoke(task);
+        }
         internal static void ExitedSession()
         {
             OnExitedSession?.Invoke();
-        }
-
-        internal static void LoadMainMenuScene()
-        {
-            SceneReference mainMenu = new();
-            mainMenu .SceneName = "MainMenu";
-            SceneManager.Singleton.LoadAsync(mainMenu);
-        }
-
-        internal static void LoadInGameScene()
-        {
-            SceneReference prototype = new();
-            prototype.SceneName = "Prototype";
-
-            SceneManager.Singleton.LoadAsync(prototype); 
-            SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
         }
     }
 }

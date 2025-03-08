@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Blessing.Audio;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Characters.Traits;
 using UnityEngine;
@@ -29,7 +30,11 @@ namespace Blessing.Gameplay.SkillsAndMagic
         public string Name;
         public string Label;
         public string Description;
+        public AudioClip[] AudioClips = new AudioClip[] {};
+        public HitType HitType = HitType.Nothing;
         public SkillType Type;
+        [Tooltip("Damage and Pen of this skill will be applied in the next hit")]
+        public bool ActiveSkillOnHit = false;
         // public SkillTrigger Trigger;
         public SkillModifier[] Modifiers;
         public int Attack = 0;
@@ -40,7 +45,11 @@ namespace Blessing.Gameplay.SkillsAndMagic
 
         public virtual void Trigger(ISkillTrigger skillTrigger)
         {
-            skillTrigger.ActiveSkill = this;
+            if (ActiveSkillOnHit)
+                skillTrigger.ActiveSkill = this;
+
+            if (AudioClips.Length > 0)
+                AudioManager.Singleton.PlaySoundFx(AudioClips, skillTrigger.SkillOrigin);
         }
 
         public virtual int GetSkillDamage(Dictionary<Stat, int> stats)

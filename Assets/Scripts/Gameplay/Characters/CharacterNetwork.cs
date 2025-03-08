@@ -3,6 +3,7 @@ using Unity.Netcode;
 using System;
 using Blessing.Gameplay.Characters.Traits;
 using System.Collections.Generic;
+using UnityEngine.VFX;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -68,10 +69,20 @@ namespace Blessing.Gameplay.Characters
             if (GameManager.Singleton.PlayerConnected)
                 Character.Initialize();
         }
+        public override void OnNetworkDespawn()
+        {
+            Debug.Log(gameObject.name + ": OnNetworkDespawn");
+
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+            stateIndex.OnValueChanged -= OnNetworkStateIndexChanged;
+            comboMoveIndex.OnValueChanged -= OnNetworkComboMoveIndexChanged;
+            TraitDataNetworkList.OnListChanged -= OnTraitDataNetworkListChanged;
+        }
 
         private void OnClientConnectedCallback(ulong clientId)
         {
-            if (NetworkManager.Singleton.LocalClientId == clientId)
+            Debug.Log(gameObject.name + ": OnClientConnectedCallback");
+            if (NetworkManager.Singleton.LocalClientId == clientId && GameManager.Singleton.PlayerConnected)
             {
                 Character.Initialize();
             }
@@ -162,6 +173,20 @@ namespace Blessing.Gameplay.Characters
         public void ClearTargetListRpc()
         {
             Character.TargetList.Clear();
+        }
+
+        [Rpc(SendTo.Everyone)]
+        public void HandleTraitVisualEffectRpc(int traitId)
+        {
+            Trait trait = Character.GetTrait(traitId);
+            
+            if (trait == null) return;
+
+            VisualEffect visualEffect = Instantiate(trait.VisualEffect, transform.position, Quaternion.identity);
+            
+            visualEffect.Play();
+
+            Destroy(visualEffect.gameObject, visualEffect.GetFloat("LifeTime"));
         }
     }
 }

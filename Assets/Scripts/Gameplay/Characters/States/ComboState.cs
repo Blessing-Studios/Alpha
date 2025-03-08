@@ -58,6 +58,7 @@ namespace Blessing.Gameplay.Characters.States
             movementController.HandleAttackMovment();
 
             string nextComboAction = "";
+
             if (moveIndex + 1 < combos[comboIndex].Moves.Length)
             {
                 nextComboAction = combos[comboIndex].Moves[moveIndex + 1].TriggerAction.Name;

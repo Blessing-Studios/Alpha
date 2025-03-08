@@ -39,6 +39,8 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             int incrementId = 1;
 
+            List<Item> items = new();
+
             foreach (string guid in guids)
             {
                 Debug.Log(AssetDatabase.GUIDToAssetPath(guid));
@@ -50,12 +52,42 @@ namespace Blessing.Gameplay.TradeAndInventory
 
                 Debug.Log(item.name + " New Id: " + incrementId);
 
+                items.Add(item);  
+
                 incrementId += 1;
 
                 EditorUtility.SetDirty(item);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }
+
+            // Update AllItems List
+
+            // Try to get All Items list
+            string[] allItemsGuids = AssetDatabase.FindAssets("t:ItemList AllItems", new[] { "Assets/Items" });
+
+            ItemList allItemList;
+
+            if (allItemsGuids.Length == 0)
+            {
+                Debug.Log("ItemList AllItems was created");
+                
+                string path = $"Assets/Items/AllItems.asset";
+                allItemList = CreateInstance<ItemList>();
+                allItemList.Description = "Lista com todos os items do jogo";
+                AssetDatabase.CreateAsset(allItemList, path);
+            }
+            else
+            {
+                Debug.Log("AllItems was updated");
+                string pathAllITemList = AssetDatabase.GUIDToAssetPath(allItemsGuids[0]);
+                allItemList = (ItemList) AssetDatabase.LoadAssetAtPath(pathAllITemList, typeof(ItemList));
+            }
+
+            allItemList.Items = items.ToArray();
+            EditorUtility.SetDirty(allItemList);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
 
         public static List<Dictionary<string, object>> GetItemsListFromCSV()

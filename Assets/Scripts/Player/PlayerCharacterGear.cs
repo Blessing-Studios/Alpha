@@ -48,7 +48,7 @@ namespace Blessing.Player
         {
             Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
             GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
-            Inventory.InventoryGrid.Owner = this.gameObject;
+            Inventory.InventoryGrid.Owner = gameObject;
             GameManager.Singleton.InventoryController.PlayerInventoryGrid.InitializeGrid();
         }
 

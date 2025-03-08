@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Blessing.Gameplay
 {
+    // TODO: Refatorar esse código
     public class Object : NetworkTransform, ISpawnable
     {
         NetworkVariable<NetworkBehaviourReference> m_SessionOwnerNetworkObjectSpawner = new NetworkVariable<NetworkBehaviourReference>(writePerm: NetworkVariableWritePermission.Owner);
@@ -33,7 +34,7 @@ namespace Blessing.Gameplay
 
         public void Init(SessionOwnerNetworkObjectSpawner spawner)
         {
-            m_SessionOwnerNetworkObjectSpawner.Value = new NetworkBehaviourReference(spawner);
+            
         }
 
         // void Update()

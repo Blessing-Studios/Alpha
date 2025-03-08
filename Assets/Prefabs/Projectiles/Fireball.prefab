@@ -143,7 +143,7 @@ Transform:
   m_GameObject: {fileID: 2703509549900476795}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.713478, z: -0, w: 0.70067763}
-  m_LocalPosition: {x: 7.427, y: -2.262, z: 3.309}
+  m_LocalPosition: {x: 24.84, y: -2.262, z: 33.09}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -212,12 +212,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectileSkill: {fileID: 0}
+  trails:
+  - {fileID: 6072878632348185247}
+  - {fileID: 405042988443428972}
   speed: 0
   lifeTime: 0
   isDestroyedOnHit: 0
   Timer: 0
   direction: {x: 0, y: 0, z: 0}
-  owner: {fileID: 0}
 --- !u!1 &3335235604772508888
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,7 +419,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Time: 0.5
+  m_Time: 5
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3

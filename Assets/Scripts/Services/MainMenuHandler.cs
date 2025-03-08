@@ -3,6 +3,7 @@ using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.GameData;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace Blessing.Services
 {
@@ -29,14 +30,16 @@ namespace Blessing.Services
             if (task.IsCompletedSuccessfully)
             {
                 Debug.Log("ConnectToSessionCompleted");
+
+                // Descarregar a cena presente, que deve ser o menu.
+                // SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
+                UnitySceneManager.UnloadSceneAsync(SceneManager.Singleton.CurrentScene.SceneName);
+
                 if (GameDataManager.Singleton.IsHost)
                 {
                     // Quando host carregar a cena, todos os clientes carregarão junto.
                     SceneManager.Singleton.LoadAsync(multiplayerScene); 
                 }
-                
-                // Descarregar a cena presente, que deve ser o menu.
-                SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
             }
         }
     }

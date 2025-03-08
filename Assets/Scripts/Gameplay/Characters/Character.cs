@@ -38,6 +38,7 @@ namespace Blessing.Gameplay.Characters
 
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public float AttackPressedTimerWindow = 0.2f;
+        [field: SerializeField] protected List<CharacterHitAudio> characterHitAudios = new();
         public MovementController MovementController { get; protected set; }
         public CharacterStateMachine CharacterStateMachine { get; protected set; }
         public CharacterHealth Health { get; protected set; }
@@ -196,6 +197,19 @@ namespace Blessing.Gameplay.Characters
             UpdateParameters();
         }
 
+        public Trait GetTrait(int id)
+        {
+            foreach (Trait trait in GameManager.Singleton.AllTraits.Traits)
+            {
+                if (trait.Id == id)
+                {
+                    return trait;
+                }
+            }
+
+            return null;
+        }
+
         public IEnumerator ChangeByTime()
         {
             while (Health.IsAlive)
@@ -250,13 +264,13 @@ namespace Blessing.Gameplay.Characters
                 int skillDamage = ActiveSkill.GetSkillDamage(Stats.ValueByStat);
 
                 // O dano soma com o do ataque normal e a Penetração é trocada pela pen da skill
-                HitInfo = new HitInfo(DamageAndPen.x + skillDamage, ActiveSkill.DamageClass, ActiveSkill.Buffs);
+                HitInfo = new HitInfo(DamageAndPen.x + skillDamage, ActiveSkill.DamageClass, ActiveSkill.Buffs, ActiveSkill.HitType);
 
                 ActiveSkill = null;
             }
             else
             {
-                HitInfo = new HitInfo(DamageAndPen.x, DamageAndPen.y);
+                HitInfo = new HitInfo(DamageAndPen.x, DamageAndPen.y, null, HitType.Slash);
             }
 
             TargetList.Add(target);
@@ -267,6 +281,9 @@ namespace Blessing.Gameplay.Characters
         public virtual void GotHit(IHitter hitter)
         {
             if (ShowDebug) Debug.Log(gameObject.name + ": Entrou GotHit HitInfo Damage - " + hitter.HitInfo.Damage);
+
+            // TODO: criar sistema mais complexo para selecionar o som dependendo do tipo do hit usando o CharacterStateMachine
+            HandleHitAudio(hitter.HitInfo.HitType);
 
             if (!HasAuthority) return;
 
@@ -315,6 +332,15 @@ namespace Blessing.Gameplay.Characters
                 CharacterStateMachine.SetNextState(CharacterStateMachine.DeadState);
         }
 
+        private void HandleHitAudio(HitType hitType)
+        {
+            foreach(CharacterHitAudio characterHitAudio in characterHitAudios)
+            {
+                if (characterHitAudio.HitType == hitType)
+                    AudioManager.Singleton.PlaySoundFx(characterHitAudio.Clips, transform);
+            } 
+        }
+
         public virtual void OnDeath()
         {
             Health.SetCharacterAsDead();
@@ -350,17 +376,6 @@ namespace Blessing.Gameplay.Characters
                 }
             }
 
-            // Apply Visual Effect
-            if (trait.VisualEffect != null)
-            {   
-                // VisualEffectManager.Singleton.PlayVFX(buff.VisualEffect, transform.position);
-                VisualEffect visualEffect = Instantiate(trait.VisualEffect, transform.position, Quaternion.identity);
-            
-                visualEffect.Play();
-
-                Destroy(visualEffect.gameObject, visualEffect.GetFloat("LifeTime"));
-            }
-
             TraitData data;
 
             Buff buff = trait as Buff;
@@ -375,6 +390,11 @@ namespace Blessing.Gameplay.Characters
                 CharacterTrait characterTrait = new(trait);
                 CharacterTraits.Add(characterTrait);
                 data = characterTrait.Data;
+            }
+
+            if (trait.VisualEffect != null)
+            {
+                CharacterNetwork.HandleTraitVisualEffectRpc(trait.Id);
             }
 
             CharacterNetwork.TraitDataNetworkList.Add(data);

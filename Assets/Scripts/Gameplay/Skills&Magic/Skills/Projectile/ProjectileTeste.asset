@@ -15,7 +15,9 @@ MonoBehaviour:
   Name: ProjectileTest
   Label: 
   Description: 
+  AudioClips: []
   Type: 2
+  ActiveSkillOnHit: 0
   Modifiers: []
   Attack: 50
   DamageClass: 1

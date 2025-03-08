@@ -12,6 +12,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
     {
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         [SerializeField] protected ProjectileSkill projectileSkill;
+        [SerializeField] protected TrailRenderer[] trails;
         [SerializeField] protected float speed;
         [SerializeField] protected float lifeTime;
         [SerializeField] protected bool isDestroyedOnHit;
@@ -32,12 +33,12 @@ namespace Blessing.Gameplay.SkillsAndMagic
         {
             transform.position += speed * Time.deltaTime * direction;
 
-            Timer += Time.deltaTime;
-
             if (Timer >= lifeTime)
             {
                 Pool.Release(this);
-            } 
+            }
+
+            Timer += Time.deltaTime;
         }
 
         public Projectile Initialize(ProjectileSkill projectileSkill, ISkillTrigger owner)
@@ -73,6 +74,8 @@ namespace Blessing.Gameplay.SkillsAndMagic
 
         void OnTriggerEnter(Collider other)
         {
+            if (!gameObject.activeSelf) return;
+
             Debug.Log(gameObject.name + ": OnCollisionEnter");
 
             if (other.gameObject.TryGetComponent(out HurtBox hurtBox))
@@ -82,6 +85,15 @@ namespace Blessing.Gameplay.SkillsAndMagic
                     // Pegar informação do dano e mantar para o target
                     hurtBox.Owner.GotHit(this);
                 }
+                if (isDestroyedOnHit) 
+                {
+                    projectileSkill.AfterSkill.Trigger(this);
+
+                    Pool.Release(this);
+                }
+            }
+            else
+            {
                 if (isDestroyedOnHit) 
                 {
                     projectileSkill.AfterSkill.Trigger(this);
@@ -104,6 +116,14 @@ namespace Blessing.Gameplay.SkillsAndMagic
         public override void DestroyPooledObject()
         {
             Destroy(gameObject);
+        }
+
+        void OnDisable()
+        {
+            foreach (TrailRenderer trail in trails)
+            {
+                trail.Clear();
+            }           
         }
     }
 }

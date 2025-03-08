@@ -1,4 +1,5 @@
 using System.Collections;
+using Blessing.GameData;
 using Blessing.Gameplay;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.TradeAndInventory;
@@ -13,11 +14,12 @@ namespace Blessing.Ai
         [SerializeField] private Gear[] gears;
 
         AiCharacter spawnedAiCharacter;
-        protected NetworkVariable<int> m_TickToSpawnLoot = new NetworkVariable<int>();
+        protected int m_TickToSpawnLoot;
         public int SpawnTime = 2;
         public override void Spawn()
         {
-            var spawnedNetworkObject = m_NetworkObjectToSpawn.InstantiateAndSpawn(NetworkManager, ownerClientId: OwnerClientId);
+            Debug.Log(gameObject.name + ": Spawn");
+            var spawnedNetworkObject = m_NetworkObjectToSpawn.InstantiateAndSpawn(NetworkManager.Singleton);
             
             // Handle Spawn position
             spawnedAiCharacter = spawnedNetworkObject.GetComponent<AiCharacter>();
@@ -26,15 +28,14 @@ namespace Blessing.Ai
 
             spawnedAiCharacter.SpawnLocation = transform.position;
 
-            m_TickToSpawnLoot.Value = SpawnTime;
+            m_TickToSpawnLoot = SpawnTime;
 
             var spawnable = spawnedNetworkObject.GetComponent<ISpawnable>();
             spawnable.Init(this);
-            m_IsRespawning.Value = false;
 
             spawnedAiCharacter.Initialize();
 
-            if (HasAuthority)
+            if (GameDataManager.Singleton.IsHost)
             {
                 StartCoroutine(WaitToSpawnGear());
             }
@@ -42,7 +43,7 @@ namespace Blessing.Ai
         }
         IEnumerator WaitToSpawnGear()
         {
-            yield return new WaitUntil(() => NetworkManager.NetworkTickSystem.ServerTime.Tick > m_TickToSpawnLoot.Value);
+            yield return new WaitUntil(() => NetworkManager.Singleton.NetworkTickSystem.ServerTime.Tick > m_TickToSpawnLoot);
 
             SpawnGear();
 
@@ -51,8 +52,6 @@ namespace Blessing.Ai
 
         private void SpawnGear()
         {
-            if (!HasAuthority) return;
-
             foreach (Gear gear in gears)
             {
                 InventoryItem inventoryItem = GameManager.Singleton.GetInventoryItem();

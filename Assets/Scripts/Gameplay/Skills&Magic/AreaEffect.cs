@@ -11,15 +11,20 @@ namespace Blessing.Gameplay.SkillsAndMagic
         [SerializeField] protected ISkillTrigger owner;
         [SerializeField] public bool HasAuthority { get { return owner.HasAuthority; } }
         public HitInfo HitInfo { get; protected set; }
-        public Collider[] colliders = new Collider[50];
+        [SerializeField] protected Collider[] colliders = new Collider[50];
+        [SerializeField] protected ParticleSystem explosion;
+        private float timer;
+        private float duration;
 
         public void Initialize(AreaSkill areaSkill, ISkillTrigger owner)
         {
             this.areaSkill = areaSkill;
             this.owner = owner;
+
+            transform.position = owner.SkillOrigin.position;
             
             int numberOfHits = 0;
-            int hitsNumber = Physics.OverlapSphereNonAlloc(owner.SkillOrigin.position, areaSkill.Radius, colliders);
+            int hitsNumber = Physics.OverlapSphereNonAlloc(transform.position, areaSkill.Radius, colliders);
             for (int i = 0; i < hitsNumber; i++)
             {
                 // Can't interact with itself
@@ -39,7 +44,18 @@ namespace Blessing.Gameplay.SkillsAndMagic
                 if (numberOfHits > areaSkill.MaxTargets) break;
             }
 
-            Pool.Release(this);
+            timer = 0;
+            duration = explosion.main.duration;
+        }
+
+        void Update()
+        {
+            if (timer >= duration)
+            {
+                Pool.Release(this);
+            }
+
+            timer += Time.deltaTime;
         }
 
         public bool Hit(IHittable target)

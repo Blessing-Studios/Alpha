@@ -133,7 +133,7 @@ namespace Anarkila.DeveloperConsole {
                 }
 
                 obj.SetActive(false);
-                obj.transform.SetParent(messageParent, false);
+                obj.transform.SetParent(messageParent);
                 messageQueue.Enqueue(obj);
             }
             setupDone = true;

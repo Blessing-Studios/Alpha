@@ -37,6 +37,13 @@ namespace Blessing.Player
                 GuidText.gameObject.SetActive(false);
         }
 
+        public override void OnNetworkDespawn()
+        {
+            OwnerName.OnValueChanged -= OnOwnerNameValueChanged;
+            StopAllCoroutines();
+            base.OnNetworkDespawn();
+        }
+
         private void OnOwnerNameValueChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
         {
             // Will set the values on the Clients that don't Have Authority
@@ -72,34 +79,6 @@ namespace Blessing.Player
             OwnerName.Value = new FixedString32Bytes(name);
         }
 
-        public override void OnNetworkSpawn()
-        {
-            base.OnNetworkSpawn();
-            // if (HasAuthority) return;
-
-            // PlayerCharacter.SetCanGiveInputs(GameDataManager.Singleton.ValidateOwner(OwnerName.Value.ToString()));
-
-            // if (!PlayerCharacter.CanGiveInputs && !GameManager.Singleton.PlayerCharactersDic.ContainsKey(OwnerName.Value.ToString()))
-            // {
-            //     GameManager.Singleton.AddPlayerCharacter(OwnerName.Value.ToString(), PlayerCharacter);
-            //     GameManager.Singleton.PlayerCharacterList.Add(PlayerCharacter);
-
-            //     gameObject.name = "Char-" + OwnerName.Value.ToString();
-            //     Debug.Log(gameObject.name + " OnNetworkSpawn()");
-
-            //     // Find Player Controller
-            //     // foreach (PlayerController player in GameManager.Singleton.PlayerList)
-            //     // {
-            //     //     if (player.GetPlayerName() == GetPlayerOwnerName())
-            //     //     {
-            //     //         player.SetPlayerCharacter(this);
-            //     //         return;
-            //     //     }
-            //     // }
-
-            // }
-        }
-
         public override void GetOwnership()
         {
             // if (hasOnNetworkSpawnRan)
@@ -122,11 +101,6 @@ namespace Blessing.Player
             GameManager.Singleton.GetOwnership(NetworkObject);
 
             StopCoroutine(WaitToGetOwnership());
-        }
-
-        public override void OnNetworkDespawn()
-        {
-            StopAllCoroutines();
         }
 
         protected override void OnOwnershipChanged(ulong previous, ulong current) // Mover para PlayerCharacterNetwork

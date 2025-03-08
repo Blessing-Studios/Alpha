@@ -23,7 +23,7 @@ namespace Blessing.UI
             multiplayerPanel.SetActive(false);
 
             singlePlayerButton.onClick.AddListener(() => {
-                if (ShowDebug) Debug.Log("prototypeButton");
+                if (ShowDebug) Debug.Log("SinglePlayerButton");
 
                 GameDataManager.Singleton.PlayerName = "Player1";
                 singlePlayerButton.interactable = false;
@@ -31,7 +31,7 @@ namespace Blessing.UI
             });
 
             multiplayerButton.onClick.AddListener(() => {
-                if (ShowDebug) Debug.Log("multiplayerButton");
+                if (ShowDebug) Debug.Log("MultiplayerButton");
                 multiplayerPanel.SetActive(true);
                 
             });

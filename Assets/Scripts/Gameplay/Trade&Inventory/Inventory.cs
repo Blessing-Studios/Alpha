@@ -122,6 +122,8 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
+
             GridSize.OnValueChanged += OnGridSizeValueChanged;
             OwnerData.OnValueChanged += OnOwnerDataOnValueChanged;
             InventoryNetworkList.OnListChanged += OnInventoryNetworkListChanged;
@@ -129,6 +131,15 @@ namespace Blessing.Gameplay.TradeAndInventory
             // This is for a player that enters after this inventory is already on scene by another client
             if (!HasAuthority)
                 Initialize();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+
+            GridSize.OnValueChanged -= OnGridSizeValueChanged;
+            OwnerData.OnValueChanged -= OnOwnerDataOnValueChanged;
+            InventoryNetworkList.OnListChanged -= OnInventoryNetworkListChanged;
         }
 
         private void OnGridSizeValueChanged(Vector2Int previousValue, Vector2Int newValue)

@@ -12,7 +12,7 @@ namespace Blessing.Gameplay.HealthAndDamage
         protected override DamageNumber CreateObject()
         {
             DamageNumber damageNumber = Instantiate(DamageNumberPrefab).GetComponent<DamageNumber>();
-            damageNumber.Pool = Pool;
+            // damageNumber.Pool = Pool;
 
             return damageNumber;
         }

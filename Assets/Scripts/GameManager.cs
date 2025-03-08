@@ -14,6 +14,9 @@ using Blessing.Gameplay.Characters.Traits;
 using Blessing.Gameplay.HealthAndDamage;
 using Blessing.Gameplay.SkillsAndMagic;
 using UnityEngine.VFX;
+using Blessing.Services;
+using Blessing.Core.ObjectPooling;
+using Blessing.Gameplay;
 
 namespace Blessing
 {
@@ -22,11 +25,15 @@ namespace Blessing
         public static GameManager Singleton { get; private set; }
         public Camera MainCamera;
         public CinemachineCamera VirtualCamera;
-        public TextMeshProUGUI FpsDisplay;
         public TraitList AllTraits;
-        public List<PlayerCharacter> PlayerCharacterList;
+        public ItemList AllItems;
+        public List<PlayerCharacter> PlayerCharacterList = new();
+        [Tooltip("Player Controller of the current client player")]
+        public PlayerController PlayerController;
+        private bool playersInitialized = false;
         [field: SerializeField] public List<PlayerController> PlayerList { get; private set; }
-        public List<Transform> PlayerSpawnLocations;
+        public List<Transform> PlayerSpawnLocations = new();
+        public List<SessionOwnerNetworkObjectSpawner> ObjectSpawners = new();
         private Dictionary<string, PlayerCharacter> playerCharactersDic = new();
         public Dictionary<string, PlayerCharacter> PlayerCharactersDic { get { return playerCharactersDic; } }
         public SceneStarter SceneStarter;
@@ -89,9 +96,6 @@ namespace Blessing
             // ProjectilePool = ProjectilePooler.Pool;
         }
 
-        private float pollingTime = 0.5f;
-        private float time;
-        private int frameCount;
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Tab))
@@ -123,27 +127,18 @@ namespace Blessing
             {
                 InventoryController.ConsumeSelectedItem();
             }
-            
-
-            time += Time.deltaTime;
-            frameCount++;
-
-            if (time >= pollingTime)
-            {
-                FpsDisplay.text = "FPS " + Mathf.RoundToInt(frameCount / time);
-
-                time -= pollingTime;
-                frameCount = 0;
-            }
-            
         }
 
         public void OnClientConnected(ulong clientId)
         {
             Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
             PlayerConnected = true;
-        }
 
+            if (GameDataManager.Singleton.IsHost)
+            {
+                InitializeSpawners();
+            }
+        }
         public void SetSelectedGameObject(GameObject gameObject)
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
@@ -176,18 +171,32 @@ namespace Blessing
         {
             return InventoryController.FindInventoryItem(data, createNew);
         }
+        public void InitializeSpawners()
+        {
+            foreach(SessionOwnerNetworkObjectSpawner spawner in ObjectSpawners)
+            {
+                spawner.Spawn();
+            }
+        }
 
         public void InitializePlayers()
         {
-            foreach(PlayerCharacter playerCharacter in PlayerCharacterList)
-            {
-                playerCharacter.InitializePlayerChar();
-            }
+
+            if (playersInitialized == true) return;
+            if (!(SceneStarter != null && SceneStarter.HasStarted != false)) return;
+            if (PlayerController == null) return;
 
             foreach (PlayerController player in PlayerList)
             {
                 player.Initialization();
             }
+
+            foreach(PlayerCharacter playerCharacter in PlayerCharacterList)
+            {
+                playerCharacter.InitializePlayerChar();
+            }
+
+            playersInitialized = true;
         }
 
         public bool ValidateCharPlayerOwner(string playerName)
@@ -261,24 +270,34 @@ namespace Blessing
             InventoryItemPool.Release(pooledObject);
         }
 
-        public DamageNumber GetDamageNumber(Vector3 position, int damage, float disappearTimer = 2f, float fadeOutSpeed = 1f, float moveUpSpeed = 1f)
+        public DamageNumber GetDamageNumber(Vector3 position, int damage)
         {
-            return DamageNumberPool.Get().Initialize(position, damage, disappearTimer, fadeOutSpeed, moveUpSpeed);
+            return DamageNumberPool.Get().Initialize(position, damage);
         }
 
         public void ReleaseDamageNumber(DamageNumber pooledObject)
         {
             DamageNumberPool.Release(pooledObject);
         }
-        // public Projectile GetProjectile()
-        // {
-        //     return ProjectilePool.Get();
-        // }
 
-        // public void ReleaseProjectile(Projectile pooledObject)
-        // {
-        //     ProjectilePool.Release(pooledObject);
-        // }
+        internal void ClearGameStates()
+        {
+            playersInitialized = false;
+            PlayerController = null;
+
+            playerCharactersDic.Clear();
+            PlayerList.Clear();
+            PlayerCharacterList.Clear();
+            PlayerSpawnLocations.Clear();
+            ObjectSpawners.Clear();
+
+            // Clean Pooled InventoryItems
+            InventoryItemPool.Clear();
+            InventoryController.ClearInventoryItemDic();
+
+            // Clean Other Pools
+            PoolManager.Singleton.ClearAllPools();
+        }
     }
 }
 

@@ -1,3 +1,4 @@
+using System;
 using Blessing.Gameplay.TradeAndInventory;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
@@ -6,28 +7,21 @@ using UnityEngine;
 namespace Blessing.Scene
 {
     // Separar em duas classes
-    public class SceneStarter : NetworkBehaviour
+    public class SceneStarter : MonoBehaviour
     {
-        public NetworkVariable<bool> HasStarted = new(false);
+        public bool HasStarted = false;
+
         void Awake()
         {
             // Debug.Log(gameObject.name + " Awake");
             GameManager.Singleton.SceneStarter = this;
         }
-
-        public override void OnNetworkSpawn()
-        {
-            // if (!HasStarted.Value)
-            // {
-            //     HasStarted.Value = true;
-            //     GameManager.Singleton.InitializePlayers();
-            // }
-            // GameManager.Singleton.InitializePlayers();
-        }
         
         void Start()
         {
-            // Debug.Log(gameObject.name + " Start");
+            Debug.Log(gameObject.name + ": SceneStarter Start" );
+            HasStarted = true;
+            GameManager.Singleton.InitializePlayers();
         }
     }
 }

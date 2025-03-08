@@ -29,6 +29,10 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
         }
+        public override void OnNetworkDespawn()
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+        }
 
         private void OnClientConnectedCallback(ulong clientId)
         {

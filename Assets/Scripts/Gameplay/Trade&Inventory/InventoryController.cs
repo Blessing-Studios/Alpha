@@ -24,13 +24,17 @@ namespace Blessing.Gameplay.TradeAndInventory
         public List<BaseGrid> OtherGrids;
         public IGrid SelectedGrid;
 
-        [SerializeField] public ItemList SpawnableItems;
+        [SerializeField] public ItemList SpawnableItems { get { return GameManager.Singleton.AllItems; } }
         public NetworkObject LooseItemPrefab { get { return GameManager.Singleton.LooseItemPrefab; } }
         private Transform canvasTransform { get { return InventoryCanvas.transform; } }
         [SerializeField] private InventoryItem selectedItem;
         [SerializeField] private bool isGridsOpen = false;
         public bool IsGridsOpen { get { return isGridsOpen; } }
         private Dictionary<FixedString64Bytes, InventoryItem> inventoryItemDic = new();
+        public void ClearInventoryItemDic()
+        {
+            inventoryItemDic.Clear();
+        }
 
         void Awake()
         {
@@ -279,7 +283,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             inventoryItemDic.Add(inventoryItem.Data.Id, inventoryItem);
 
             return inventoryItem;
-
         }
 
         public InventoryItem CreateItem(InventoryItemData data, Inventory inventory = null)
