@@ -11,6 +11,9 @@
 /[Uu]ser[Ss]ettings/
 
 # Vendor folder is removed from git
+/[Aa]ssets/[Aa]rt/
+
+# Vendor folder is removed from git
 /[Aa]ssets/[Vv]endor/
 
 # MemoryCaptures can get excessive in size.
