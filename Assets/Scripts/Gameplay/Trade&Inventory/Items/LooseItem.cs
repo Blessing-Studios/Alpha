@@ -92,7 +92,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (interactor.gameObject.TryGetComponent(out CharacterGear character))
             {
                 GetOwnership();
-                // Checar se GetOwnership funcionou
+
+                // TODO: Checar se GetOwnership funcionou
 
                 // Try to equip item, if yes, return
                 if (character.AddEquipment(InventoryItem))

@@ -48,39 +48,8 @@ namespace Blessing.Network
             if (m_NetworkManager.LocalClientId == clientId)
             {
                 GameManager.Singleton.OnClientConnected(clientId);
-
-                // Carregar cena
-                // SceneManager.Singleton.LoadAsync(prototypeScene); 
-                // SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
             }
         }
-
-        // private void OnGUI()
-        // {
-        //     if (_state == ConnectionState.Connected)
-        //         return;
-
-        //     GUI.enabled = _state != ConnectionState.Connecting;
-
-        //     using (new GUILayout.HorizontalScope(GUILayout.Width(250)))
-        //     {
-        //         GUILayout.Label("Profile Name", GUILayout.Width(100));
-        //         _profileName = GUILayout.TextField(_profileName);
-        //     }
-
-        //     using (new GUILayout.HorizontalScope(GUILayout.Width(250)))
-        //     {
-        //         GUILayout.Label("Session Name", GUILayout.Width(100));
-        //         _sessionName = GUILayout.TextField(_sessionName);
-        //     }
-
-        //     GUI.enabled = GUI.enabled && !string.IsNullOrEmpty(_profileName) && !string.IsNullOrEmpty(_sessionName);
-
-        //     // if (GUILayout.Button("Create or Join Session"))
-        //     // {
-        //     //     CreateOrJoinSessionAsync();
-        //     // }
-        // }
 
         private void OnDestroy()
         {

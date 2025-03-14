@@ -65,6 +65,7 @@ namespace Blessing.AI.Goap
             if (Target != null)
             {
                 if (ShowDebug) Debug.Log(gameObject.name + ": OnMovementInput Target - " + Target.name);
+                // TODO: olhar erro SetDestination
                 navMashAgent.SetDestination(Target.transform.position);
                 if (ShowDebug) Debug.Log(gameObject.name + ": OnMovementInput Target Position - " + Target.transform.position);
                 if (ShowDebug) Debug.Log(gameObject.name + ": OnMovementInput Velocity - " + navMashAgent.velocity);

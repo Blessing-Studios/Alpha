@@ -73,6 +73,8 @@ namespace Blessing.Gameplay.Characters
         
         public override void OnNetworkDespawn()
         {
+            health.OnValueChanged -= OnNetworkHealthChanged;
+
             StopAllCoroutines();
         }
 
@@ -152,8 +154,6 @@ namespace Blessing.Gameplay.Characters
 
         public void SetCharacterAsDead()
         {
-            StopAllCoroutines();
-
             if (HasAuthority) health.Value = 0;
 
             isAlive.Value = false;
@@ -229,22 +229,6 @@ namespace Blessing.Gameplay.Characters
             if (healthValue < 0) healthValue = 0;
 
             health.Value = healthValue;
-        }
-        public IEnumerator ChangeLifeByTime()
-        {
-            while (IsAlive)
-            {
-                //Put your code before waiting here
-
-                ReceiveHeal(regen);
-                ReceiveBleed(decay);
-
-                yield return new WaitForSeconds(waitTime);
-
-                //Put code after waiting here
-
-                //You can put more yield return new WaitForSeconds(1); in one coroutine
-            }
         }
         public void ChangeByTime()
         {

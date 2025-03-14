@@ -31,7 +31,7 @@ namespace Blessing
         [Tooltip("Player Controller of the current client player")]
         public PlayerController PlayerController;
         private bool playersInitialized = false;
-        [field: SerializeField] public List<PlayerController> PlayerList { get; private set; }
+        [field: SerializeField] public List<PlayerController> Players { get; private set; }
         public List<Transform> PlayerSpawnLocations = new();
         public List<SessionOwnerNetworkObjectSpawner> ObjectSpawners = new();
         private Dictionary<string, PlayerCharacter> playerCharactersDic = new();
@@ -134,10 +134,7 @@ namespace Blessing
             Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
             PlayerConnected = true;
 
-            if (GameDataManager.Singleton.IsHost)
-            {
-                InitializeSpawners();
-            }
+            InitializeSpawners();
         }
         public void SetSelectedGameObject(GameObject gameObject)
         {
@@ -145,11 +142,16 @@ namespace Blessing
         }
         public void AddPlayer(PlayerController player)
         {
-            PlayerList.Add(player);
+            Players.Add(player);
         }
         public void AddPlayerCharacter(string playerName, PlayerCharacter playerCharacter)
         {
             playerCharactersDic.Add(playerName, playerCharacter);
+        }
+        public void RemovePlayerCharacter(string playerName)
+        {
+            PlayerCharacterList.Remove(playerCharactersDic[playerName]);
+            playerCharactersDic.Remove(playerName);
         }
 
         public void AddPlayerSpawn(Transform spawn)
@@ -173,9 +175,12 @@ namespace Blessing
         }
         public void InitializeSpawners()
         {
-            foreach(SessionOwnerNetworkObjectSpawner spawner in ObjectSpawners)
+            if (PlayerConnected && GameDataManager.Singleton.IsHost && SceneStarter.HasStarted)
             {
-                spawner.Spawn();
+                foreach(SessionOwnerNetworkObjectSpawner spawner in ObjectSpawners)
+                {
+                    spawner.Spawn();
+                }
             }
         }
 
@@ -186,7 +191,7 @@ namespace Blessing
             if (!(SceneStarter != null && SceneStarter.HasStarted != false)) return;
             if (PlayerController == null) return;
 
-            foreach (PlayerController player in PlayerList)
+            foreach (PlayerController player in Players)
             {
                 player.Initialization();
             }
@@ -280,13 +285,14 @@ namespace Blessing
             DamageNumberPool.Release(pooledObject);
         }
 
-        internal void ClearGameStates()
+        public void ClearGameStates()
         {
             playersInitialized = false;
+            PlayerConnected = false;
             PlayerController = null;
 
             playerCharactersDic.Clear();
-            PlayerList.Clear();
+            Players.Clear();
             PlayerCharacterList.Clear();
             PlayerSpawnLocations.Clear();
             ObjectSpawners.Clear();

@@ -150,7 +150,7 @@ public abstract class MovementController : NetworkBehaviour
 
     public void DisableCollision()
     {
-        GetCharacterController().excludeLayers = LayerMask.GetMask("Player");
+        // GetCharacterController().excludeLayers = LayerMask.GetMask("Player");
     }
 
     // this script pushes all rigidbodies that the character touches

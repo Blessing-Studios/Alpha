@@ -91,12 +91,23 @@ namespace Blessing.Player
         {
             if (isPlayerCharacterInitialized) return;
 
-            isPlayerCharacterInitialized = true;
+            if (ShowDebug) Debug.Log(gameObject.name + ": InitializePlayerChar");
+
+            
 
             gameObject.name = "Char-" + GetPlayerOwnerName();
             GameManager.Singleton.AddPlayerCharacter(GetPlayerOwnerName(), this);
             canGiveInputs = GameDataManager.Singleton.ValidateOwner(GetPlayerOwnerName());
-            if (ShowDebug) Debug.Log(gameObject.name + ": InitializePlayerChar");
+
+            foreach(PlayerController player in GameManager.Singleton.Players)
+            {
+                if (player.GetPlayerName() == GetPlayerOwnerName() && player.PlayerCharacter == null)
+                {
+                    player.SetPlayerCharacter(this);
+                }
+            }
+
+            isPlayerCharacterInitialized = true;
         }
 
         public void GetPlayerCharacterOwnership()

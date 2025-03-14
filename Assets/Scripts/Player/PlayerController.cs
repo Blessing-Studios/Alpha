@@ -44,31 +44,20 @@ namespace Blessing.Player
             return PlayerName.Value.ToString();
         }
 
-        public void SetNetworkVariables(string playerName)
-        {
-            if (!HasAuthority) return;
-
-            PlayerName.Value = new FixedString32Bytes(playerName);
-            gameObject.name = "Player-" + playerName;
-        }
-        public NetworkVariable<bool> IsDisabled = new();
-        // private int deferredDespawnTicks = 4;
-
         public override void OnNetworkSpawn()
         {
             if (ShowDebug) Debug.Log(gameObject.name + " On Network Spawn");
             PlayerName.OnValueChanged += OnPlayerNameValueChanged;
             SceneSessionNetworkList.OnListChanged += OnSceneSessionNetworkListChanged;
-
-            // Initialization();
-
-            // SetNetworkVariables(GameDataManager.Singleton.PlayerName);
         }
         public override void OnNetworkDespawn()
         {
             PlayerName.OnValueChanged -= OnPlayerNameValueChanged;
             SceneSessionNetworkList.OnListChanged -= OnSceneSessionNetworkListChanged;
+
             StopAllCoroutines();
+
+            GameManager.Singleton.Players.Remove(this);
         }
 
         private void OnPlayerNameValueChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
@@ -77,9 +66,11 @@ namespace Blessing.Player
         }
         private void OnSceneSessionNetworkListChanged(NetworkListEvent<MapTravelData> changeEvent)
         {
+            Debug.Log(gameObject.name + ": OnSceneSessionNetworkListChanged");
+             
             GameDataManager.Singleton.UpdateSceneSessionDic(changeEvent.Value);
 
-            if (!UpdateLocalList(ref SceneSessionLocalList, SceneSessionNetworkList)) return;
+            // if (!UpdateLocalList(ref SceneSessionLocalList, SceneSessionNetworkList)) return;
         }
         protected bool UpdateLocalList(ref List<MapTravelData> localList, NetworkList<MapTravelData> networkList)
         {
@@ -131,7 +122,8 @@ namespace Blessing.Player
 
             if (!HasAuthority)
             {
-                PlayerCharacter = GameManager.Singleton.PlayerCharactersDic[GetPlayerName()];
+                if (GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetPlayerName()))
+                    PlayerCharacter = GameManager.Singleton.PlayerCharactersDic[GetPlayerName()];
             }
 
             gameObject.name = "Player-" + GetPlayerName();
@@ -277,14 +269,14 @@ namespace Blessing.Player
                 if (SceneSessionNetworkList[i].Scene == scene.SceneName)
                 {
                     SceneSessionNetworkList.RemoveAt(i);
-                    SceneSessionLocalList.RemoveAt(i);
+                    // SceneSessionLocalList.RemoveAt(i);
                     break;
                 }
             }
 
             MapTravelData data = new(scene.SceneName, session);
             SceneSessionNetworkList.Add(data);
-            SceneSessionLocalList.Add(data);
+            // SceneSessionLocalList.Add(data);
         }
     }
 }

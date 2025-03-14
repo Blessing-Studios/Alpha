@@ -45,7 +45,9 @@ namespace Blessing.GameData
             if (sceneSessionDic.ContainsKey(scene.SceneName))
                 return sceneSessionDic[scene.SceneName];
 
+            //  Create new SessionName and mark this player as Host
             string newSessionName = Guid.NewGuid().ToString()[..8];
+            // IsHost = true;
 
             GameManager.Singleton.PlayerController.UpdateSceneSessionList(scene, newSessionName);
 

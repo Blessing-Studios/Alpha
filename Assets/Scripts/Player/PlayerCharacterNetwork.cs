@@ -39,9 +39,11 @@ namespace Blessing.Player
 
         public override void OnNetworkDespawn()
         {
+            base.OnNetworkDespawn();
             OwnerName.OnValueChanged -= OnOwnerNameValueChanged;
             StopAllCoroutines();
-            base.OnNetworkDespawn();
+
+            GameManager.Singleton.RemovePlayerCharacter(OwnerName.Value.ToString());
         }
 
         private void OnOwnerNameValueChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
@@ -106,6 +108,12 @@ namespace Blessing.Player
         protected override void OnOwnershipChanged(ulong previous, ulong current) // Mover para PlayerCharacterNetwork
         {
             base.OnOwnershipChanged(previous, current);
+
+            if (IsTraveling == true)
+            {
+                GameManager.Singleton.RemovePlayerCharacter(OwnerName.Value.ToString());
+                gameObject.SetActive(false);
+            }
             // if (!HasAuthority) return;
 
             // if (GameDataManager.Singleton.ValidateOwner(OwnerName.Value.ToString()))

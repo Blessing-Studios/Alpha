@@ -37,16 +37,15 @@ namespace Blessing.Gameplay.Transition
         {
             if (ShowDebug) Debug.Log(gameObject.name + ": TriggerEnter funcionou");
 
-            // Early exit
-            if (!(collider.TryGetComponent<PlayerCharacter>(out PlayerCharacter character) && character.HasAuthority))
+            //Exit if it is not the PlayerCharacter owned
+            if (collider.TryGetComponent<PlayerCharacter>(out PlayerCharacter character) && character.HasAuthority)
             {
-                return;
+                character.Network.IsTraveling = true;
+                string playerName = GameDataManager.Singleton.PlayerName;
+                string sessionName = GameDataManager.Singleton.GetSessionByScene(mapScene);
+
+                GameplayEventHandler.MapTravelTriggered(playerName, sessionName, mapScene);
             }
-
-            string playerName = GameDataManager.Singleton.PlayerName;
-            string sessionName = GameDataManager.Singleton.GetSessionByScene(mapScene);
-
-            GameplayEventHandler.MapTravelTriggered(playerName, sessionName, mapScene);
         }
     }
 }

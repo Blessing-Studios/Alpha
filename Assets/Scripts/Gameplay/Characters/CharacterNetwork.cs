@@ -11,6 +11,8 @@ namespace Blessing.Gameplay.Characters
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public Character Character { get; private set; }
+        [field: SerializeField] protected NetworkVariable<bool> isTraveling = new NetworkVariable<bool>(false);
+        public bool IsTraveling { get { return isTraveling.Value; } set { isTraveling.Value = value;}}
 
         [field: SerializeField]
         protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(1,
@@ -142,6 +144,12 @@ namespace Blessing.Gameplay.Characters
         protected override void OnOwnershipChanged(ulong previous, ulong current) // Mover para PlayerCharacterNetwork
         {
             base.OnOwnershipChanged(previous, current);
+
+            // When change Ownership, if character is dead, call OnDeath on the new owner client
+            if (Character.Health.IsDead)
+            {
+                Character.OnDeath();
+            }
         }
         protected bool UpdateLocalList(ref List<TraitData> localList, NetworkList<TraitData> networkList)
         {

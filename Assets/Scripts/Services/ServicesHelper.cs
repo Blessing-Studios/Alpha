@@ -89,7 +89,8 @@ namespace Blessing.Services
 
         async void OnMapTravelTriggered(string playerName, string sessionName, SceneReference scene)
         {
-            // await Awaitable.WaitForSecondsAsync(1);
+            // TODO: Create a count down to change map
+            await Awaitable.WaitForSecondsAsync(2);
 
             if (m_CurrentSession != null && !m_IsLeavingSession)
             {
@@ -110,24 +111,20 @@ namespace Blessing.Services
                 }
             }
 
-            // Descarregar a scene anterior
-            // SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
-
-            // await Awaitable.WaitForSecondsAsync(1);
+            Debug.Log(gameObject.name + ": UnloadSceneAsync - " + SceneManager.Singleton.CurrentScene.SceneName);
             await UnitySceneManager.UnloadSceneAsync(SceneManager.Singleton.CurrentScene.SceneName);
 
+            // TODO: adicionar cena de transição            
+
             // Connect to new session
-            // await Awaitable.WaitForSecondsAsync(1);
-            var connectTask = ConnectToSession(playerName, sessionName);
+            Task connectTask = ConnectToSession(playerName, sessionName);
             await connectTask;
 
-            // If host load new scene
-            // await Awaitable.WaitForSecondsAsync(2);
+            // If Host, load new Scene
             if (GameDataManager.Singleton.IsHost)
             {
-                // Quando host carregar a cena, todos os clientes carregarão junto.
-                SceneManager.Singleton.LoadAsync(scene);
-            }            
+                await UnitySceneManager.LoadSceneAsync(scene.SceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+            }
 
             GameplayEventHandler.ConnectToNewMapComplete(connectTask);
         }
@@ -136,7 +133,7 @@ namespace Blessing.Services
         {   
             
             // Quando host carregar a cena, todos os clientes carregarão junto.
-            await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(scene.SceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+            await UnitySceneManager.LoadSceneAsync(scene.SceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
 
             NetworkManager.Singleton.NetworkConfig.NetworkTopology = NetworkTopologyTypes.ClientServer;   
             // Descarregar a cena presente, que deve ser o menu.
@@ -261,7 +258,7 @@ namespace Blessing.Services
                 await SignIn();
             }
 
-            await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
+            // await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
             GameDataManager.Singleton.PlayerName = playerName;
 
             if (string.IsNullOrEmpty(sessionName))
@@ -283,6 +280,9 @@ namespace Blessing.Services
                     MaxPlayers = 64,
                 }.WithDistributedAuthorityNetwork();
 
+                // TODO: checar erro: An item with the same key has already been added
+                // TODO: checar erro: lobby not found
+                // TODO: https://docs.unity.com/ugs/en-us/manual/mps-sdk/manual/matchmake-session
                 m_CurrentSession = await MultiplayerService.Instance.CreateOrJoinSessionAsync(sessionName, options);
                 m_CurrentSession.RemovedFromSession += RemovedFromSession;
                 m_CurrentSession.StateChanged += CurrentSessionOnStateChanged;

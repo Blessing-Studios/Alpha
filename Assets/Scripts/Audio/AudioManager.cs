@@ -52,10 +52,9 @@ namespace Blessing.Audio
 
         public GameObject PlayMusic(AudioSource musicSource)
         {
-            if (currentMusicSource != null)
-            {
-                currentMusicSource.Stop();
-            }
+            if ( musicSource != null || musicSource == currentMusicSource) return null;
+
+            currentMusicSource.Stop();
 
             currentMusicSource = musicSource;
 

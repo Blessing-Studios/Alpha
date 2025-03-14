@@ -340,13 +340,6 @@ namespace Blessing.Gameplay.Characters
                     AudioManager.Singleton.PlaySoundFx(characterHitAudio.Clips, transform);
             } 
         }
-
-        public virtual void OnDeath()
-        {
-            Health.SetCharacterAsDead();
-            MovementController.DisableMovement();
-            MovementController.DisableCollision();
-        }
         public virtual void GetOwnership()
         {
             CharacterNetwork.GetOwnership();
@@ -540,6 +533,69 @@ namespace Blessing.Gameplay.Characters
             Mana.SetManaParameters(Stats, CharacterTraits);
         }
 
+        public void HandleSkill(Skill skill)
+        {
+            // Spent Mana to trigger skill
+            if (Mana.SpendManaSpectrum(skill.ManaCost))
+            {
+                skill.Trigger(this);
+
+                // Add/Remove Passive Skill
+                PassiveSkill activePassiveSkill = skill as PassiveSkill;
+                if (activePassiveSkill != null)
+                {
+                    if (!PassiveSkills.Add(activePassiveSkill))
+                    {
+                        PassiveSkills.Remove(activePassiveSkill);
+                        foreach(Buff buff in activePassiveSkill.Buffs)
+                        {
+                            RemoveTrait(buff);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void HandlePassiveSkills()
+        {
+            if (PassiveSkills.Count == 0) return;
+
+            // Debug.Log(gameObject.name + ": entrou HandlePassiveSkills -  PassiveSkills.Count" + PassiveSkills.Count);
+
+            foreach (PassiveSkill passive in PassiveSkills)
+            {
+                // Spend Mana
+
+                if (Mana.SpendManaSpectrum(passive.PassiveManaCost))
+                {
+                    foreach(Buff buff in passive.Buffs)
+                    {
+                        ApplyBuff(buff);
+                    }
+
+                    if (passive.AfterSkill != null)
+                        passive.AfterSkill.Trigger(this);
+                }
+                else
+                {
+                    PassiveSkills.Remove(passive);
+                    foreach(Buff buff in passive.Buffs)
+                    {
+                        RemoveTrait(buff);
+                    }
+                }
+            }
+
+            // Gastar mana e checar duração das passivas
+        }
+
+        public virtual void OnDeath()
+        {
+            Health.SetCharacterAsDead();
+            MovementController.DisableMovement();
+            MovementController.DisableCollision();
+        }
+
         // GameEventListeners
         public void OnAddEquipment(Component component, object data)
         {
@@ -604,60 +660,6 @@ namespace Blessing.Gameplay.Characters
                 AudioManager.Singleton.PlaySoundFx(attackAudios, transform);
         }
 
-        public void HandleSkill(Skill skill)
-        {
-            // Spent Mana to trigger skill
-            if (Mana.SpendManaSpectrum(skill.ManaCost))
-            {
-                skill.Trigger(this);
-
-                // Add/Remove Passive Skill
-                PassiveSkill activePassiveSkill = skill as PassiveSkill;
-                if (activePassiveSkill != null)
-                {
-                    if (!PassiveSkills.Add(activePassiveSkill))
-                    {
-                        PassiveSkills.Remove(activePassiveSkill);
-                        foreach(Buff buff in activePassiveSkill.Buffs)
-                        {
-                            RemoveTrait(buff);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void HandlePassiveSkills()
-        {
-            if (PassiveSkills.Count == 0) return;
-
-            // Debug.Log(gameObject.name + ": entrou HandlePassiveSkills -  PassiveSkills.Count" + PassiveSkills.Count);
-
-            foreach (PassiveSkill passive in PassiveSkills)
-            {
-                // Spend Mana
-
-                if (Mana.SpendManaSpectrum(passive.PassiveManaCost))
-                {
-                    foreach(Buff buff in passive.Buffs)
-                    {
-                        ApplyBuff(buff);
-                    }
-
-                    if (passive.AfterSkill != null)
-                        passive.AfterSkill.Trigger(this);
-                }
-                else
-                {
-                    PassiveSkills.Remove(passive);
-                    foreach(Buff buff in passive.Buffs)
-                    {
-                        RemoveTrait(buff);
-                    }
-                }
-            }
-
-            // Gastar mana e checar duração das passivas
-        }
+        
     }
 }

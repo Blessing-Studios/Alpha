@@ -38,6 +38,10 @@
 
 ### Bugs para arrumar
 
+Apertar tab para mostrar inventário funciona dentro do Menu, precisa criar uma lógica melhor
+
+Sistema de reconect parou de funcionar, precisa rever ele.
+
 Na classe PlayerCharacter, 
 public override bool CheckIfAttackPressed(string nextComboAction)
 Fazer essa função;
@@ -49,6 +53,7 @@ Arrumar a UI para funcionar em todas resoluções
 Quando um jogador cai e reconecta a vida buga, o personagem não regenera mais vida
 
 Personagens que já morreram bugam na Client do Player que entrou na partida depois que ele morreu
+Personagens que morreram começam a andar mortos quando mudam de dono
 
 No modo online, se um bot ataca alguém, os players não host mostram erro
 
@@ -71,3 +76,28 @@ public void GetOwnership(NetworkObject networkObject)
 https://www.youtube.com/watch?v=SMWxCpLvrcc
 
 https://www.youtube.com/watch?v=2ajD1GDbEzA vídeo tempo 46 min
+
+## Menus
+# Single-Player
+    Character-Selection
+        Character-1 
+            Load 
+            Delete 
+        Character-2 
+            *the same options as Character-1* 
+        Character-N 
+            *the same options as Character-1*
+        New-Character
+# Online 
+    *the same options as Single-Player* 
+# Options 
+    Sound 
+        FX 
+        Voices 
+        Music 
+    Controls 
+    Graphics 
+    Resolution 
+    Quality 
+# Path-Notes 
+# Quit 
