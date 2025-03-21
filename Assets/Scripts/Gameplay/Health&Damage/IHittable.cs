@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Blessing.Gameplay.HealthAndDamage
 {
     public interface IHittable

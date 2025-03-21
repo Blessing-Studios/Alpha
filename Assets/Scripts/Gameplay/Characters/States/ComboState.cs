@@ -55,7 +55,7 @@ namespace Blessing.Gameplay.Characters.States
             attackPressedTimer -= Time.deltaTime;
 
             // Precias setar na animação a variável AttackMovement
-            movementController.HandleAttackMovment();
+            movementController.HandleAttackMovement();
 
             string nextComboAction = "";
 

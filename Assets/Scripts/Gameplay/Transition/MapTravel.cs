@@ -41,6 +41,7 @@ namespace Blessing.Gameplay.Transition
             if (collider.TryGetComponent<PlayerCharacter>(out PlayerCharacter character) && character.HasAuthority)
             {
                 character.Network.IsTraveling = true;
+
                 string playerName = GameDataManager.Singleton.PlayerName;
                 string sessionName = GameDataManager.Singleton.GetSessionByScene(mapScene);
 

@@ -68,7 +68,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
 
             target.GetOwnership();
 
-            HitInfo = new HitInfo(projectileSkill.GetSkillDamage(owner.ValueByStat), projectileSkill.DamageClass, projectileSkill.Buffs);
+            HitInfo = new HitInfo(projectileSkill.GetSkillDamage(owner.ValueByStat), projectileSkill.DamageClass, 0f, projectileSkill.Buffs);
             return true;
         }
 

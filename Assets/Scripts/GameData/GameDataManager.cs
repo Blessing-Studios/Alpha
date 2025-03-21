@@ -14,6 +14,7 @@ namespace Blessing.GameData
         public bool IsHost = false; // Temporarário
         // public string SessionName = "";
         public string PlayerName = "";
+        public CharacterData CharacterSelected;
         private Dictionary<string, string> sceneSessionDic = new();
         public List<string> SceneList = new();
         public List<string> SessionList = new();
@@ -36,6 +37,15 @@ namespace Blessing.GameData
             }
 
             IsHost =  false;
+        }
+        public List<CharacterData> GetCharacters()
+        {
+            if (gameData == null)
+            {
+                LoadGame();
+            }
+
+            return gameData.Characters;
         }
 
         public string GetSessionByScene(SceneReference scene)

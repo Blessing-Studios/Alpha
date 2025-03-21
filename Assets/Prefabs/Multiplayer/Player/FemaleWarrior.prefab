@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: InteractRange
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1043140347493080583, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: ImpulseDefinition.ImpulseShape
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1336789277861539600, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: Gravity
       value: -1

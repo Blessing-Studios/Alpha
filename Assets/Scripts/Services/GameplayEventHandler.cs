@@ -2,6 +2,7 @@ using Blessing.Core;
 using Unity.Netcode;
 using System;
 using System.Threading.Tasks;
+using Blessing.Gameplay.Characters;
 
 namespace Blessing.Services
 {
@@ -11,6 +12,7 @@ namespace Blessing.Services
         internal static event Action<NetworkObject> OnNetworkObjectDespawned;
         internal static event Action<NetworkObject, ulong, ulong> OnNetworkObjectOwnershipChanged;
         internal static event Action<string, string> OnStartButtonPressed;
+        internal static event Action<Archetype> OnArchetypeButtonPressed;
         internal static event Action<string, string, SceneReference> OnMapTravelTriggered;
         internal static event Action<SceneReference> OnSinglePlayerButtonPressed;
         internal static event Action OnReturnToMainMenuButtonPressed;
@@ -32,6 +34,10 @@ namespace Blessing.Services
         internal static void StartButtonPressed(string playerName, string sessionName)
         {
             OnStartButtonPressed?.Invoke(playerName, sessionName);
+        }
+        internal static void ArchetypeButtonPressed(Archetype archetypeName)
+        {
+            OnArchetypeButtonPressed?.Invoke(archetypeName);
         }
 
         internal static void MapTravelTriggered(string playerName, string sessionName, SceneReference scene)

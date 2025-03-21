@@ -29,13 +29,6 @@ namespace Blessing.Gameplay.Characters
     [RequireComponent(typeof(CharacterStats))]
     public abstract class Character : MonoBehaviour, IHitter, IHittable, ISkillTrigger
     {
-        protected string characterName;
-        public string CharacterName
-        {
-            get => characterName;
-            protected set => characterName = value;
-        }
-
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public float AttackPressedTimerWindow = 0.2f;
         [field: SerializeField] protected List<CharacterHitAudio> characterHitAudios = new();
@@ -264,13 +257,15 @@ namespace Blessing.Gameplay.Characters
                 int skillDamage = ActiveSkill.GetSkillDamage(Stats.ValueByStat);
 
                 // O dano soma com o do ataque normal e a Penetração é trocada pela pen da skill
-                HitInfo = new HitInfo(DamageAndPen.x + skillDamage, ActiveSkill.DamageClass, ActiveSkill.Buffs, ActiveSkill.HitType);
+                HitInfo = new HitInfo(DamageAndPen.x + skillDamage, ActiveSkill.DamageClass, Stats.Strength / 2, ActiveSkill.Buffs, ActiveSkill.HitType);
 
                 ActiveSkill = null;
             }
             else
             {
-                HitInfo = new HitInfo(DamageAndPen.x, DamageAndPen.y, null, HitType.Slash);
+                // Pegar Damage Multiplicador do CurrentMove
+                // CharacterStateMachine.CurrentMove
+                HitInfo = new HitInfo(DamageAndPen.x, DamageAndPen.y, Stats.Strength / 2, null, HitType.Slash);
             }
 
             TargetList.Add(target);
@@ -323,6 +318,10 @@ namespace Blessing.Gameplay.Characters
 
             //Receive Damage
             Health.ReceiveDamage(appliedDamage);
+
+            Vector3 pushDirection = (transform.position - hitter.transform.position).normalized;
+
+            MovementController.HandlePushBack(pushDirection, 5f);
 
             int health = Health.CurrentHealth;
             if (health > 0)

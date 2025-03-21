@@ -1613,7 +1613,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1847838473}
-  - {fileID: 990171712}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &377327974
@@ -1630,6 +1629,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 330585545}
   VirtualCamera: {fileID: 1130855746}
+  Archetypes:
+  - {fileID: 11400000, guid: 14c35a66fa8c67c4f931d1e89311cdf1, type: 2}
+  - {fileID: 11400000, guid: a3dbda1c820784b448df139ad5fdc07c, type: 2}
   AllTraits: {fileID: 11400000, guid: bf9128c58a929234faff2a8a7c98a157, type: 2}
   AllItems: {fileID: 11400000, guid: 1707cdec420a11448bc0f55285f55b89, type: 2}
   PlayerCharacterList: []
@@ -1642,8 +1644,6 @@ MonoBehaviour:
   <ContainerPrefab>k__BackingField: {fileID: 2964627397090348853, guid: 483ae8fbfb8367b42937bc1c802a421c, type: 3}
   <LooseItemPrefab>k__BackingField: {fileID: 1062098594658658245, guid: 49a326bde239dc945bab5b080513c455, type: 3}
   InventoryItemPooler: {fileID: 1847838472}
-  DamageNumberPooler: {fileID: 990171713}
-  ProjectilePooler: {fileID: 0}
   PlayerConnected: 0
   GroundGravity: -0.05
   Gravity: -0.05
@@ -3147,54 +3147,6 @@ MonoBehaviour:
   FirstSceneToLoad:
     value: {fileID: 11400000, guid: a027d24c8c9429e47ba01597534f142c, type: 2}
   CurrentScene: {fileID: 0}
---- !u!1 &990171711
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 990171712}
-  - component: {fileID: 990171713}
-  m_Layer: 0
-  m_Name: DamageNumberPooler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &990171712
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 990171711}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 377327973}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &990171713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 990171711}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 231a4b9adc0a2a641b844b42db672491, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collectionCheck: 1
-  defaultCapacity: 20
-  maxSize: 100
-  DamageNumberPrefab: {fileID: 7336901896106610742, guid: f1c32115ba5da82488c3697a5b1235d4, type: 3}
 --- !u!1001 &1009292634
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4070,6 +4022,7 @@ GameObject:
   - component: {fileID: 1130855747}
   - component: {fileID: 1130855746}
   - component: {fileID: 1130855745}
+  - component: {fileID: 1130855748}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -4154,6 +4107,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
+--- !u!114 &1130855748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130855743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &1162941314
 GameObject:
   m_ObjectHideFlags: 0
@@ -4716,6 +4692,12 @@ MonoBehaviour:
   dataDirPath: 
   IsHost: 0
   PlayerName: 
+  CharacterSelected:
+    Id: 
+    Name: 
+    ArchetypeId: 0
+    Gears: []
+    Items: []
   SceneList: []
   SessionList: []
 --- !u!1 &1349777006
@@ -5800,7 +5782,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6577536551770996436, guid: b5fbf8417053cf343a54a8bfb1069a55, type: 3}
       propertyPath: playButtonTime
-      value: 638774782818603700
+      value: 638780847854755172
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6913,7 +6895,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -587.5, y: -65}
+  m_AnchoredPosition: {x: -269, y: -65}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1979514077

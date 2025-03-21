@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using Blessing;
+using System.Collections;
 
 [RequireComponent(typeof(CharacterController))]
 public abstract class MovementController : NetworkBehaviour
@@ -111,7 +112,7 @@ public abstract class MovementController : NetworkBehaviour
         direction.x = currentMovement.x;
         direction.y = currentMovement.z;
 
-        characterController.Move( new Vector3
+        characterController.Move(new Vector3
         (
             currentMovement.x * Time.deltaTime * CharacterSpeed,
             currentMovement.y,
@@ -122,9 +123,29 @@ public abstract class MovementController : NetworkBehaviour
         animator.SetFloat(speedHash , characterController.velocity.magnitude);
     }
 
-    protected void HandleColision()
+    protected void HandleCollision()
     {
         
+    }
+
+    private Coroutine impulseMovementCoroutine;
+    protected IEnumerator ImpulseMovement(Vector3 impulse)
+    {
+        float time = 0;
+        float impulseSpeed = impulse.magnitude;
+        float impulseTime = impulseSpeed / 10;
+        Vector3 direction = impulse.normalized;
+
+        while (time < impulseTime)
+        {
+            impulseSpeed = Mathf.Lerp(impulseSpeed, 0, time / impulseTime);
+            characterController.Move(impulseSpeed * direction * Time.deltaTime);
+            time += Time.deltaTime;
+
+            yield return null;
+        }
+
+        StopAllCoroutines();
     }
     protected virtual void HandleFacing()
     {
@@ -137,12 +158,16 @@ public abstract class MovementController : NetworkBehaviour
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
         }
     }
-
-    public virtual void HandlePushBack( Vector3 pushMovement)
+    public virtual void HandlePushBack(Vector3 direction, float impact)
     {
-        // characterController.Move(pushMovement);
+        if (impulseMovementCoroutine != null)
+        {
+            StopCoroutine(impulseMovementCoroutine);
+        }
+
+        Coroutine coroutine = StartCoroutine(ImpulseMovement(direction * impact));
     }
-    public virtual void HandleAttackMovment()
+    public virtual void HandleAttackMovement()
     {
         Quaternion rotation = this.gameObject.transform.rotation;
         characterController.Move(rotation * AttackMovement * Time.deltaTime * CharacterSpeed);

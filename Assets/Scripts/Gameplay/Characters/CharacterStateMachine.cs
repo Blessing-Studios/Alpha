@@ -55,9 +55,7 @@ namespace Blessing.Gameplay.Characters
 
             if (MovementController == null)
                 MovementController = GetComponent<MovementController>();
-        }
-        protected override void Start()
-        {
+
             IdleState = new IdleState(this, 0);
             ComboState = new ComboState(this, 1);
             TakeHitState = new TakeHitState(this, 2);
@@ -70,7 +68,9 @@ namespace Blessing.Gameplay.Characters
             StateList.Add(DeadState);
 
             mainStateType = IdleState;
-
+        }
+        protected override void Start()
+        {
             base.Start();
 
             // In case IdleState is not the current one, call current State

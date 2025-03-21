@@ -17,6 +17,7 @@ using Unity.VisualScripting;
 
 namespace Blessing.Player
 {
+    [RequireComponent(typeof(CinemachineImpulseSource))]
     [RequireComponent(typeof(PlayerInput))]
     [RequireComponent(typeof(Interactor))]
     public class PlayerCharacter : Character
@@ -35,6 +36,7 @@ namespace Blessing.Player
         private PlayerInput playerInput;
         public Interactor Interactor { get; private set; }
         private bool isPlayerCharacterInitialized = false;
+        private CinemachineImpulseSource impulseSource;
         [SerializeField] private bool canGiveInputs = false;
         public bool CanGiveInputs { get { return  canGiveInputs; } }
         public void SetCanGiveInputs (bool canGiveInputs)
@@ -77,6 +79,8 @@ namespace Blessing.Player
             Interactor = GetComponent<Interactor>();
 
             Network = GetComponent<PlayerCharacterNetwork>();
+
+            impulseSource = GetComponent<CinemachineImpulseSource>();
 
             GameManager.Singleton.PlayerCharacterList.Add(this);
         }
@@ -234,7 +238,13 @@ namespace Blessing.Player
         {
             bool baseValue = base.Hit(target);
 
-            if (HasAuthority && baseValue) target.GetOwnership();
+            if (HasAuthority && baseValue)
+            {
+                if (CharacterStateMachine.CurrentMove.ShakeEffect != null)
+                    GameManager.Singleton.CameraShake(impulseSource, CharacterStateMachine.CurrentMove.ShakeEffect);
+                    
+                target.GetOwnership();
+            }
 
             return baseValue;
         }

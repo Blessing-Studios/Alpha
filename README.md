@@ -24,7 +24,7 @@
 
 ### Observações
     Atualmente, a UI do inventário do Player e a UI do inventário do resto está separada, tab fecha o inventário do player, e interagir fecha o inventário do resto
-
+    
     Network Animator tem problema para triggar a mesma animação várias vezes, contornar esse problema
 
     Separar a lógica das NetWorkBehaviors em duas classes, uma que é MonoBehaviors e outra que é NetworkBehaviors
@@ -37,6 +37,10 @@
     
 
 ### Bugs para arrumar
+Erro CharacterNetwork.SetNextStateByIndex
+
+Erro: Coroutine couldn't be started because the the game object is inactive!
+    Erro acontece quando o segundo jogador entra no novo mapa
 
 Apertar tab para mostrar inventário funciona dentro do Menu, precisa criar uma lógica melhor
 
@@ -76,6 +80,8 @@ public void GetOwnership(NetworkObject networkObject)
 https://www.youtube.com/watch?v=SMWxCpLvrcc
 
 https://www.youtube.com/watch?v=2ajD1GDbEzA vídeo tempo 46 min
+
+https://www.youtube.com/watch?v=gO4jnaxvMjk Tutorial para fazer botões usando sliced e tiled images
 
 ## Menus
 # Single-Player

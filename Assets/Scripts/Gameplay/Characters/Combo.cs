@@ -21,6 +21,9 @@ namespace Blessing.Gameplay.Characters
         [Tooltip("What direction button need to be pressed")][ScriptableObjectDropdown(typeof(InputDirectionType))] public ScriptableObjectReference Direction;
         [SerializeField] public InputDirectionType TriggerDirection { get { return Direction.value as InputDirectionType; } }
         [SerializeField] public float ExitEarlier = 0.1f;
+        [SerializeField] public float DamageMultiplier = 1.0f;
+        [SerializeField] public float Impact = 1.0f;
+        [SerializeField] public CameraShakeEffect ShakeEffect;
         [SerializeField] public bool CanUseSkill = false; // Teste
     }
 

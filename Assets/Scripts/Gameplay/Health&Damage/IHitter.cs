@@ -1,7 +1,10 @@
+using UnityEngine;
+
 namespace Blessing.Gameplay.HealthAndDamage
 {
     public interface IHitter
     {
+        public Transform transform { get; }
         public bool HasAuthority { get; }
         public HitInfo HitInfo { get; }
 

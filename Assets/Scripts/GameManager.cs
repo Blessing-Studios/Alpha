@@ -17,6 +17,7 @@ using UnityEngine.VFX;
 using Blessing.Services;
 using Blessing.Core.ObjectPooling;
 using Blessing.Gameplay;
+using Blessing.Gameplay.Characters;
 
 namespace Blessing
 {
@@ -25,6 +26,7 @@ namespace Blessing
         public static GameManager Singleton { get; private set; }
         public Camera MainCamera;
         public CinemachineCamera VirtualCamera;
+        public Archetype[] Archetypes;
         public TraitList AllTraits;
         public ItemList AllItems;
         public List<PlayerCharacter> PlayerCharacterList = new();
@@ -43,15 +45,13 @@ namespace Blessing
         [Header("Pooling")]
         public InventoryItemPooler InventoryItemPooler;
         public IObjectPool<InventoryItem> InventoryItemPool;
-        public DamageNumberPooler DamageNumberPooler;
-        public IObjectPool<DamageNumber> DamageNumberPool;
-        public ProjectilePooler ProjectilePooler;
-        public IObjectPool<Projectile> ProjectilePool;
         [Header("Multiplayer")]
         public bool PlayerConnected = false;
         [Header("Misc")]
+        public float GlobalShakeForce = 1f;
         public float GroundGravity = -0.2f;
         public float Gravity = -0.8f;
+        private CinemachineImpulseListener impulseListener;
         protected virtual void Awake()
         {
             if (Singleton != null && Singleton != this)
@@ -85,15 +85,10 @@ namespace Blessing
             if (InventoryItemPooler == null)
                 Debug.LogError(gameObject.name + ": Missing InventoryItemPooler");
 
-            if (DamageNumberPooler == null)
-                Debug.LogError(gameObject.name + ": Missing DamageNumberPooler");
-
-            // if (ProjectilePooler == null)
-            //     Debug.LogError(gameObject.name + ": Missing ProjectilePooler");
-
             InventoryItemPool = InventoryItemPooler.Pool;
-            DamageNumberPool = DamageNumberPooler.Pool;
-            // ProjectilePool = ProjectilePooler.Pool;
+
+            // Se CinemachineImpulseListener não for encontrado vai dar erro
+            impulseListener = VirtualCamera.GetComponent<CinemachineImpulseListener>();
         }
 
         void Update()
@@ -169,6 +164,16 @@ namespace Blessing
             return PlayerSpawnLocations[index];
         }
 
+        public Archetype GetArchetypeById(int id)
+        {
+            foreach (Archetype archetype in Archetypes)
+            {
+                if (archetype.Id == id) return archetype;
+            }
+
+            return null;
+        }
+
         internal InventoryItem FindInventoryItem(InventoryItemData data, bool createNew = true)
         {
             return InventoryController.FindInventoryItem(data, createNew);
@@ -177,7 +182,7 @@ namespace Blessing
         {
             if (PlayerConnected && GameDataManager.Singleton.IsHost && SceneStarter.HasStarted)
             {
-                foreach(SessionOwnerNetworkObjectSpawner spawner in ObjectSpawners)
+                foreach (SessionOwnerNetworkObjectSpawner spawner in ObjectSpawners)
                 {
                     spawner.Spawn();
                 }
@@ -196,7 +201,7 @@ namespace Blessing
                 player.Initialization();
             }
 
-            foreach(PlayerCharacter playerCharacter in PlayerCharacterList)
+            foreach (PlayerCharacter playerCharacter in PlayerCharacterList)
             {
                 playerCharacter.InitializePlayerChar();
             }
@@ -275,16 +280,6 @@ namespace Blessing
             InventoryItemPool.Release(pooledObject);
         }
 
-        public DamageNumber GetDamageNumber(Vector3 position, int damage)
-        {
-            return DamageNumberPool.Get().Initialize(position, damage);
-        }
-
-        public void ReleaseDamageNumber(DamageNumber pooledObject)
-        {
-            DamageNumberPool.Release(pooledObject);
-        }
-
         public void ClearGameStates()
         {
             playersInitialized = false;
@@ -303,6 +298,25 @@ namespace Blessing
 
             // Clean Other Pools
             PoolManager.Singleton.ClearAllPools();
+        }
+        public void CameraShake(CinemachineImpulseSource impulseSource, CameraShakeEffect shakeEffect = null)
+        {
+            float force = 1f;
+
+            if (shakeEffect != null)
+            {
+                // Change Impulse Source Settings
+                impulseSource.ImpulseDefinition = shakeEffect.ImpulseDefinition;
+                impulseSource.DefaultVelocity = shakeEffect.DefaultVelocity;
+                force = shakeEffect.ImpactForce;
+
+                // Change Impulse Listener Settings
+                impulseListener.ReactionSettings.AmplitudeGain = shakeEffect.ListenerAmplitude;
+                impulseListener.ReactionSettings.FrequencyGain = shakeEffect.ListenerFrequency;
+                impulseListener.ReactionSettings.Duration = shakeEffect.ListenerDuration;
+            }
+            
+            impulseSource.GenerateImpulse(GlobalShakeForce * force);
         }
     }
 }

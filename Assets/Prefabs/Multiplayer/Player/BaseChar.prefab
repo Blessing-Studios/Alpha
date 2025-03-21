@@ -293,6 +293,7 @@ GameObject:
   - component: {fileID: 2259359815306742575}
   - component: {fileID: -6873965126545705189}
   - component: {fileID: 2959266363100497720}
+  - component: {fileID: 1043140347493080583}
   m_Layer: 3
   m_Name: BaseChar
   m_TagString: Player
@@ -703,12 +704,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   AttackPressedTimerWindow: 0.2
+  characterHitAudios: []
   actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
   CharacterTraits: []
-  Skills: []
+  CharacterSkills: []
   <ActiveSkill>k__BackingField: {fileID: 0}
   <SkillOrigin>k__BackingField: {fileID: 6931712906820337884}
   SpawnLocation: {x: 0, y: 0, z: 0}
@@ -728,6 +730,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   <ShowDebug>k__BackingField: 0
+  CharacterName:
+    m_InternalValue:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0016: 0
+        byte0017: 0
+        byte0018: 0
+        byte0019: 0
+        byte0020: 0
+        byte0021: 0
+        byte0022: 0
+        byte0023: 0
+        byte0024: 0
+        byte0025: 0
+        byte0026: 0
+        byte0027: 0
+        byte0028: 0
+        byte0029: 0
+  isTraveling:
+    m_InternalValue: 0
   stateIndex:
     m_InternalValue: 1
   comboMoveIndex:
@@ -913,7 +952,8 @@ MonoBehaviour:
   regen: 0
   decay: 0
   waitTime: 0.5
-  isAlive: 1
+  isAlive:
+    m_InternalValue: 1
   <MaxWounds>k__BackingField: 0
   woundHealth: 25
   wounds: 0
@@ -934,8 +974,22 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
-  <MoveIndex>k__BackingField: 0
-  <ComboIndex>k__BackingField: 0
+  <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
+  <CurrentMove>k__BackingField:
+    Name: 
+    Description: 
+    AnimationClip: {fileID: 0}
+    AudioClips: []
+    AnimationParam: 
+    Action:
+      value: {fileID: 0}
+    Direction:
+      value: {fileID: 0}
+    ExitEarlier: 0.1
+    DamageMultiplier: 1
+    Impact: 1
+    ScreenShakeForce: 1
+    CanUseSkill: 0
   combos:
   - {fileID: 11400000, guid: f8d096a5c0289fa4ba19f62f4eb3ed78, type: 2}
 --- !u!114 &-6873965126545705189
@@ -974,6 +1028,59 @@ MonoBehaviour:
   targetPositionOffset: {x: 0, y: 1, z: 0}
   fadeSpeed: 1
   objectsBlockingView: []
+--- !u!114 &1043140347493080583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ImpulseDefinition:
+    ImpulseChannel: 1
+    ImpulseShape: 2
+    CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    ImpulseDuration: 0.2
+    ImpulseType: 0
+    DissipationRate: 0.25
+    RawSignal: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    RepeatMode: 0
+    Randomize: 1
+    TimeEnvelope:
+      AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackTime: 0
+      SustainTime: 0.2
+      DecayTime: 0.7
+      ScaleWithImpact: 1
+      HoldForever: 0
+    ImpactRadius: 100
+    DirectionMode: 0
+    DissipationMode: 2
+    DissipationDistance: 100
+    PropagationSpeed: 343
+  DefaultVelocity: {x: 0, y: -1, z: 0}
 --- !u!1 &6275102321004740793
 GameObject:
   m_ObjectHideFlags: 0

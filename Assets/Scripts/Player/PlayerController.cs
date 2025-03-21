@@ -16,6 +16,7 @@ namespace Blessing.Player
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public NetworkObject CharacterToSpawn;
+        private CharacterData characterData;
         public Vector3 SpawnLocation;
         [field: SerializeField] public PlayerCharacter PlayerCharacter { get; private set; }
         protected NetworkVariable<int> m_TickToSpawnLoot = new NetworkVariable<int>();
@@ -58,6 +59,8 @@ namespace Blessing.Player
             StopAllCoroutines();
 
             GameManager.Singleton.Players.Remove(this);
+
+            GameDataManager.Singleton.SaveGame();
         }
 
         private void OnPlayerNameValueChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
@@ -81,7 +84,16 @@ namespace Blessing.Player
         void Awake()
         {
             if (ShowDebug) Debug.Log(gameObject.name + " Awake");
+
+            if (GameDataManager.Singleton.CharacterSelected == null)
+            {
+                Debug.LogError(gameObject.name + ": CharacterSelected is missing on GameDataManager");
+            }
+
+
             GameManager.Singleton.AddPlayer(this);
+
+            characterData = GameDataManager.Singleton.CharacterSelected;
         }
 
         void Start()
@@ -143,13 +155,22 @@ namespace Blessing.Player
             if (SpawnLocation == null)
                 Debug.LogError(gameObject.name + " SpawnLocation is missing.");
 
-            var spawnedNetworkObject = CharacterToSpawn.InstantiateAndSpawn(NetworkManager, ownerClientId: OwnerClientId);
+            if (characterData == null)
+            {
+                Debug.Log(gameObject.name + ": characterData can't be null to spawn character");
+            }
+
+            Archetype archetype = GameManager.Singleton.GetArchetypeById(characterData.ArchetypeId);
+
+            var spawnedNetworkObject = archetype.Prefab.InstantiateAndSpawn(NetworkManager, ownerClientId: OwnerClientId);
 
             PlayerCharacter = spawnedNetworkObject.GetComponent<PlayerCharacter>();
             PlayerCharacter.SpawnLocation = SpawnLocation;
             PlayerCharacter.SetPlayerOwnerName(GetPlayerName());
 
             PlayerCharacter.InitializePlayerChar();
+
+            PlayerCharacter.Network.CharacterName.Value = new FixedString32Bytes(characterData.Name);
 
             m_TickToSpawnLoot.Value = SpawnTime;
 
@@ -208,6 +229,22 @@ namespace Blessing.Player
             GameManager.Singleton.VirtualCamera.LookAt = PlayerCharacter.transform;
             GameManager.Singleton.VirtualCamera.Target.TrackingTarget = PlayerCharacter.transform;
         }
+        public void UpdateSceneSessionList(SceneReference scene, string session)
+        {
+            for (int i = 0; i < SceneSessionNetworkList.Count; i++)
+            {
+                if (SceneSessionNetworkList[i].Scene == scene.SceneName)
+                {
+                    SceneSessionNetworkList.RemoveAt(i);
+                    // SceneSessionLocalList.RemoveAt(i);
+                    break;
+                }
+            }
+
+            MapTravelData data = new(scene.SceneName, session);
+            SceneSessionNetworkList.Add(data);
+            // SceneSessionLocalList.Add(data);
+        }
         public bool ValidateOwner()
         {
             return GameDataManager.Singleton.ValidateOwner(GetPlayerName());
@@ -225,6 +262,29 @@ namespace Blessing.Player
             if (ShowDebug) Debug.Log(gameObject.name + " Save from Player");
             playerData.Name = GetPlayerName();
 
+            foreach(CharacterData data in playerData.Characters)
+            {
+                if (data.Id == characterData.Id)
+                {
+                }
+            }
+
+            int characterId = -1;
+            for (int i = 0; i < playerData.Characters.Count; i++)
+            {
+                if (playerData.Characters[i].Id == characterData.Id)
+                {
+                    characterId = i;
+                    break;
+                }
+            }
+
+            if (characterId == -1)
+            {
+                Debug.LogError(gameObject + ": characterData not found in save file");
+                return;
+            }
+
             gears = new();
             foreach (CharacterEquipment equipment in PlayerCharacter.Gear.Equipments)
             {
@@ -232,9 +292,7 @@ namespace Blessing.Player
                     gears.Add(equipment.InventoryItem.Data);
             }
 
-            playerData.Gears = gears;
-
-
+            playerData.Characters[characterId].Gears = gears;
 
             items = new();
 
@@ -244,9 +302,9 @@ namespace Blessing.Player
                     items.Add(inventoryItem.Data);
                 }
 
-            playerData.Items = items;
+            playerData.Characters[characterId].Items = items;
 
-            if (ShowDebug) Debug.Log(gameObject.name + " playerData.Name " + playerData.Name);
+            if (ShowDebug) Debug.Log(gameObject.name + " characterData Save finished " + characterData.Name);
         }
         public void LoadData<T>(T gameData) where T : Data
         {
@@ -256,27 +314,21 @@ namespace Blessing.Player
 
             PlayerData playerData = gameData as PlayerData;
 
-            gears = playerData.Gears;
-            items = playerData.Items;
-
-            if (ShowDebug) Debug.Log(gameObject.name + " playerData.Name " + playerData.Name);
-        }
-
-        public void UpdateSceneSessionList(SceneReference scene, string session)
-        {
-            for (int i = 0; i < SceneSessionNetworkList.Count; i++)
+            foreach(CharacterData data in playerData.Characters)
             {
-                if (SceneSessionNetworkList[i].Scene == scene.SceneName)
+                if (data.Id == characterData.Id)
                 {
-                    SceneSessionNetworkList.RemoveAt(i);
-                    // SceneSessionLocalList.RemoveAt(i);
-                    break;
+                    gears = data.Gears;
+                    items = data.Items;
+
+                    if (ShowDebug) Debug.Log(gameObject.name + " characterData Load finished " + data.Name);
+
+                    return;
                 }
             }
 
-            MapTravelData data = new(scene.SceneName, session);
-            SceneSessionNetworkList.Add(data);
-            // SceneSessionLocalList.Add(data);
+            // Send error mensage about not finding characterData in save file
+            Debug.LogError(gameObject.name + ": CharacterData not found in save file");
         }
     }
 }

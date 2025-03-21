@@ -4,6 +4,7 @@ using System;
 using Blessing.Gameplay.Characters.Traits;
 using System.Collections.Generic;
 using UnityEngine.VFX;
+using Unity.Collections;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -11,11 +12,12 @@ namespace Blessing.Gameplay.Characters
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public Character Character { get; private set; }
+        public NetworkVariable<FixedString32Bytes> CharacterName = new();
         [field: SerializeField] protected NetworkVariable<bool> isTraveling = new NetworkVariable<bool>(false);
         public bool IsTraveling { get { return isTraveling.Value; } set { isTraveling.Value = value;}}
 
         [field: SerializeField]
-        protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(1,
+        protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(0,
                 NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public int StateIndex { get { return stateIndex.Value; } }
 

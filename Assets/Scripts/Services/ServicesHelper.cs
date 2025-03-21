@@ -131,14 +131,18 @@ namespace Blessing.Services
 
         async void OnSinglePlayerButtonPressed(SceneReference scene)
         {   
-            
-            // Quando host carregar a cena, todos os clientes carregarão junto.
-            await UnitySceneManager.LoadSceneAsync(scene.SceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+            Debug.Log(gameObject.name + ": UnloadSceneAsync - " + SceneManager.Singleton.CurrentScene.SceneName);
+            await UnitySceneManager.UnloadSceneAsync(SceneManager.Singleton.CurrentScene.SceneName);
 
-            NetworkManager.Singleton.NetworkConfig.NetworkTopology = NetworkTopologyTypes.ClientServer;   
-            // Descarregar a cena presente, que deve ser o menu.
-            SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
+            NetworkManager.Singleton.NetworkConfig.NetworkTopology = NetworkTopologyTypes.ClientServer;
+
             ConnectToSinglePlayerSession();
+
+            // If Host, load new Scene
+            if (GameDataManager.Singleton.IsHost)
+            {
+                await UnitySceneManager.LoadSceneAsync(scene.SceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+            }
         }
 
         private void ConnectToSinglePlayerSession()
