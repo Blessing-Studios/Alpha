@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Blessing.Gameplay.HealthAndDamage
+namespace Blessing.HealthAndDamage
 {
     public interface IHitter
     {

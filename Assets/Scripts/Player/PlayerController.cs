@@ -12,17 +12,22 @@ using UnityEngine;
 
 namespace Blessing.Player
 {
+    [RequireComponent(typeof(PlayerHUD))]
     public class PlayerController : NetworkBehaviour, IDataPersistence
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public NetworkObject CharacterToSpawn;
         private CharacterData characterData;
         public Vector3 SpawnLocation;
+        public PlayerHUD PlayerHUD;
         [field: SerializeField] public PlayerCharacter PlayerCharacter { get; private set; }
         protected NetworkVariable<int> m_TickToSpawnLoot = new NetworkVariable<int>();
         public int SpawnTime = 20;
         [field: SerializeField] private List<InventoryItemData> gears = new();
         private List<InventoryItemData> items = new();
+        private int rankScore;
+        private int rankStrike;
+        private List<int> questsCompleted = new();
         [Header("Map Travel Info ")]
         public NetworkList<MapTravelData> SceneSessionNetworkList = new NetworkList<MapTravelData>
             (
@@ -94,6 +99,8 @@ namespace Blessing.Player
             GameManager.Singleton.AddPlayer(this);
 
             characterData = GameDataManager.Singleton.CharacterSelected;
+
+            PlayerHUD = GetComponent<PlayerHUD>();
         }
 
         void Start()
@@ -108,7 +115,6 @@ namespace Blessing.Player
                 GameManager.Singleton.PlayerController = this;
                 GameManager.Singleton.InitializePlayers();
             }
-
         }
 
         public void Initialization()
@@ -169,6 +175,7 @@ namespace Blessing.Player
             PlayerCharacter.SetPlayerOwnerName(GetPlayerName());
 
             PlayerCharacter.InitializePlayerChar();
+            PlayerCharacter.Adventurer.Initialize(rankScore, rankStrike, questsCompleted);
 
             PlayerCharacter.Network.CharacterName.Value = new FixedString32Bytes(characterData.Name);
 
@@ -212,7 +219,6 @@ namespace Blessing.Player
 
             Inventory lootInventory = PlayerCharacter.Gear.Inventory;
             if (lootInventory == null) return;
-
             
             foreach (InventoryItemData item in items)
             {
@@ -226,6 +232,8 @@ namespace Blessing.Player
 
         private void SetPlayer()
         {
+            PlayerHUD.Initialize(PlayerCharacter);
+            
             GameManager.Singleton.VirtualCamera.LookAt = PlayerCharacter.transform;
             GameManager.Singleton.VirtualCamera.Target.TrackingTarget = PlayerCharacter.transform;
         }
@@ -262,24 +270,17 @@ namespace Blessing.Player
             if (ShowDebug) Debug.Log(gameObject.name + " Save from Player");
             playerData.Name = GetPlayerName();
 
-            foreach(CharacterData data in playerData.Characters)
-            {
-                if (data.Id == characterData.Id)
-                {
-                }
-            }
-
-            int characterId = -1;
+            int characterIndex = -1;
             for (int i = 0; i < playerData.Characters.Count; i++)
             {
                 if (playerData.Characters[i].Id == characterData.Id)
                 {
-                    characterId = i;
+                    characterIndex = i;
                     break;
                 }
             }
 
-            if (characterId == -1)
+            if (characterIndex == -1)
             {
                 Debug.LogError(gameObject + ": characterData not found in save file");
                 return;
@@ -292,7 +293,7 @@ namespace Blessing.Player
                     gears.Add(equipment.InventoryItem.Data);
             }
 
-            playerData.Characters[characterId].Gears = gears;
+            playerData.Characters[characterIndex].Gears = gears;
 
             items = new();
 
@@ -302,7 +303,11 @@ namespace Blessing.Player
                     items.Add(inventoryItem.Data);
                 }
 
-            playerData.Characters[characterId].Items = items;
+            playerData.Characters[characterIndex].Items = items;
+
+            playerData.Characters[characterIndex].RankScore = PlayerCharacter.Adventurer.Rank.Score;
+            playerData.Characters[characterIndex].RankStrike = PlayerCharacter.Adventurer.Rank.Strike;
+            playerData.Characters[characterIndex].QuestsCompleted = PlayerCharacter.Adventurer.QuestsCompleted;
 
             if (ShowDebug) Debug.Log(gameObject.name + " characterData Save finished " + characterData.Name);
         }
@@ -320,6 +325,9 @@ namespace Blessing.Player
                 {
                     gears = data.Gears;
                     items = data.Items;
+                    rankScore = data.RankScore;
+                    rankStrike = data.RankStrike;
+                    questsCompleted = data.QuestsCompleted;
 
                     if (ShowDebug) Debug.Log(gameObject.name + " characterData Load finished " + data.Name);
 

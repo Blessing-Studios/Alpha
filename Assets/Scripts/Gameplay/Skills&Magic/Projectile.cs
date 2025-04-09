@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Blessing.Core.ObjectPooling;
 using Blessing.Gameplay.Characters;
-using Blessing.Gameplay.HealthAndDamage;
+using Blessing.HealthAndDamage;
 using UnityEngine;
 using UnityEngine.Pool;
 

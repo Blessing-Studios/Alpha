@@ -8,15 +8,17 @@ using UnityEngine;
 using Unity.Netcode;
 using Unity.Collections;
 using UnityEngine.InputSystem;
-using Blessing.Gameplay.HealthAndDamage;
+using Blessing.HealthAndDamage;
 using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.TradeAndInventory;
 using NUnit.Framework;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
+using Blessing.Gameplay.Guild;
 
 namespace Blessing.Player
 {
+    [RequireComponent(typeof(Adventurer))]
     [RequireComponent(typeof(CinemachineImpulseSource))]
     [RequireComponent(typeof(PlayerInput))]
     [RequireComponent(typeof(Interactor))]
@@ -37,6 +39,7 @@ namespace Blessing.Player
         public Interactor Interactor { get; private set; }
         private bool isPlayerCharacterInitialized = false;
         private CinemachineImpulseSource impulseSource;
+        public Adventurer Adventurer;
         [SerializeField] private bool canGiveInputs = false;
         public bool CanGiveInputs { get { return  canGiveInputs; } }
         public void SetCanGiveInputs (bool canGiveInputs)
@@ -81,6 +84,8 @@ namespace Blessing.Player
             Network = GetComponent<PlayerCharacterNetwork>();
 
             impulseSource = GetComponent<CinemachineImpulseSource>();
+
+            Adventurer = GetComponent<Adventurer>();
 
             GameManager.Singleton.PlayerCharacterList.Add(this);
         }

@@ -23,6 +23,8 @@
             Auto Sync Transforms -> False
 
 ### Observações
+    Precisa adicionar validação para quanto pegar a arma
+    
     Atualmente, a UI do inventário do Player e a UI do inventário do resto está separada, tab fecha o inventário do player, e interagir fecha o inventário do resto
     
     Network Animator tem problema para triggar a mesma animação várias vezes, contornar esse problema
@@ -82,6 +84,9 @@ https://www.youtube.com/watch?v=SMWxCpLvrcc
 https://www.youtube.com/watch?v=2ajD1GDbEzA vídeo tempo 46 min
 
 https://www.youtube.com/watch?v=gO4jnaxvMjk Tutorial para fazer botões usando sliced e tiled images
+
+https://www.youtube.com/watch?v=CFcGRE1DJRQ efeito de Blur
+https://github.com/lukakldiashvili/Unified-Universal-Blur?tab=readme-ov-file#limitations
 
 ## Menus
 # Single-Player

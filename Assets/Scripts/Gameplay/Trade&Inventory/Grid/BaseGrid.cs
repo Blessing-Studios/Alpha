@@ -18,7 +18,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         [field: SerializeField] public RectTransform ItemHighlight { get; protected set; }
         [field: SerializeField] public Vector2Int? HighlightPosition { get; protected set; } 
         [field: SerializeField] public bool IsOpen { get; protected set; }
-        [SerializeField] protected NetworkObject looseItemPrefab;
+        // [SerializeField] protected NetworkObject looseItemPrefab;
 
         protected virtual void Awake()
         {

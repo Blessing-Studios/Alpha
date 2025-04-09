@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aa14803ee9d2be4e9c7a6d88b7c62c3, type: 3}
+  m_Name: QuestTest 2
+  m_EditorClassIdentifier: 
+  Id: 2
+  Name: QuestTest2
+  Label: Quest Teste 2
+  Description: Quest Teste de pegar item
+  IsCompleted: 0
+  IsActive: 0
+  KillObjectives:
+  - IsCompleted: 0
+    CanComplete: 0
+    Trophies:
+    - {fileID: 11400000, guid: 708fbf99de0e34d44b719ec8c7022b39, type: 2}
+    Quantity: 3
+  Rewards:
+  - {fileID: 11400000, guid: 2c1d6d1ac841fc54c910e7dc41b339da, type: 2}

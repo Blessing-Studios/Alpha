@@ -283,6 +283,7 @@ GameObject:
   - component: {fileID: 3296479451506363367}
   - component: {fileID: 1736910387813517896}
   - component: {fileID: 6483174246542211240}
+  - component: {fileID: 7578142494862022236}
   - component: {fileID: 8376207516185148171}
   - component: {fileID: 4936700350840750799}
   - component: {fileID: 1336789277861539600}
@@ -334,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3752516906
+  GlobalObjectIdHash: 3936908184
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 2
@@ -690,6 +691,19 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: -0.02, z: 0}
+--- !u!114 &7578142494862022236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2063852164ba38346807080a3b93e562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &8376207516185148171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -715,6 +729,7 @@ MonoBehaviour:
   <SkillOrigin>k__BackingField: {fileID: 6931712906820337884}
   SpawnLocation: {x: 0, y: 0, z: 0}
   <Network>k__BackingField: {fileID: 0}
+  Adventurer: {fileID: 0}
   canGiveInputs: 0
 --- !u!114 &4936700350840750799
 MonoBehaviour:
@@ -958,6 +973,7 @@ MonoBehaviour:
   woundHealth: 25
   wounds: 0
   OnReceiveDamage: {fileID: 0}
+  OnHealthChange: {fileID: 11400000, guid: 3bbd1987fc8c19145b088bcac9f1f0c8, type: 2}
 --- !u!114 &2259359815306742575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -987,8 +1003,8 @@ MonoBehaviour:
       value: {fileID: 0}
     ExitEarlier: 0.1
     DamageMultiplier: 1
-    Impact: 1
-    ScreenShakeForce: 1
+    ImpactMultiplier: 1
+    ShakeEffect: {fileID: 0}
     CanUseSkill: 0
   combos:
   - {fileID: 11400000, guid: f8d096a5c0289fa4ba19f62f4eb3ed78, type: 2}

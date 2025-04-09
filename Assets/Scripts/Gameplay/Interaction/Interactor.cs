@@ -4,13 +4,6 @@ using UnityEngine.InputSystem;
 
 namespace Blessing.Gameplay.Interation
 {
-    interface IInteractable
-    {
-        public Transform transform { get; }
-        public void Interact(Interactor interactor);
-        public bool CanInteract { get;}
-    }
-
     public class Interactor : MonoBehaviour
     {
         public Transform InteractorSource;
@@ -39,13 +32,22 @@ namespace Blessing.Gameplay.Interation
                 }
             }
 
-            IInteractable closest = GetClosest(InteractorSource.position, interactables);
-
-            if (closest != null)
+            if (interactables.Count > 1)
             {
-                currentInteracting = closest;
-                currentInteracting.Interact(this);
+                GameManager.Singleton.ContextDropDownMenu.AddInteractables(interactables, this);
             }
+            else if (interactables.Count == 1)
+            {
+                interactables[0].Interact(this);
+            }
+
+            // IInteractable closest = GetClosest(InteractorSource.position, interactables);
+
+            // if (closest != null)
+            // {
+            //     currentInteracting = closest;
+            //     currentInteracting.Interact(this);
+            // }
         }
 
         private IInteractable GetClosest(Vector3 startPosition, List<IInteractable> interactables)

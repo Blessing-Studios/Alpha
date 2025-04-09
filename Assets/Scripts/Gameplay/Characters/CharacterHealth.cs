@@ -1,13 +1,12 @@
 using Blessing.Gameplay.Characters;
-using Blessing.Gameplay.HealthAndDamage;
+using Blessing.HealthAndDamage;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using System;
-using NUnit.Framework;
 using Blessing.Gameplay.Characters.Traits;
 using Blessing.Core.GameEventSystem;
+using System;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -15,7 +14,6 @@ namespace Blessing.Gameplay.Characters
     {
         // Tentar criar a classe sem usar uma MonoBehaviour
         [field: SerializeField] public bool ShowDebug { get; private set; }
-        public event EventHandler OnTakeDamage;
 
         [Header("Health Settings")]
         [Tooltip("Current health points of the character.")]
@@ -50,6 +48,7 @@ namespace Blessing.Gameplay.Characters
 
         [Header("Events")]
         public GameEvent OnReceiveDamage;
+        public GameEvent OnHealthChange;
         private bool isHealthInitialized = false;
         // Wounds are the subDivision of the HeathPool, they are like block of health
         // If a character loose health equal to woundHealth, the character will loose Max health equal to woundHealth
@@ -58,7 +57,7 @@ namespace Blessing.Gameplay.Characters
         // Start is called before the first frame update
         void Awake()
         {
-            OnTakeDamage += HandleOnTakeDamage;
+            
         }
         void Start()
         {
@@ -141,7 +140,7 @@ namespace Blessing.Gameplay.Characters
             return woundHealth;
         }
 
-        public float GethealthPercent()
+        public float GetHealthPercent()
         {
             return (float)health.Value / OriginalMaxHealth;
         }
@@ -173,30 +172,32 @@ namespace Blessing.Gameplay.Characters
             healthValue -= damageAmount;
 
             // arrumar essa parte para considerar o netcode
-            if (healthValue < (wounds - 1) * woundHealth)
-            {
-                wounds--;
-                maxHealth -= woundHealth;
-            }
+            // TODO
+
+            
+            
+            // if (healthValue < (wounds - 1) * woundHealth)
+            // {
+            //     wounds--;
+            //     maxHealth -= woundHealth;
+            // }
 
             // Don't let health be negative
             if (healthValue < 0) healthValue = 0;
+
+            wounds = Mathf.CeilToInt((float) healthValue / woundHealth);
+            maxHealth = woundHealth * wounds;
 
             health.Value = healthValue;
             if (ShowDebug) Debug.Log(gameObject.name + " damageAmount: " + damageAmount);
             if (ShowDebug) Debug.Log(gameObject.name + " healthValue: " + healthValue);
 
-            OnTakeDamage?.Invoke(this, EventArgs.Empty);
-
             // Raise Events
             if (OnReceiveDamage != null)
                 OnReceiveDamage.Raise(this, damageAmount);
-        }
 
-        public void HandleOnTakeDamage(object sender, System.EventArgs eventArgs)
-        {
-            // Debug.Log("HandleOnTakeDamage: " + character.name);
-            // character.GetMeleeStateMachine().CurrentState.OnTakeDamage(sender, eventArgs);
+            if (OnHealthChange != null)
+                OnHealthChange.Raise(this);
         }
 
         public void ReceiveHeal(int healAmount)
@@ -214,21 +215,27 @@ namespace Blessing.Gameplay.Characters
             }
 
             health.Value += healAmount;
+
+            if (OnHealthChange != null)
+                OnHealthChange.Raise(this);
         }
-        public void ReceiveBleed(int bleedAmout)
+        public void ReceiveBleed(int bleedAmount)
         {
-            if (bleedAmout <= 0) return;
+            if (bleedAmount <= 0) return;
 
             if (!HasAuthority) return;
 
             int healthValue = health.Value;
 
-            healthValue -= bleedAmout;
+            healthValue -= bleedAmount;
 
             // Don't let health be negative
             if (healthValue < 0) healthValue = 0;
 
             health.Value = healthValue;
+
+            if (OnHealthChange != null)
+                OnHealthChange.Raise(this);
         }
         public void ChangeByTime()
         {

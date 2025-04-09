@@ -22,7 +22,7 @@ namespace Blessing.Gameplay.Characters
         [SerializeField] public InputDirectionType TriggerDirection { get { return Direction.value as InputDirectionType; } }
         [SerializeField] public float ExitEarlier = 0.1f;
         [SerializeField] public float DamageMultiplier = 1.0f;
-        [SerializeField] public float Impact = 1.0f;
+        [SerializeField] public float ImpactMultiplier = 1.0f;
         [SerializeField] public CameraShakeEffect ShakeEffect;
         [SerializeField] public bool CanUseSkill = false; // Teste
     }

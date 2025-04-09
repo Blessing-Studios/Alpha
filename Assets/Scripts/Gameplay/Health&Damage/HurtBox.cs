@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Blessing.Gameplay.HealthAndDamage
+namespace Blessing.HealthAndDamage
 {
     public class HurtBox : MonoBehaviour
     {

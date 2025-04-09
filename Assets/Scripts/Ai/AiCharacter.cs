@@ -1,7 +1,7 @@
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Characters.InputActions;
 using Blessing.Gameplay.Characters.InputDirections;
-using Blessing.Gameplay.HealthAndDamage;
+using Blessing.HealthAndDamage;
 using Unity.Netcode;
 using UnityEngine;
 

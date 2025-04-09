@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Blessing.Core.ObjectPooling;
 using UnityEngine;
 
-namespace Blessing.Gameplay.HealthAndDamage
+namespace Blessing.HealthAndDamage
 {
     public class DamageNumberPooler : AbstractObjectPooler<DamageNumber>
     {

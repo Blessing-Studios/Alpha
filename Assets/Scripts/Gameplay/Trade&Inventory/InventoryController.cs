@@ -18,8 +18,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         public GameObject PlayerEquipmentsFrame;
         public CharacterStatsInfo PlayerStatsInfo;
         public InventoryGrid OtherInventoryGrid;
-        public GameObject OtherEquipmentsFrame;
-        public CharacterStatsInfo OtherStatsInfo;
+        public GameObject OtherEquipmentsCanvas;
+        // public CharacterStatsInfo OtherStatsInfo;
         public List<BaseGrid> Grids;
         public List<BaseGrid> OtherGrids;
         public IGrid SelectedGrid;
@@ -134,7 +134,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
 
             PlayerStatsInfo.UpdateStatInfo();
-            OtherStatsInfo.UpdateStatInfo();
+            // OtherStatsInfo.UpdateStatInfo();
         }
 
         public void OpenGrids()
@@ -147,6 +147,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
 
             PlayerEquipmentsFrame.SetActive(true);
+            gameObject.SetActive(true);
 
             isGridsOpen = true;
         }
@@ -159,6 +160,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
 
             PlayerEquipmentsFrame.SetActive(false);
+            gameObject.SetActive(false);
 
             isGridsOpen = false;
         }
@@ -168,9 +170,9 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (OtherCharacter != null)
             {
                 OtherInventoryGrid.Inventory = OtherCharacter.Gear.Inventory;
-                OtherStatsInfo.CharacterStats = OtherCharacter.Gear.GetStats();
-                OtherStatsInfo.Initialize();
-                OtherEquipmentsFrame.SetActive(true);
+                // OtherStatsInfo.CharacterStats = OtherCharacter.Gear.GetStats();
+                // OtherStatsInfo.Initialize();
+                OtherEquipmentsCanvas.SetActive(true);
 
                 foreach (var grid in OtherGrids)
                 {
@@ -194,10 +196,10 @@ namespace Blessing.Gameplay.TradeAndInventory
                 grid.Owner = null;
             }
 
-            OtherStatsInfo.CharacterStats = null;
+            // OtherStatsInfo.CharacterStats = null;
             OtherCharacter = null;
 
-            OtherEquipmentsFrame.SetActive(false);
+            OtherEquipmentsCanvas.SetActive(false);
 
             OtherInventoryGrid.Inventory = null;
         }

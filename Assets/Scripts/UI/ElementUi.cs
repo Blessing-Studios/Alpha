@@ -26,7 +26,8 @@ namespace Blessing.UI
 
         public virtual void OnSelect(BaseEventData eventData)
         {
-            AudioManager.Singleton.PlayUiSound(selectButtonAudioClip, Volume);
+            if (selectButtonAudioClip != null)
+                AudioManager.Singleton.PlayUiSound(selectButtonAudioClip, Volume);
         }
     }
 }

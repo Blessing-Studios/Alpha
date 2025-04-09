@@ -1,5 +1,5 @@
 using Blessing.Core.ObjectPooling;
-using Blessing.Gameplay.HealthAndDamage;
+using Blessing.HealthAndDamage;
 using Blessing.Gameplay.SkillsAndMagic;
 using UnityEngine;
 

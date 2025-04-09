@@ -1,6 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
-using Blessing.Gameplay.HealthAndDamage;
+using Blessing.HealthAndDamage;
 using System;
 using Unity.VisualScripting;
 using System.Collections.Generic;
@@ -249,6 +249,9 @@ namespace Blessing.Gameplay.Characters
             }
 
             // If CurrentMove is null, it will throw a error
+            Move currentMove = CharacterStateMachine.CurrentMove;
+            float impact = Stats.Strength * currentMove.ImpactMultiplier;
+            int damage = (int) (DamageAndPen.x * currentMove.DamageMultiplier);
 
             // ApplySkill
             if (ActiveSkill != null)
@@ -257,7 +260,7 @@ namespace Blessing.Gameplay.Characters
                 int skillDamage = ActiveSkill.GetSkillDamage(Stats.ValueByStat);
 
                 // O dano soma com o do ataque normal e a Penetração é trocada pela pen da skill
-                HitInfo = new HitInfo(DamageAndPen.x + skillDamage, ActiveSkill.DamageClass, Stats.Strength / 2, ActiveSkill.Buffs, ActiveSkill.HitType);
+                HitInfo = new HitInfo(damage + skillDamage, ActiveSkill.DamageClass, impact, ActiveSkill.Buffs, ActiveSkill.HitType);
 
                 ActiveSkill = null;
             }
@@ -265,7 +268,7 @@ namespace Blessing.Gameplay.Characters
             {
                 // Pegar Damage Multiplicador do CurrentMove
                 // CharacterStateMachine.CurrentMove
-                HitInfo = new HitInfo(DamageAndPen.x, DamageAndPen.y, Stats.Strength / 2, null, HitType.Slash);
+                HitInfo = new HitInfo(damage, DamageAndPen.y, impact, null, HitType.Slash);
             }
 
             TargetList.Add(target);
@@ -321,7 +324,10 @@ namespace Blessing.Gameplay.Characters
 
             Vector3 pushDirection = (transform.position - hitter.transform.position).normalized;
 
-            MovementController.HandlePushBack(pushDirection, 5f);
+            float impact = hitter.HitInfo.Impact;
+            float impulseTime = impact - Stats.Constitution;
+
+            MovementController.HandlePushBack(pushDirection, impact, impulseTime);
 
             int health = Health.CurrentHealth;
             if (health > 0)

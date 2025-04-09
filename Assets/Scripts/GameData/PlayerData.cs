@@ -13,16 +13,19 @@ namespace Blessing.GameData
         public string Id;
         public string Name;
         public int ArchetypeId;
+        public int RankScore;
+        public int RankStrike;
         public List<InventoryItemData> Gears;
         public List<InventoryItemData> Items;
-
-        public CharacterData(string name = "", int archetypeId = 1)
+        public List<int> QuestsCompleted;
+        public CharacterData(string name = "", int archetypeId = 1, int rankScore = 1, int rankStrike = 0)
         {
             Id = Guid.NewGuid().ToString();
             Name = name;
             ArchetypeId = archetypeId;
+            RankScore = rankScore;
+            RankStrike = rankStrike;
         }
-
         public bool Equals(CharacterData other)
         {
             return

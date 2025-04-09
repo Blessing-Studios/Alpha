@@ -11,13 +11,15 @@ using TMPro;
 using Blessing.GameData;
 using System;
 using Blessing.Gameplay.Characters.Traits;
-using Blessing.Gameplay.HealthAndDamage;
+using Blessing.HealthAndDamage;
 using Blessing.Gameplay.SkillsAndMagic;
 using UnityEngine.VFX;
 using Blessing.Services;
 using Blessing.Core.ObjectPooling;
 using Blessing.Gameplay;
 using Blessing.Gameplay.Characters;
+using Blessing.Gameplay.Interation;
+using Blessing.UI.QuestSelection;
 
 namespace Blessing
 {
@@ -48,6 +50,8 @@ namespace Blessing
         [Header("Multiplayer")]
         public bool PlayerConnected = false;
         [Header("Misc")]
+        public ContextDropDownMenu ContextDropDownMenu;
+        public QuestBoardMenu QuestBoardMenu;
         public float GlobalShakeForce = 1f;
         public float GroundGravity = -0.2f;
         public float Gravity = -0.8f;
@@ -84,6 +88,9 @@ namespace Blessing
 
             if (InventoryItemPooler == null)
                 Debug.LogError(gameObject.name + ": Missing InventoryItemPooler");
+
+            ContextDropDownMenu.gameObject.SetActive(false);
+            QuestBoardMenu.gameObject.SetActive(false);
 
             InventoryItemPool = InventoryItemPooler.Pool;
 

@@ -75,6 +75,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             GetComponent<SpriteRenderer>().sprite = InventoryItem.Item.Sprite;
             GetComponent<SphereCollider>().radius = GetComponent<SpriteRenderer>().bounds.size.magnitude / 4;
 
+            gameObject.name = InventoryItem.Item.Label;
+
             // Para debugar
             Guid = InventoryItem.Data.Id.ToString();
             GuidText.text = Guid;

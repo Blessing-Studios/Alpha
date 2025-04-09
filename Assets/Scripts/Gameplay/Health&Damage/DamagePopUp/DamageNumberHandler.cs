@@ -2,7 +2,7 @@ using Blessing.Core.ObjectPooling;
 using Blessing.Gameplay.Characters;
 using UnityEngine;
 
-namespace Blessing.Gameplay.HealthAndDamage
+namespace Blessing.HealthAndDamage
 {
     public class DamageNumberHandler : MonoBehaviour
     {

@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using Blessing.Core;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.DataPersistence;
 using Blessing.GameData;
 using Blessing.Gameplay.Characters;
+using Blessing.Gameplay.Guild;
 using Blessing.Services;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,30 +17,53 @@ namespace Blessing.UI.CharacterSelection
 {
     public class CharacterMenu : MonoBehaviour, IDataPersistence
     {
-        public ArchetypeMenu ArchetypeMenu;
+        public GameObject ArchetypeColumn;
+        public CharacterListMenu CharacterListMenu;
+
+        [Header("Character Info")]
+        public GameObject CharacterInfoColumn;
+        [SerializeField] private TextMeshProUGUI characterNameText;
+        [SerializeField] private TextMeshProUGUI rankAndClassText;
         [SerializeField] private Button confirmCharacterButton;
         
-        [Header("Character Info")]
+        [Header("Create Character")]
+        public GameObject CreateCharacterColumn;
+        public GameObject ClassInfoColumn;
         [SerializeField] private TMP_InputField characterNameField;
         [SerializeField] private TextMeshProUGUI characterArchetypeText;
+        [SerializeField] private TextMeshProUGUI ArchetypeDescriptionText;
+        [SerializeField] private Button confirmCharacterCreateButton;
         [ScriptableObjectDropdown(typeof(SceneReference))] public ScriptableObjectReference MainMenuScene;
         private SceneReference mainMenuScene { get { return MainMenuScene.value as SceneReference; } }
-
-        private CharacterData characterSelected;
+        [SerializeField] private CharacterData characterSelected;
+        public List<CharacterData> Characters = new();
         void Awake()
         {
-            confirmCharacterButton.onClick.AddListener(() =>
+            confirmCharacterCreateButton.onClick.AddListener(() =>
             {
                 Debug.Log("confirmCharacterButton");
 
                 if (ValidateCharacterInfo())
                 {
+                    Debug.Log(gameObject.name + " SaveData - " + characterSelected.Name);
+
                     GameDataManager.Singleton.SaveGame();
                     GameDataManager.Singleton.CharacterSelected = characterSelected;
 
                     SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
                     SceneManager.Singleton.LoadAsync(mainMenuScene);
                 }
+            });
+
+            confirmCharacterButton.onClick.AddListener(() =>
+            {
+                Debug.Log("confirmCharacterButton");
+                
+                GameDataManager.Singleton.SaveGame();
+                GameDataManager.Singleton.CharacterSelected = characterSelected;
+
+                SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
+                SceneManager.Singleton.LoadAsync(mainMenuScene);
             });
         }
 
@@ -55,9 +81,9 @@ namespace Blessing.UI.CharacterSelection
 
         void Start()
         {
-            if (ArchetypeMenu == null)
+            if (ArchetypeColumn == null)
             {
-                Debug.LogError(gameObject.name + ": ArchetypeMenu is missing");
+                Debug.LogError(gameObject.name + ": ArchetypeColumn is missing");
             }
 
             if (confirmCharacterButton == null)
@@ -71,8 +97,21 @@ namespace Blessing.UI.CharacterSelection
             }
 
             GameDataManager.Singleton.UpdatePersistenceObjectsList();
-
             GameplayEventHandler.OnArchetypeButtonPressed += OnArchetypeButtonPressed;
+
+            GameDataManager.Singleton.LoadGame();
+
+            ArchetypeColumn.SetActive(false);
+            CreateCharacterColumn.SetActive(false);
+            ClassInfoColumn.SetActive(false);
+            CharacterInfoColumn.SetActive(true);
+            CharacterListMenu.gameObject.SetActive(true);
+
+            CharacterListMenu.CreateCharacterSlots();
+
+            characterNameText.text = "";
+            rankAndClassText.text = "";
+            ArchetypeDescriptionText.text = "CLASS INFO";
         }
 
         void OnDestroy()
@@ -84,55 +123,69 @@ namespace Blessing.UI.CharacterSelection
         {
             characterSelected.ArchetypeId = archetype.Id;
             characterArchetypeText.text = archetype.Label;
-
+            
             // Update informações
+            ArchetypeDescriptionText.text = "CLASS INFO <br> <br> " + archetype.Description;
         }
 
         public void SelectCharacter(CharacterData character)
         {
             gameObject.SetActive(true);
-            ArchetypeMenu.gameObject.SetActive(false);
+            ArchetypeColumn.SetActive(false);
+            CreateCharacterColumn.SetActive(false);
+            ClassInfoColumn.SetActive(false);
+            CharacterInfoColumn.SetActive(true);
+            CharacterListMenu.gameObject.SetActive(true);
+
             characterSelected = character;
 
-            characterNameField.text = character.Name;
+            characterNameText.text = character.Name;
 
             Archetype archetype = GameManager.Singleton.GetArchetypeById(character.ArchetypeId);
             
-            if (archetype != null)
-            {
-                characterArchetypeText.text = archetype.Label;
-            }
-
-            characterNameField.interactable =  false;
+            Rank rank = new Rank(character.RankScore, character.RankStrike);
+            rankAndClassText.text = $"{rank.Label} Rank {archetype.Label}";
         }
 
         public void CreateNewCharacter()
         {
             gameObject.SetActive(true);
-            ArchetypeMenu.gameObject.SetActive(true);
+            ArchetypeColumn.SetActive(true);
+            CreateCharacterColumn.SetActive(true);
+            ClassInfoColumn.SetActive(true);
+            CharacterInfoColumn.SetActive(false);
+            CharacterListMenu.gameObject.SetActive(false);
+
             characterSelected = new CharacterData();
+
+            Characters.Add(characterSelected);
 
             characterNameField.interactable =  true;
         }
 
+        public void DeleteCharacter()
+        {
+            Characters.Remove(characterSelected);
+
+            characterNameText.text = "";
+            rankAndClassText.text = "";
+
+            characterSelected = null;
+        }
+
         public void LoadData<T>(T gameData) where T : Data
         {
-            //
+            Debug.Log("Load Teste");
+            PlayerData playerData = gameData as PlayerData;
+
+            Characters = playerData.Characters;
         }
 
         public void SaveData<T>(ref T gameData) where T : Data
         {
             PlayerData playerData = gameData as PlayerData;
 
-            foreach(CharacterData character in playerData.Characters)
-            {
-                if (character.Id == characterSelected.Id)
-                {
-                    return;
-                }
-            }
-            Debug.Log(gameObject.name + " SaveData - " + characterSelected.Name);
-            playerData.Characters.Add(characterSelected);
+            playerData.Characters = Characters;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Blessing.Core;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.GameData;
@@ -80,6 +81,21 @@ namespace Blessing.UI
             
             // Call GameManager to set Selected GameObject
             GameManager.Singleton.SetSelectedGameObject(firstSelectedGameObject);
+
+            // Try to get First Character
+
+            if (GameDataManager.Singleton.CharacterSelected.Id != "")  return;
+
+            List<CharacterData> characters = GameDataManager.Singleton.GetCharacters();
+            if (characters.Count > 0 && characters[0].Id != "")
+            {
+                GameDataManager.Singleton.CharacterSelected = characters[0];
+
+                singlePlayerButton.interactable = true;
+                multiplayerButton.interactable = true;
+
+                characterNameDisplay.text = characters[0].Name;
+            }
         }   
     }
 }

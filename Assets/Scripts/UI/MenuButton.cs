@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace Blessing.UI
 {
     [RequireComponent(typeof(Image))]
-    public class MainMenuButton : ElementUi
+    public class MenuButton : ElementUi
     {
         private Image buttonImage;
         [SerializeField][Range(0, 1f)] private float fadedAlpha = 0.0f;

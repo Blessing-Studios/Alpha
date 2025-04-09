@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using Blessing;
 using System.Collections;
+using NUnit.Framework.Internal;
 
 [RequireComponent(typeof(CharacterController))]
 public abstract class MovementController : NetworkBehaviour
@@ -129,21 +130,37 @@ public abstract class MovementController : NetworkBehaviour
     }
 
     private Coroutine impulseMovementCoroutine;
-    protected IEnumerator ImpulseMovement(Vector3 impulse)
+    protected IEnumerator ImpulseMovement(Vector3 direction, float impact, float impulseTime)
     {
         float time = 0;
-        float impulseSpeed = impulse.magnitude;
-        float impulseTime = impulseSpeed / 10;
-        Vector3 direction = impulse.normalized;
+        impact = impact > 20 ? 20 : impact;
+        impulseTime = impulseTime > 20 ? 20 : impulseTime;
 
-        while (time < impulseTime)
+        Debug.Log("### Entrou Push Back: " + time);
+        Debug.Log("Teste: impulseSpeed - " + impact);
+        Debug.Log("Teste: time < impulseTime - " + (time < impulseTime));
+
+        // float time2 = 0;
+
+        while (time < impulseTime && impact > 0.000001f)
         {
-            impulseSpeed = Mathf.Lerp(impulseSpeed, 0, time / impulseTime);
-            characterController.Move(impulseSpeed * direction * Time.deltaTime);
+            impact = Mathf.Lerp(impact, 0, time / impulseTime);
+            characterController.Move(impact * direction * Time.deltaTime);
             time += Time.deltaTime;
+            // time2 += Time.deltaTime;
+
+            // if (time2 > 0.2f)
+            // {
+            //     Debug.Log("Teste: time - " + time);
+            //     Debug.Log("Teste: impulseSpeed - " + impact);
+            //     time2 = 0;
+            // }
+            
 
             yield return null;
         }
+
+        Debug.Log("### Saiu Push Back: " + time);
 
         StopAllCoroutines();
     }
@@ -158,14 +175,19 @@ public abstract class MovementController : NetworkBehaviour
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
         }
     }
-    public virtual void HandlePushBack(Vector3 direction, float impact)
+    public virtual void HandlePushBack(Vector3 direction, float impact, float impulseTime)
     {
         if (impulseMovementCoroutine != null)
         {
             StopCoroutine(impulseMovementCoroutine);
         }
 
-        Coroutine coroutine = StartCoroutine(ImpulseMovement(direction * impact));
+        if (impact <= 0 || impulseTime <= 0)
+        {
+            return;
+        }
+        
+        Coroutine coroutine = StartCoroutine(ImpulseMovement(direction, impact, impulseTime));
     }
     public virtual void HandleAttackMovement()
     {

@@ -15,5 +15,15 @@ MonoBehaviour:
   Id: 1
   Name: Adventurer
   Label: Adventurer
-  Description: Woman with a sword
+  Description: "They are durable, have great armor, and provide plenty of damage
+    output. Fighters get more Ability Score Increases than any other class, allowing
+    them to easily explore feats without sacrificing crucial ability scores. They
+    also notably get more attacks than any other class, which can be a lot of fun.
+    <br> <br> The core of the class is very simple, but the complexity of the subclasses
+    varies significantly. The\_Champion\_adds almost no complexity, while subclasses
+    like the\_Eldritch Knight\_can add quite a bit. This makes the Fighter a great
+    choice for players of all experience levels and for players with a broad range
+    of preferences, allowing you to build a character that you find mechanically
+    appealing but without making it more work than you might like."
+  Icon: {fileID: 0}
   Prefab: {fileID: 6907878382742480730, guid: e98472db6134ef84e8ec86d64f9a8e1b, type: 3}

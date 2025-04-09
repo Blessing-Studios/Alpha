@@ -3,7 +3,7 @@ using Unity.Netcode;
 // This Monobehavier is made to be in a HitBox or a Projectile object inside a character
 // The HitBox is espected to has a Rigbody to the hit detection and OnTriggerEnter work
 
-namespace Blessing.Gameplay.HealthAndDamage
+namespace Blessing.HealthAndDamage
 {
     public class HitBox : NetworkBehaviour
     {

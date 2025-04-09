@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63217b872cfb16947be5a28def4e8a28, type: 3}
   m_Name: LeatherBackpack
   m_EditorClassIdentifier: 
-  Label: 
+  Label: Leather Backpack
   Value: 10
   Width: 2
   Height: 2
