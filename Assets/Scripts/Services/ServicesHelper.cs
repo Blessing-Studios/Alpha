@@ -24,9 +24,10 @@ namespace Blessing.Services
         Task m_SessionTask;
 
         ISession m_CurrentSession;
-        public ISession CurrentSession { get { return m_CurrentSession;}}
+        public ISession CurrentSession { get { return m_CurrentSession; } }
         bool m_IsLeavingSession;
 
+        private bool isDistributedAuthority { get { return NetworkManager.Singleton.NetworkConfig.NetworkTopology == NetworkTopologyTypes.DistributedAuthority; } }
         void Awake()
         {
             if (Singleton != null && Singleton != this)
@@ -89,14 +90,13 @@ namespace Blessing.Services
 
         async void OnMapTravelTriggered(string playerName, string sessionName, SceneReference scene)
         {
-            // TODO: Create a count down to change map
+            // TODO: Refatorar método
             await Awaitable.WaitForSecondsAsync(2);
 
-            if (m_CurrentSession != null && !m_IsLeavingSession)
+            if (m_CurrentSession != null && isDistributedAuthority)
             {
                 try
                 {
-                    m_IsLeavingSession = true;
                     await m_CurrentSession.LeaveAsync();
                 }
                 catch (Exception e)
@@ -104,12 +104,18 @@ namespace Blessing.Services
                     Debug.LogException(e);
                     throw;
                 }
-                finally
+            }
+            else
+            {
+                NetworkManager.Singleton.Shutdown();
+
+                while (NetworkManager.Singleton.IsHost == true)
                 {
-                    m_IsLeavingSession = false;
-                    ExitedSession();
+                    await Awaitable.WaitForSecondsAsync(0.1f);
                 }
             }
+
+            ExitedSession();
 
             Debug.Log(gameObject.name + ": UnloadSceneAsync - " + SceneManager.Singleton.CurrentScene.SceneName);
             await UnitySceneManager.UnloadSceneAsync(SceneManager.Singleton.CurrentScene.SceneName);
@@ -117,8 +123,15 @@ namespace Blessing.Services
             // TODO: adicionar cena de transição            
 
             // Connect to new session
-            Task connectTask = ConnectToSession(playerName, sessionName);
-            await connectTask;
+            if (isDistributedAuthority)
+            {
+                Task connectTask = ConnectToSession(playerName, sessionName);
+                await connectTask;
+            }
+            else
+            {
+                ConnectToSinglePlayerSession();
+            }
 
             // If Host, load new Scene
             if (GameDataManager.Singleton.IsHost)
@@ -126,11 +139,11 @@ namespace Blessing.Services
                 await UnitySceneManager.LoadSceneAsync(scene.SceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
             }
 
-            GameplayEventHandler.ConnectToNewMapComplete(connectTask);
+            // GameplayEventHandler.ConnectToNewMapComplete(connectTask);
         }
 
         async void OnSinglePlayerButtonPressed(SceneReference scene)
-        {   
+        {
             Debug.Log(gameObject.name + ": UnloadSceneAsync - " + SceneManager.Singleton.CurrentScene.SceneName);
             await UnitySceneManager.UnloadSceneAsync(SceneManager.Singleton.CurrentScene.SceneName);
 
@@ -147,6 +160,7 @@ namespace Blessing.Services
 
         private void ConnectToSinglePlayerSession()
         {
+            NetworkManager.Singleton.NetworkConfig.NetworkTopology = NetworkTopologyTypes.ClientServer;
             NetworkManager.Singleton.StartHost();
             GameDataManager.Singleton.IsHost = true;
         }
@@ -161,14 +175,14 @@ namespace Blessing.Services
             LeaveSession();
             Application.Quit();
         }
-         void OnExitedSession()
+        void OnExitedSession()
         {
-            GameManager.Singleton.ClearGameStates();
+            
         }
 
         async void LeaveSession()
         {
-            if (m_CurrentSession != null && !m_IsLeavingSession)
+            if (m_CurrentSession != null && !m_IsLeavingSession && isDistributedAuthority)
             {
                 try
                 {
@@ -251,7 +265,7 @@ namespace Blessing.Services
         async Task ConnectToSession(string playerName, string sessionName)
         {
             NetworkManager.Singleton.NetworkConfig.NetworkTopology = NetworkTopologyTypes.DistributedAuthority;
-            
+
             if (AuthenticationService.Instance == null)
             {
                 return;
@@ -318,6 +332,8 @@ namespace Blessing.Services
 
         void ExitedSession()
         {
+            GameManager.Singleton.ClearGameStates();
+            
             if (m_CurrentSession != null)
             {
                 m_CurrentSession.RemovedFromSession -= RemovedFromSession;

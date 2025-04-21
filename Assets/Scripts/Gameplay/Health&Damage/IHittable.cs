@@ -9,4 +9,3 @@ namespace Blessing.HealthAndDamage
         public void GetOwnership();
     }
 }
-

@@ -20,6 +20,7 @@ using Blessing.Gameplay;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Interation;
 using Blessing.UI.QuestSelection;
+using UnityEngine.Rendering.Universal;
 
 namespace Blessing
 {
@@ -56,6 +57,10 @@ namespace Blessing
         public float GroundGravity = -0.2f;
         public float Gravity = -0.8f;
         private CinemachineImpulseListener impulseListener;
+        private CinemachineVolumeSettings cameraVolumeSettings;
+        private DepthOfField depthOfField;
+        // Usar originalFocusDistance no Settings
+        private float originalFocusDistance = 10f; 
         protected virtual void Awake()
         {
             if (Singleton != null && Singleton != this)
@@ -67,6 +72,13 @@ namespace Blessing
             {
                 Singleton = this;
             }
+
+            // Se CinemachineImpulseListener não for encontrado vai dar erro
+            impulseListener = VirtualCamera.GetComponent<CinemachineImpulseListener>();
+            cameraVolumeSettings = VirtualCamera.GetComponent<CinemachineVolumeSettings>();
+
+
+            cameraVolumeSettings.Profile.TryGet(out depthOfField);
         }
 
         protected virtual void Start()
@@ -93,9 +105,6 @@ namespace Blessing
             QuestBoardMenu.gameObject.SetActive(false);
 
             InventoryItemPool = InventoryItemPooler.Pool;
-
-            // Se CinemachineImpulseListener não for encontrado vai dar erro
-            impulseListener = VirtualCamera.GetComponent<CinemachineImpulseListener>();
         }
 
         void Update()
@@ -152,8 +161,9 @@ namespace Blessing
         }
         public void RemovePlayerCharacter(string playerName)
         {
-            PlayerCharacterList.Remove(playerCharactersDic[playerName]);
-            playerCharactersDic.Remove(playerName);
+            // TODO: Checar se precisa remover
+            // PlayerCharacterList.Remove(playerCharactersDic[playerName]);
+            // playerCharactersDic.Remove(playerName);
         }
 
         public void AddPlayerSpawn(Transform spawn)
@@ -187,10 +197,13 @@ namespace Blessing
         }
         public void InitializeSpawners()
         {
+            Debug.Log("InitializeSpawners: " + PlayerConnected + " - " + SceneStarter.HasStarted);
             if (PlayerConnected && GameDataManager.Singleton.IsHost && SceneStarter.HasStarted)
             {
+                Debug.Log("Entrou InitializeSpawners");
                 foreach (SessionOwnerNetworkObjectSpawner spawner in ObjectSpawners)
                 {
+                    Debug.Log(spawner.gameObject.name + " - Spawn");
                     spawner.Spawn();
                 }
             }
@@ -199,9 +212,10 @@ namespace Blessing
         public void InitializePlayers()
         {
 
-            if (playersInitialized == true) return;
-            if (!(SceneStarter != null && SceneStarter.HasStarted != false)) return;
-            if (PlayerController == null) return;
+            // if (playersInitialized == true) return;
+
+            if (SceneStarter == null || SceneStarter.HasStarted == false) return;
+            if (PlayerController == null || PlayerController.IsReady == false) return;
 
             foreach (PlayerController player in Players)
             {
@@ -210,7 +224,7 @@ namespace Blessing
 
             foreach (PlayerCharacter playerCharacter in PlayerCharacterList)
             {
-                playerCharacter.InitializePlayerChar();
+                playerCharacter.TriggerInitializePlayerChar();
             }
 
             playersInitialized = true;
@@ -324,6 +338,17 @@ namespace Blessing
             }
             
             impulseSource.GenerateImpulse(GlobalShakeForce * force);
+        }
+
+
+        public void AddBlurToBackground()
+        {
+            depthOfField.focusDistance.value = 0.2f;   
+        }
+
+        public void RemoveBlurFromBackground()
+        {
+            depthOfField.focusDistance.value = originalFocusDistance; 
         }
     }
 }

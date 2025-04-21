@@ -23,11 +23,20 @@ namespace Blessing.Player
         [field: SerializeField] public PlayerCharacter PlayerCharacter { get; private set; }
         protected NetworkVariable<int> m_TickToSpawnLoot = new NetworkVariable<int>();
         public int SpawnTime = 20;
+        private bool hasStarted = false;
+        private bool hasSpawned = false;
+        public bool WasInitialize = false;
+        public bool IsReady { get { return hasStarted && hasSpawned;}}
+
+        // Para debugar
         [field: SerializeField] private List<InventoryItemData> gears = new();
-        private List<InventoryItemData> items = new();
-        private int rankScore;
-        private int rankStrike;
-        private List<int> questsCompleted = new();
+        [field: SerializeField] private List<InventoryItemData> backpackItems = new();
+        [field: SerializeField] public List<InventoryItemDataList> utilityItems = new();
+        [field: SerializeField] private int rankScore;
+        [field: SerializeField] private int rankStrike;
+        [field: SerializeField] private List<int> questsCompleted = new();
+        [field: SerializeField] private List<int> questsActive = new();
+
         [Header("Map Travel Info ")]
         public NetworkList<MapTravelData> SceneSessionNetworkList = new NetworkList<MapTravelData>
             (
@@ -55,6 +64,10 @@ namespace Blessing.Player
             if (ShowDebug) Debug.Log(gameObject.name + " On Network Spawn");
             PlayerName.OnValueChanged += OnPlayerNameValueChanged;
             SceneSessionNetworkList.OnListChanged += OnSceneSessionNetworkListChanged;
+
+            hasSpawned = true;
+
+            InitializePlayers();
         }
         public override void OnNetworkDespawn()
         {
@@ -102,23 +115,38 @@ namespace Blessing.Player
 
             PlayerHUD = GetComponent<PlayerHUD>();
         }
-
         void Start()
         {
             if (ShowDebug) Debug.Log(gameObject.name + " Start");
             if (HasAuthority)
-            {
-                // Teste DataSystem
-                
+            {   
                 GameDataManager.Singleton.UpdatePersistenceObjectsList();
                 GameDataManager.Singleton.LoadGame();
                 GameManager.Singleton.PlayerController = this;
-                GameManager.Singleton.InitializePlayers();
             }
+
+            hasStarted = true;
+
+            InitializePlayers();
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                ShowDebug = !ShowDebug;
+            }
+        }
+
+        private void InitializePlayers()
+        {
+            if (IsReady)
+                GameManager.Singleton.InitializePlayers();
         }
 
         public void Initialization()
         {
+            if (WasInitialize) return;
             if (ShowDebug) Debug.Log("Entrou Initialization");
             if (HasAuthority)
             {
@@ -145,6 +173,8 @@ namespace Blessing.Player
             }
 
             gameObject.name = "Player-" + GetPlayerName();
+
+            WasInitialize = true;
         }
         private void FindPlayerCharacter()
         {
@@ -175,7 +205,7 @@ namespace Blessing.Player
             PlayerCharacter.SetPlayerOwnerName(GetPlayerName());
 
             PlayerCharacter.InitializePlayerChar();
-            PlayerCharacter.Adventurer.Initialize(rankScore, rankStrike, questsCompleted);
+            PlayerCharacter.Adventurer.Initialize(characterData.RankScore, characterData.RankStrike, characterData.QuestsCompleted, characterData.QuestsActive);
 
             PlayerCharacter.Network.CharacterName.Value = new FixedString32Bytes(characterData.Name);
 
@@ -204,11 +234,9 @@ namespace Blessing.Player
         {
             if (!HasAuthority) return;
 
-            GameDataManager.Singleton.LoadGame();
-
             Debug.Log(gameObject.name + ": SpawnGear");
 
-            foreach (InventoryItemData gear in gears)
+            foreach (InventoryItemData gear in characterData.Gears)
             {
                 InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(gear);
 
@@ -218,15 +246,35 @@ namespace Blessing.Player
             }
 
             Inventory lootInventory = PlayerCharacter.Gear.Inventory;
-            if (lootInventory == null) return;
-            
-            foreach (InventoryItemData item in items)
+            if (lootInventory != null)
             {
-                InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(item);
+                foreach (InventoryItemData item in characterData.BackpackItems)
+                {
+                    InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(item);
 
-                lootInventory.AddItem(inventoryItem);
-                inventoryItem.transform.SetParent(PlayerCharacter.transform, false);
-                inventoryItem.gameObject.SetActive(false);
+                    lootInventory.AddItem(inventoryItem);
+                    inventoryItem.transform.SetParent(PlayerCharacter.transform, false);
+                    inventoryItem.gameObject.SetActive(false);
+                }
+            }
+            
+            if (characterData.UtilityItems.Count > 0 && PlayerCharacter.Gear.UtilityInventories.Count == characterData.UtilityItems.Count)
+            {
+                for(int i = 0; i < characterData.UtilityItems.Count; i++)
+                {
+                    foreach(InventoryItemData item in characterData.UtilityItems[i].Items)
+                    {
+                        InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(item);
+                        PlayerCharacter.Gear.UtilityInventories[i].AddItem(inventoryItem);
+                        inventoryItem.transform.SetParent(PlayerCharacter.transform, false);
+                        inventoryItem.gameObject.SetActive(false);
+                    }
+                }
+            }
+            
+            if (characterData.UtilityItems.Count > 0 && PlayerCharacter.Gear.UtilityInventories.Count != characterData.UtilityItems.Count)
+            {
+                Debug.LogError(gameObject.name + ": Utility Inventories number are not matching in the save file");
             }
         }
 
@@ -286,28 +334,50 @@ namespace Blessing.Player
                 return;
             }
 
-            gears = new();
+            characterData.Gears = new();
             foreach (CharacterEquipment equipment in PlayerCharacter.Gear.Equipments)
             {
                 if (equipment.InventoryItem != null)
-                    gears.Add(equipment.InventoryItem.Data);
+                    characterData.Gears.Add(equipment.InventoryItem.Data);
             }
 
-            playerData.Characters[characterIndex].Gears = gears;
+            playerData.Characters[characterIndex].Gears = characterData.Gears;
 
-            items = new();
+            characterData.BackpackItems = new();
 
             if (PlayerCharacter.Gear.Inventory != null)
+            {
                 foreach (InventoryItem inventoryItem in PlayerCharacter.Gear.Inventory.ItemList)
                 {
-                    items.Add(inventoryItem.Data);
+                    characterData.BackpackItems.Add(inventoryItem.Data);
                 }
+            }
 
-            playerData.Characters[characterIndex].Items = items;
+            characterData.UtilityItems = new();
 
+            if (PlayerCharacter.Gear.UtilityInventories != null)
+            {
+                foreach(Inventory inventory in PlayerCharacter.Gear.UtilityInventories)
+                {
+                    InventoryItemDataList utiInventory = new();
+                    utiInventory.Items = new();
+                    if (inventory != null)
+                    {
+                        foreach (InventoryItem inventoryItem in inventory.ItemList)
+                        {
+                            utiInventory.Items.Add(inventoryItem.Data);
+                        }
+                    }
+                    characterData.UtilityItems.Add(utiInventory);
+                }
+            }
+
+            playerData.Characters[characterIndex].BackpackItems = characterData.BackpackItems;
+            playerData.Characters[characterIndex].UtilityItems = characterData.UtilityItems;
             playerData.Characters[characterIndex].RankScore = PlayerCharacter.Adventurer.Rank.Score;
             playerData.Characters[characterIndex].RankStrike = PlayerCharacter.Adventurer.Rank.Strike;
             playerData.Characters[characterIndex].QuestsCompleted = PlayerCharacter.Adventurer.QuestsCompleted;
+            playerData.Characters[characterIndex].QuestsActive = PlayerCharacter.Adventurer.QuestsActive;
 
             if (ShowDebug) Debug.Log(gameObject.name + " characterData Save finished " + characterData.Name);
         }
@@ -324,10 +394,14 @@ namespace Blessing.Player
                 if (data.Id == characterData.Id)
                 {
                     gears = data.Gears;
-                    items = data.Items;
+                    backpackItems = data.BackpackItems;
+                    utilityItems = data.UtilityItems;
                     rankScore = data.RankScore;
                     rankStrike = data.RankStrike;
                     questsCompleted = data.QuestsCompleted;
+                    questsActive = data.QuestsActive;
+
+                    characterData = data;
 
                     if (ShowDebug) Debug.Log(gameObject.name + " characterData Load finished " + data.Name);
 

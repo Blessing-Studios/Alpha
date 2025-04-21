@@ -11,6 +11,8 @@ namespace Blessing.Gameplay.SkillsAndMagic
     {
         [SerializeField] protected Projectile projectilePrefab;
         [field: SerializeField] public float Speed { get; protected set; }
+        [field: SerializeField] public Vector2 PositionPrecision { get; protected set; }
+        [Range(0, 90)] public float AnglePrecision;
         [field: SerializeField] public bool IsDestroyedOnHit { get; protected set; }
         [field: SerializeField] public float LifeTime { get; protected set; }
         public override void Trigger(ISkillTrigger skillTrigger)

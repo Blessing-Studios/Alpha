@@ -6,6 +6,10 @@ using Unity.Netcode;
 
 namespace Blessing.GameData
 {
+    [Serializable] public struct InventoryItemDataList : INetworkSerializeByMemcpy
+    {
+        public List<InventoryItemData> Items;
+    }
     
     [Serializable]
     public class CharacterData : IEquatable<CharacterData>, INetworkSerializeByMemcpy
@@ -16,8 +20,10 @@ namespace Blessing.GameData
         public int RankScore;
         public int RankStrike;
         public List<InventoryItemData> Gears;
-        public List<InventoryItemData> Items;
+        public List<InventoryItemData> BackpackItems;
+        public List<InventoryItemDataList> UtilityItems;
         public List<int> QuestsCompleted;
+        public List<int> QuestsActive;
         public CharacterData(string name = "", int archetypeId = 1, int rankScore = 1, int rankStrike = 0)
         {
             Id = Guid.NewGuid().ToString();

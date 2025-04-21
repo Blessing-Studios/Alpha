@@ -14,6 +14,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public CharacterGear CharacterGear;
         public CharacterEquipment CharacterEquipment;
         public InventoryItem EquippedItem;
+        public int DuplicateIndex = 0;
 
         [Header("Events")]
         public GameEvent OnAddItem;
@@ -55,10 +56,10 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (Owner.TryGetComponent(out CharacterGear characterGear))
             {
                 CharacterGear = characterGear;
-
+                int duplicated = 0;
                 foreach (CharacterEquipment equipment in CharacterGear.Equipments)
                 {
-                    if (equipment.GearSlotType == GearSlotType)
+                    if (equipment.GearSlotType == GearSlotType && duplicated == DuplicateIndex)
                     {
                         CharacterEquipment = equipment;
 
@@ -67,6 +68,10 @@ namespace Blessing.Gameplay.TradeAndInventory
                             PlaceItemOnGrid(EquippedItem, Vector2Int.zero);
                             
                         return;
+                    }
+                    else if (equipment.GearSlotType == GearSlotType)
+                    {
+                        duplicated++;
                     }
                 }
             }
@@ -88,22 +93,15 @@ namespace Blessing.Gameplay.TradeAndInventory
         public bool PlaceItem(InventoryItem inventoryItem, Vector2Int position)
         {
             // Mudar quem tem autoridade para poder fazer a mudança online
-            Debug.Log(gameObject.name + ": PlaceItem 1 - " + inventoryItem.name);
 
-            if (!CheckGearType(inventoryItem))
+            if (!CheckEquipmentType(inventoryItem))
                 return false;
 
-            Debug.Log(gameObject.name + ": PlaceItem 2 - " + inventoryItem.name);
-            
             if (!CheckAvailableSpace())
                 return false;
 
-            Debug.Log(gameObject.name + ": PlaceItem 3 - " + inventoryItem.name);
-
             if (!BoundaryCheck(position, inventoryItem.Width, inventoryItem.Height))
                 return false;
-
-            Debug.Log(gameObject.name + ": PlaceItem 4 - " + inventoryItem.name);
 
             //Rotate Item to the right side
             if (inventoryItem.Rotated)
@@ -129,13 +127,13 @@ namespace Blessing.Gameplay.TradeAndInventory
             return true;
         }
 
-        private bool CheckGearType(InventoryItem inventoryItem)
+        private bool CheckEquipmentType(InventoryItem inventoryItem)
         {
             Gear item = inventoryItem.Item as Gear;
 
             if (item == null) return false;
 
-            if (GearSlotType != item.GearType) return false;
+            if (GearSlotType != item.EquipmentType) return false;
 
             return true;
 

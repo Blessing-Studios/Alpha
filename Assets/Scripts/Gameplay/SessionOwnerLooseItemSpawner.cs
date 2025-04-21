@@ -13,6 +13,7 @@ namespace Blessing.Gameplay
             spawnedNetworkObject.GetComponent<LooseItem>().Item = item;
             
             spawnedNetworkObject.Spawn();
+            Debug.Log(gameObject.name + " Entrou Spawn");
 
             var spawnable = spawnedNetworkObject.GetComponent<ISpawnable>();
             spawnable.Init(this);

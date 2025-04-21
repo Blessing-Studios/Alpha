@@ -8,6 +8,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public GameObject Owner;
+        [field: SerializeField] public Canvas Canvas { get; protected set; }
         public const float TileSizeWidth = 46;
         public const float TileSizeHeight = 46;
         protected RectTransform rectTransform;
@@ -28,6 +29,11 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             // TileSizeWidth = GetComponent<SpriteRenderer>().size.x;
             // TileSizeHeight = GetComponent<SpriteRenderer>().size.y;
+
+            if (Canvas == null)
+            {
+                Debug.LogError(gameObject.name + ": Canvas can't be null");
+            }
         }
 
         public virtual void InitializeGrid()

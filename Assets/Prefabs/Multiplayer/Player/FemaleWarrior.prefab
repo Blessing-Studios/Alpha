@@ -16,6 +16,14 @@ PrefabInstance:
       propertyPath: ImpulseDefinition.ImpulseShape
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1128820130049227818, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_Radius
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1128820130049227818, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_Center.y
+      value: 0.24
+      objectReference: {fileID: 0}
     - target: {fileID: 1336789277861539600, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: Gravity
       value: -1
@@ -23,6 +31,10 @@ PrefabInstance:
     - target: {fileID: 1336789277861539600, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: CharacterSpeed
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1511698797570248328, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1646976488681774380, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Controller
@@ -90,15 +102,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6370903744886762439, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_LocalScale.x
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6370903744886762439, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6370903744886762439, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_LocalScale.z
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6370903744886762439, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_LocalPosition.x
@@ -142,11 +154,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6431316129197781818, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Size.x
-      value: 0.19
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431316129197781818, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_Size.y
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6431316129197781818, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Size.z
-      value: 0.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6431316129197781818, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Center.x
@@ -158,11 +174,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6483174246542211240, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Height
-      value: 0.34
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 6483174246542211240, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Radius
-      value: 0.1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6483174246542211240, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Center.y
@@ -176,6 +192,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -0.006
       objectReference: {fileID: 0}
+    - target: {fileID: 7246065932389035199, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_Height
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7246065932389035199, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: Skills.Array.size
       value: 1
@@ -186,7 +210,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 0b35bd7dff00727448e840fb0c02c905, type: 2}
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: <ShowDebug>k__BackingField
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: CharacterSkills.Array.size
@@ -199,7 +223,7 @@ PrefabInstance:
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: CharacterSkills.Array.data[0].Skill
       value: 
-      objectReference: {fileID: 11400000, guid: 8205196bfbd0fc148a20ec8bf648ac98, type: 2}
+      objectReference: {fileID: 11400000, guid: 0b35bd7dff00727448e840fb0c02c905, type: 2}
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: CharacterSkills.Array.data[1].Skill
       value: 

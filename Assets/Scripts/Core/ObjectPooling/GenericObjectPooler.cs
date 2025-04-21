@@ -33,7 +33,8 @@ namespace Blessing.Core.ObjectPooling
         }
         protected override void OnDestroyPooledObject(PooledObject pooledObject)
         {
-            pooledObject.DestroyPooledObject();
+            if (pooledObject != null)
+                pooledObject.DestroyPooledObject();
         }
     }
 }

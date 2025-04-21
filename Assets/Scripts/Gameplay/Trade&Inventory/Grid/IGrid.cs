@@ -7,6 +7,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public bool IsOpen { get; }
         // public GameObject Owner { get; }
+        public Canvas Canvas { get; }
         public RectTransform ItemHighlight { get; }
         public Vector2Int? HighlightPosition { get; }
         public void InitializeGrid();

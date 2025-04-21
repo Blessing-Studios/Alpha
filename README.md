@@ -6,6 +6,7 @@
     Parece que foi resolvido !!Quando recarrega, o player reconectando pode pegar Autoridade de outros player characters
 
     Fazer sistema de pooling dos objetos online
+    Limpar Poolers depois de trocar de mapa
 
     Criar sistema de interação mais complexo, para ter ter a opção de ter mais de um tipo de interação por objeto
 
@@ -23,6 +24,8 @@
             Auto Sync Transforms -> False
 
 ### Observações
+    Criar nos Settings opção para trocar de teclado para controle
+    
     Precisa adicionar validação para quanto pegar a arma
     
     Atualmente, a UI do inventário do Player e a UI do inventário do resto está separada, tab fecha o inventário do player, e interagir fecha o inventário do resto
@@ -32,10 +35,12 @@
     Separar a lógica das NetWorkBehaviors em duas classes, uma que é MonoBehaviors e outra que é NetworkBehaviors
         Exemplo PlayerController, transformar em duas classes
 
-    Desacoplar as classes InventoryGrid e Inventory
+    Desacoplar as classes InventoryGrid e Inventory (Em progresso)
+
+    Criar um validador de arquivos de save
 
     Criar um sistema de pooling https://docs-multiplayer.unity3d.com/netcode/current/advanced-topics/object-pooling/
-    PS.: foi feito um sistema de pooling para a classe InventoryItem, precisa fazer para as outras
+    Sistema de pooling/pooler foi feito
     
 
 ### Bugs para arrumar
@@ -75,8 +80,10 @@ public void GetOwnership(NetworkObject networkObject)
     ulong LocalClientId = NetworkManager.Singleton.LocalClientId;
     if (LocalClientId != networkObject.OwnerClientId)
         networkObject.ChangeOwnership(LocalClientId);
-}
+}`
 
+MissingReferenceException: The object of type 'Blessing.Gameplay.TradeAndInventory.InventoryItem' has been destroyed but you are still trying to access it.
+Assets/Scripts/Gameplay/Trade&Inventory/InventoryItemPooler.cs:32)
 
 ### Links para estudar
 https://www.youtube.com/watch?v=SMWxCpLvrcc

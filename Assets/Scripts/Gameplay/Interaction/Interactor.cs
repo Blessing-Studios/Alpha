@@ -7,6 +7,7 @@ namespace Blessing.Gameplay.Interation
     public class Interactor : MonoBehaviour
     {
         public Transform InteractorSource;
+        public Vector3 SourceOffset = Vector3.zero;
         public float InteractRange = 2f;
         private List<IInteractable> interactables = new();
         [SerializeField] private IInteractable currentInteracting;
@@ -16,7 +17,7 @@ namespace Blessing.Gameplay.Interation
         {
             interactables = new();
 
-            Collider[] hitColliders = Physics.OverlapSphere(InteractorSource.position, InteractRange);
+            Collider[] hitColliders = Physics.OverlapSphere(InteractorSource.position + SourceOffset, InteractRange);
             foreach (var hitCollider in hitColliders)
             {
                 // Can't interact with itself
@@ -73,7 +74,7 @@ namespace Blessing.Gameplay.Interation
         void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(InteractorSource.position, InteractRange);
+            Gizmos.DrawWireSphere(InteractorSource.position + SourceOffset, InteractRange);
         }
     }
 }

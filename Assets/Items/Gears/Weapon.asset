@@ -18,9 +18,11 @@ MonoBehaviour:
   Height: 1
   Weight: 1
   Sprite: {fileID: 0}
-  Id: 14
-  EquipmentType:
-    value: {fileID: 0}
+  Id: 11
+  itemType:
+    value: {fileID: 11400000, guid: ad63d46b12978c4449216d86c607cd83, type: 2}
+  equipmentType:
+    value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
   Traits: []
   DamageClass: 0
   Attack: 0

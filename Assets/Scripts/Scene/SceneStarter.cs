@@ -26,9 +26,12 @@ namespace Blessing.Scene
         void Start()
         {
             Debug.Log(gameObject.name + ": SceneStarter Start" );
+
             HasStarted = true;
-            GameManager.Singleton.InitializePlayers();
+
             GameManager.Singleton.InitializeSpawners();
+            
+            GameManager.Singleton.InitializePlayers();
 
             // if (GameDataManager.Singleton.IsHost)
             // {

@@ -32,7 +32,7 @@ Transform:
   - {fileID: 315142650283635606}
   - {fileID: 2660219163199609914}
   - {fileID: 4632989939359819636}
-  - {fileID: 9000417631202641727}
+  - {fileID: 5655116782782389229}
   m_Father: {fileID: 6370903744886762439}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1511698797570248328
@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 4410562106461084563}
   - component: {fileID: 6431316129197781818}
   - component: {fileID: 7680487914564740950}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: BodyHurtBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -166,7 +166,7 @@ Transform:
   m_GameObject: {fileID: 1615121728507468792}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.15, z: 0}
+  m_LocalPosition: {x: -0.08, y: -0.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -191,8 +191,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.18, y: 0.25, z: 0.2}
-  m_Center: {x: -0, y: -0.17, z: 0}
+  m_Size: {x: 0.6, y: 0.66, z: 0.8}
+  m_Center: {x: -0, y: 0.03, z: 0}
 --- !u!114 &7680487914564740950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,7 +206,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <OwnerGameObject>k__BackingField: {fileID: 6028631068472643565}
-  IsActive: 1
   <DmgMultiplier>k__BackingField: 0
   TakeHitEffect: {fileID: 0}
 --- !u!1 &2394620303536455781
@@ -260,6 +259,66 @@ MonoBehaviour:
       - m_Target: {fileID: 2066221182297512520}
         m_TargetAssemblyTypeName: Blessing.Gameplay.Characters.Character, Assembly-CSharp
         m_MethodName: OnRemoveEquipment
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &3563234752205312179
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5655116782782389229}
+  - component: {fileID: 5871138971573270685}
+  m_Layer: 3
+  m_Name: OnIsAliveChanged
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5655116782782389229
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3563234752205312179}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1583196315626289370}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5871138971573270685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3563234752205312179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc0a02ec4aba6a549a7caff2b62c61b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameEvent: {fileID: 11400000, guid: b420b84d68bc2f24bb1855a9d4d915c3, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2066221182297512520}
+        m_TargetAssemblyTypeName: Blessing.Gameplay.Characters.Character, Assembly-CSharp
+        m_MethodName: OnIsAliveChanged
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -361,7 +420,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7, y: 7, z: 7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6931712906820337884}
@@ -542,13 +601,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 0.27
-  m_Radius: 0.08
+  m_Height: 1.5
+  m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.01, z: 0}
+  m_Center: {x: 0, y: -0.21, z: 0}
 --- !u!114 &2066221182297512520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,6 +632,8 @@ MonoBehaviour:
   <ActiveSkill>k__BackingField: {fileID: 0}
   <SkillOrigin>k__BackingField: {fileID: 0}
   SpawnLocation: {x: 0, y: 0, z: 0}
+  HasStarted: 0
+  AiMovementController: {fileID: 0}
   ViewRange: 15
 --- !u!114 &2299523755292424415
 MonoBehaviour:
@@ -588,11 +649,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   <ShowDebug>k__BackingField: 1
+  CharacterName:
+    m_InternalValue:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0016: 0
+        byte0017: 0
+        byte0018: 0
+        byte0019: 0
+        byte0020: 0
+        byte0021: 0
+        byte0022: 0
+        byte0023: 0
+        byte0024: 0
+        byte0025: 0
+        byte0026: 0
+        byte0027: 0
+        byte0028: 0
+        byte0029: 0
+  isTraveling:
+    m_InternalValue: 0
   stateIndex:
     m_InternalValue: 1
   comboMoveIndex:
     m_InternalValue: {x: 0, y: 0}
   TraitDataLocalList: []
+  HasSpawned: 0
 --- !u!114 &4503081129959420447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -611,8 +710,10 @@ MonoBehaviour:
   GroundedGravity: -0.5
   AttackMovement: {x: 0, y: 0, z: 0}
   direction: {x: 0, y: 0}
+  canMove: 0
   isPushable: 1
   currentMovementInput: {x: 0, y: 0}
+  currentMovement: {x: 0, y: 0, z: 0}
   CurrentMovement: {x: 0, y: 0, z: 0}
   CanMove: 0
 --- !u!114 &2009963721499363617
@@ -634,25 +735,32 @@ MonoBehaviour:
     SlotType:
       value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}
     InventoryItem: {fileID: 0}
+    DuplicateIndex: 0
   - Name: Chest
     SlotType:
       value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
     InventoryItem: {fileID: 0}
+    DuplicateIndex: 0
   - Name: Weapon
     SlotType:
       value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
     InventoryItem: {fileID: 0}
+    DuplicateIndex: 0
   - Name: Back
     SlotType:
       value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
     InventoryItem: {fileID: 0}
-  BackpackSlotType:
+    DuplicateIndex: 0
+  backpackSlot:
     value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
-  BodyArmorSlotType:
+  utilitySlot:
+    value: {fileID: 11400000, guid: 651669212bcb079449ee47829bd5d45e, type: 2}
+  bodyArmorSlot:
     value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
-  WeaponSlotType:
+  weaponSlot:
     value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
   Inventory: {fileID: 0}
+  UtilityInventories: []
   EquipmentLocalList: []
   OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
   OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
@@ -685,6 +793,7 @@ MonoBehaviour:
   CurrentActionsList: []
   QueuedActionsHistoryList: []
   numActionsInQueue: 0
+  <AiCharacter>k__BackingField: {fileID: 0}
   <MinRange>k__BackingField: {x: 2, y: 2, z: 2}
 --- !u!114 &5403675160440229388
 MonoBehaviour:
@@ -722,14 +831,18 @@ MonoBehaviour:
   <CurrentMove>k__BackingField:
     Name: 
     Description: 
-    AnimationClip: {fileID: 0}
     AudioClips: []
-    AnimationParam: 
+    AnimationParamRef:
+      value: {fileID: 0}
+    Duration: 0
     Action:
       value: {fileID: 0}
     Direction:
       value: {fileID: 0}
     ExitEarlier: 0.1
+    DamageMultiplier: 1
+    ImpactMultiplier: 1
+    ShakeEffect: {fileID: 0}
     CanUseSkill: 0
   combos:
   - {fileID: 11400000, guid: 44ce49ae2cf51c94eabc66d0fcf161a4, type: 2}
@@ -785,12 +898,15 @@ MonoBehaviour:
   regen: 0
   decay: 0
   waitTime: 0.5
+  <HurtBoxes>k__BackingField: []
   isAlive:
     m_InternalValue: 1
   <MaxWounds>k__BackingField: 0
   woundHealth: 25
   wounds: 0
   OnReceiveDamage: {fileID: 11400000, guid: 6fc6e6b241d183940ad504bd2b7324d6, type: 2}
+  OnHealthChanged: {fileID: 11400000, guid: 3bbd1987fc8c19145b088bcac9f1f0c8, type: 2}
+  OnIsAliveChanged: {fileID: 11400000, guid: b420b84d68bc2f24bb1855a9d4d915c3, type: 2}
 --- !u!114 &-6873965126545705189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -804,8 +920,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InteractorSource: {fileID: 6370903744886762439}
-  InteractRange: 2
-  MaxDistance: 5
+  SourceOffset: {x: 0, y: 0, z: 0}
+  InteractRange: 1
+  MaxDistance: 10
 --- !u!114 &9197522367180269322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -832,7 +949,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 6028631068472643565}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.15599999
+  m_Radius: 0.8
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -841,8 +958,8 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 0.35199997
-  m_BaseOffset: 0.17599998
+  m_Height: 2
+  m_BaseOffset: 0.96
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &8228401257819008161
@@ -926,66 +1043,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!1 &6620107337957478008
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 9000417631202641727}
-  - component: {fileID: 6318216975863455951}
-  m_Layer: 3
-  m_Name: OnUpdateAllStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &9000417631202641727
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6620107337957478008}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1583196315626289370}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6318216975863455951
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6620107337957478008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc0a02ec4aba6a549a7caff2b62c61b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GameEvent: {fileID: 11400000, guid: 492a29ef2224c8746b8d80563e24d76e, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2066221182297512520}
-        m_TargetAssemblyTypeName: Blessing.Gameplay.Characters.Character, Assembly-CSharp
-        m_MethodName: OnUpdateAllStats
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &6737046069800503288
 GameObject:
   m_ObjectHideFlags: 0
@@ -1056,7 +1113,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5143992474855496680}
   - component: {fileID: 1128820130049227818}
-  m_Layer: 3
+  - component: {fileID: 7222635016937469111}
+  m_Layer: 0
   m_Name: HeadHurtBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1072,7 +1130,7 @@ Transform:
   m_GameObject: {fileID: 8756473815224977827}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.007, y: 0.061, z: 0}
+  m_LocalPosition: {x: 0.007, y: 0.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1097,5 +1155,20 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.05
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.33
+  m_Center: {x: 0, y: 0.29, z: 0}
+--- !u!114 &7222635016937469111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8756473815224977827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d52a3807f53b414ab8fb0d0ac583a12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <OwnerGameObject>k__BackingField: {fileID: 6028631068472643565}
+  <DmgMultiplier>k__BackingField: 0
+  TakeHitEffect: {fileID: 0}

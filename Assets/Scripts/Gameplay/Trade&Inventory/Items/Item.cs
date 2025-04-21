@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Blessing.Core.ScriptableObjectDropdown;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,6 +16,9 @@ namespace Blessing.Gameplay.TradeAndInventory
         public float Weight = 1.0f;
         public Sprite Sprite;
         public int Id = 0;
+        [ScriptableObjectDropdown(typeof(ItemType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
+        [SerializeField] private ScriptableObjectReference itemType;
+        public ItemType ItemType { get { return itemType.value as ItemType; } set { itemType.value = value;}}
 
         public virtual void Initialize(InventoryItem inventoryItem)
         {
@@ -22,7 +26,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         }
 
 #if UNITY_EDITOR
-        public void Awake()
+        public virtual void Awake()
         {
             string[] guids = AssetDatabase.FindAssets("t:item", new[] { "Assets/Items" });
 

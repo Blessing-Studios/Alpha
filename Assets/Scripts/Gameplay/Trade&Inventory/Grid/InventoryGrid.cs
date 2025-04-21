@@ -101,10 +101,31 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             Inventory.GetOwnership();
 
+            // Handle Stack Item
+            if (inventoryItem.Data.Stack < Inventory.ItemsMaxStack)
+            {
+                InventoryItem itemInGrid = Inventory.ItemSlot[position.x, position.y];
+                if (itemInGrid != null)
+                {
+                    if (itemInGrid.Item.Id == inventoryItem.Item.Id &&
+                        itemInGrid.Data.Stack + inventoryItem.Data.Stack <= Inventory.ItemsMaxStack)
+                    {
+                        itemInGrid.AddToStack(inventoryItem.Data.Stack);
+
+                        GameManager.Singleton.ReleaseInventoryItem(inventoryItem);
+
+                        return true;
+                    }
+                }
+            }
+
+            if (inventoryItem.Data.Stack > Inventory.ItemsMaxStack) return false;
+
             if (!CheckAvailableSpace(position, inventoryItem.Width, inventoryItem.Height))
             {
                 return false;
             }
+
             // Move the item in the right position on the InventoryGrid
             if (!PlaceItemOnGrid(inventoryItem, position))
             {

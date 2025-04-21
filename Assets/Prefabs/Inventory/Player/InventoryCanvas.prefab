@@ -705,6 +705,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   Owner: {fileID: 0}
+  <Canvas>k__BackingField: {fileID: 0}
   gridSizeWidth: 2
   gridSizeHeight: 2
   GridItems: []
@@ -720,6 +721,7 @@ MonoBehaviour:
       value: {fileID: 0}
     InventoryItem: {fileID: 0}
   EquippedItem: {fileID: 0}
+  DuplicateIndex: 0
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
 --- !u!1 &1456415871972053256
@@ -1294,6 +1296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   Owner: {fileID: 0}
+  <Canvas>k__BackingField: {fileID: 0}
   gridSizeWidth: 2
   gridSizeHeight: 2
   GridItems: []
@@ -1309,6 +1312,7 @@ MonoBehaviour:
       value: {fileID: 0}
     InventoryItem: {fileID: 0}
   EquippedItem: {fileID: 0}
+  DuplicateIndex: 0
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
 --- !u!1 &3290380380323144271
@@ -1773,23 +1777,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 137b0f746d356aa4e9e016476bab4dbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerCharacter: {fileID: 0}
+  PlayerCharacterInventoryUI: {fileID: 0}
   OtherCharacter: {fileID: 0}
-  InventoryCanvas: {fileID: 9170664249888493419}
-  PlayerInventoryGrid: {fileID: 4318501538023841004}
-  PlayerEquipmentsFrame: {fileID: 6396486028839356646}
-  PlayerStatsInfo: {fileID: 6322673560756104501}
-  OtherInventoryGrid: {fileID: 0}
-  OtherEquipmentsFrame: {fileID: 0}
-  OtherStatsInfo: {fileID: 0}
-  Grids:
-  - {fileID: 4318501538023841004}
-  - {fileID: 3635528173564847668}
-  - {fileID: 3264679510177983217}
-  - {fileID: 4924810797995087715}
-  - {fileID: 954530096812028551}
-  - {fileID: 3460249141967814230}
-  OtherGrids: []
   selectedItem: {fileID: 0}
   isGridsOpen: 0
 --- !u!1 &4243060092388741874
@@ -3588,6 +3577,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   Owner: {fileID: 0}
+  <Canvas>k__BackingField: {fileID: 0}
   gridSizeWidth: 2
   gridSizeHeight: 2
   GridItems: []
@@ -3603,6 +3593,7 @@ MonoBehaviour:
       value: {fileID: 0}
     InventoryItem: {fileID: 0}
   EquippedItem: {fileID: 0}
+  DuplicateIndex: 0
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
 --- !u!1 &7383076990327849401
@@ -3923,6 +3914,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   Owner: {fileID: 0}
+  <Canvas>k__BackingField: {fileID: 0}
   gridSizeWidth: 3
   gridSizeHeight: 3
   GridItems: []
@@ -3938,6 +3930,7 @@ MonoBehaviour:
       value: {fileID: 0}
     InventoryItem: {fileID: 0}
   EquippedItem: {fileID: 0}
+  DuplicateIndex: 0
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
 --- !u!1 &7860143598481188338
@@ -4258,6 +4251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   Owner: {fileID: 0}
+  <Canvas>k__BackingField: {fileID: 0}
   gridSizeWidth: 2
   gridSizeHeight: 3
   GridItems: []
@@ -4273,6 +4267,7 @@ MonoBehaviour:
       value: {fileID: 0}
     InventoryItem: {fileID: 0}
   EquippedItem: {fileID: 0}
+  DuplicateIndex: 0
   OnAddItem: {fileID: 11400000, guid: 58b3c52913911ee47a17fa9c013c1f54, type: 2}
   OnRemoveItem: {fileID: 11400000, guid: 9f227b6d40a79c0419f19dbccde665f0, type: 2}
 --- !u!1 &8066638379890137129
@@ -4895,6 +4890,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   Owner: {fileID: 0}
+  <Canvas>k__BackingField: {fileID: 0}
   gridSizeWidth: 20
   gridSizeHeight: 10
   GridItems: []

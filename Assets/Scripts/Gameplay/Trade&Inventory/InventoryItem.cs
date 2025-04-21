@@ -1,4 +1,7 @@
 using System;
+using System.Collections;
+using System.Data.Common;
+using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -8,28 +11,30 @@ using UnityEngine.UI;
 namespace Blessing.Gameplay.TradeAndInventory
 {
     [Serializable]
-    public struct InventoryItemData : IEquatable<InventoryItemData>, INetworkSerializeByMemcpy
+    public struct  InventoryItemData : IEquatable<InventoryItemData>, INetworkSerializeByMemcpy
     {
         public FixedString64Bytes Id;
         public int ItemId;
         public Vector2Int Position;
         public bool Rotated;
-
-        public InventoryItemData(FixedString64Bytes id, int itemId, Vector2Int position, bool rotated)
+        public int Stack;
+        public InventoryItemData(FixedString64Bytes id, int itemId, Vector2Int position, bool rotated, int stack = 1)
         {
             Id = id;
             ItemId = itemId;
             Position = position;
             Rotated = rotated;
+            Stack = stack;
         }
 
         public bool Equals(InventoryItemData other)
         {
             return
-                (this.Id == other.Id) &&
-                (this.ItemId == other.ItemId) &&
-                (this.Position == other.Position) &&
-                (this.Rotated == other.Rotated);
+                Id == other.Id &&
+                ItemId == other.ItemId &&
+                Position == other.Position &&
+                Rotated == other.Rotated && 
+                Stack == other.Stack;
         }
     }
     public class InventoryItem : MonoBehaviour
@@ -42,6 +47,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         public bool Rotated { get { return Data.Rotated; } }
         public int Value { get { return Item.Value; } }
         public RectTransform RectTransform { get; private set; }
+        private Image image;
+        [SerializeField] private TextMeshProUGUI stackText;
         public int Width
         {
             get
@@ -62,21 +69,30 @@ namespace Blessing.Gameplay.TradeAndInventory
                     return Item.Width;
             }
         }
+        void Awake()
+        {
+            RectTransform = GetComponent<RectTransform>();
+            image = GetComponent<Image>();
 
+            if (stackText ==  null)
+            {
+                Debug.LogError(gameObject.name + ": stackText can't be null");
+            }
+        }
         private void InitializeItem(Item item)
         {
             Item = item;
 
-            GetComponent<Image>().sprite = item.Sprite;
+            image.sprite = item.Sprite;
 
             gameObject.name = item.name;
 
             RectTransform.sizeDelta = new(item.Width * InventoryGrid.TileSizeWidth, item.Height * InventoryGrid.TileSizeHeight);
         }
-        public void Set(Item item)
+        public void Set(Item item, int stack = 1)
         {
             string stringGuid = Guid.NewGuid().ToString();
-            Set(item, new InventoryItemData(new FixedString64Bytes(stringGuid), item.Id, Vector2Int.zero, false));
+            Set(item, new InventoryItemData(new FixedString64Bytes(stringGuid), item.Id, Vector2Int.zero, false, stack));
         }
 
         public void Set(Item item, InventoryItemData  data)
@@ -84,11 +100,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             InitializeItem(item);
             SetData(data);
             item.Initialize(this);
-        }
-
-        void Awake()
-        {
-            RectTransform = GetComponent<RectTransform>();
+            UpdateStackNumber();
         }
         public void Rotate()
         {
@@ -106,16 +118,33 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             Data = data;
 
-            // Deal with Rotation
+            // Reset Rotation
             Data.Rotated = !Data.Rotated;
             Rotate();
         }
-        public void SetData(FixedString64Bytes id, int itemId, Vector2Int position, bool Rotated)
+        public void SetData(FixedString64Bytes id, int itemId, Vector2Int position, bool rotated, int stack)
         {
             Data.Id = id;
             Data.ItemId = itemId;
             Data.Position = position;
-            Data.Rotated = Rotated;
+            Data.Rotated = rotated;
+            Data.Stack = stack;
+        }
+
+        public void UpdateStackNumber()
+        {
+            if (Data.Stack > 1)
+                stackText.text = $"{Data.Stack}";
+            else
+                stackText.text = "";
+        }
+
+        public void AddToStack(int qty)
+        {
+            if (qty <= 0) return;
+            // teset
+            Data.Stack += qty;
+            UpdateStackNumber();
         }
     }
 }

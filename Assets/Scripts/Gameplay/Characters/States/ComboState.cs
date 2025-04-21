@@ -41,8 +41,8 @@ namespace Blessing.Gameplay.Characters.States
             // Zera movementController.AttackMovement
             movementController.AttackMovement = Vector3.zero;
 
-            duration = CurrentMove.AnimationClip.length;
-
+            duration = CurrentMove.Duration;
+            
             shouldCombo = false;
             attackPressedTimer = 0;
         }

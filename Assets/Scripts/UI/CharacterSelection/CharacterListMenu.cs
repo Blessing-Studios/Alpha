@@ -82,7 +82,8 @@ namespace Blessing.UI.CharacterSelection
                 Archetype archetype = GameManager.Singleton.GetArchetypeById(character.ArchetypeId);
 
                 characterSlot.RankAndClass.text = $"{rank.Label} Rank {archetype.Label}";
-
+                characterSlot.Icon.sprite = archetype.Icon;
+                
                 characterButton.onClick.AddListener(() =>
                 {
                     foreach(Button button in buttons)

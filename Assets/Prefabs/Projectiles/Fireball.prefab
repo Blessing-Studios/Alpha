@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1756676584241216939}
   - component: {fileID: 4966874506761971251}
   - component: {fileID: 4954713816523824161}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: vfxgraph_Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: -281239109635682361}
   - component: {fileID: 3410403808843821273}
   - component: {fileID: -7124258646236613839}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,11 +215,13 @@ MonoBehaviour:
   trails:
   - {fileID: 6072878632348185247}
   - {fileID: 405042988443428972}
+  hitEffect: {fileID: 0}
   speed: 0
   lifeTime: 0
   isDestroyedOnHit: 0
   Timer: 0
   direction: {x: 0, y: 0, z: 0}
+  skillDirection: {x: 1, y: 0, z: 0}
 --- !u!1 &3335235604772508888
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,7 +233,7 @@ GameObject:
   - component: {fileID: 5282721453292047472}
   - component: {fileID: 5906568176534016773}
   - component: {fileID: 7345354274701970762}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -351,7 +353,7 @@ GameObject:
   m_Component:
   - component: {fileID: 73045239834519413}
   - component: {fileID: 6072878632348185247}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -491,7 +493,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8951318733711693156}
   - component: {fileID: 405042988443428972}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Trail_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

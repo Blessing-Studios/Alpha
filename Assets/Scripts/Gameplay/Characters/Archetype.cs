@@ -16,6 +16,7 @@ namespace Blessing.Gameplay.Characters
         public string Label;
         public string Description;
         public Sprite Icon;
+        public Sprite CharacterSprite;
         public NetworkObject Prefab;
     }
 }

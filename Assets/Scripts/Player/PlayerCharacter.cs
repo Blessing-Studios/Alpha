@@ -95,14 +95,21 @@ namespace Blessing.Player
             if (ShowDebug) Debug.Log(gameObject.name + ": Start");
             base.Start();
         }
+        private bool playerControllersReady = false;
+        public void TriggerInitializePlayerChar()
+        {
+            playerControllersReady = true;
 
+            InitializePlayerChar();
+        }
         public void InitializePlayerChar()
         {
             if (isPlayerCharacterInitialized) return;
 
-            if (ShowDebug) Debug.Log(gameObject.name + ": InitializePlayerChar");
+            if (!Network.HasSpawned) return;
+            if (!playerControllersReady) return;
 
-            
+            if (ShowDebug) Debug.Log(gameObject.name + ": InitializePlayerChar");
 
             gameObject.name = "Char-" + GetPlayerOwnerName();
             GameManager.Singleton.AddPlayerCharacter(GetPlayerOwnerName(), this);
@@ -117,6 +124,39 @@ namespace Blessing.Player
             }
 
             isPlayerCharacterInitialized = true;
+        }
+        public override bool CheckIfActionTriggered(string actionName)
+        {
+            if (!HasAuthority || !canGiveInputs) return false;
+
+            if (actionName != ""
+                && playerInput.currentActionMap.FindAction(actionName) != null
+                && playerInput.currentActionMap.FindAction(actionName).triggered)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool Hit(IHittable target)
+        {
+            bool baseValue = base.Hit(target);
+
+            if (HasAuthority && baseValue)
+            {
+                if (CharacterStateMachine.CurrentMove.ShakeEffect != null)
+                    GameManager.Singleton.CameraShake(impulseSource, CharacterStateMachine.CurrentMove.ShakeEffect);
+                    
+                target.GetOwnership();
+            }
+
+            return baseValue;
+        }
+
+        public override void GotHit(IHitter hitter)
+        {
+            base.GotHit(hitter);
         }
 
         public void GetPlayerCharacterOwnership()
@@ -225,38 +265,9 @@ namespace Blessing.Player
             }
         }
 
-        public override bool CheckIfActionTriggered(string actionName)
+        public override void OnDeath()
         {
-            if (!HasAuthority || !canGiveInputs) return false;
-
-            if (actionName != ""
-                && playerInput.currentActionMap.FindAction(actionName) != null
-                && playerInput.currentActionMap.FindAction(actionName).triggered)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public override bool Hit(IHittable target)
-        {
-            bool baseValue = base.Hit(target);
-
-            if (HasAuthority && baseValue)
-            {
-                if (CharacterStateMachine.CurrentMove.ShakeEffect != null)
-                    GameManager.Singleton.CameraShake(impulseSource, CharacterStateMachine.CurrentMove.ShakeEffect);
-                    
-                target.GetOwnership();
-            }
-
-            return baseValue;
-        }
-
-        public override void GotHit(IHitter hitter)
-        {
-            base.GotHit(hitter);
+            base.OnDeath();
         }
     }
 }

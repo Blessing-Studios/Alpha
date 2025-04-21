@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Blessing.Gameplay.SkillsAndMagic
 {
+    // TODO: Não está sendo usando, estudar se precisa deletar
     public class ProjectilePooler : AbstractObjectPooler<Projectile>
     {
         public GameObject ProjectilePrefab;
@@ -28,7 +29,6 @@ namespace Blessing.Gameplay.SkillsAndMagic
             pooledObject.transform.SetParent(transform, true);
 
             pooledObject.TargetList.Clear();
-            pooledObject.Timer = 0.0f;
         }
         protected override void OnDestroyPooledObject(Projectile pooledObject)
         {

@@ -26,7 +26,7 @@ namespace Blessing.Ai
 
             if (spawnedAiCharacter == null) Debug.LogError(gameObject.name + " AiCharacter is missing");
 
-            spawnedAiCharacter.SpawnLocation = transform.position;
+            spawnedAiCharacter.SpawnLocation = transform.position + new Vector3(0, spawnedAiCharacter.CharacterController.height, 0);
 
             m_TickToSpawnLoot = SpawnTime;
 

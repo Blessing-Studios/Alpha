@@ -39,7 +39,7 @@ namespace Blessing.Gameplay.Characters
         public CharacterMana Mana { get; protected set; }
         public CharacterStats Stats { get; protected set; }
         public Dictionary<Stat, int> ValueByStat { get { return Stats.ValueByStat;} }
-        public CharacterController CharacterController { get; protected set; }
+        public CharacterController CharacterController { get {return MovementController.GetCharacterController();} }
         public CharacterNetwork CharacterNetwork { get; protected set; }
         [field: SerializeField] protected InputActionList actionList;
         [field: SerializeField] protected InputDirectionList directionList;
@@ -116,8 +116,6 @@ namespace Blessing.Gameplay.Characters
             Mana = GetComponent<CharacterMana>();
             Stats = GetComponent<CharacterStats>();
 
-            CharacterController = GetComponent<CharacterController>();
-
             CharacterNetwork = GetComponent<CharacterNetwork>();
 
             TargetList = new List<IHittable>();
@@ -135,6 +133,7 @@ namespace Blessing.Gameplay.Characters
             // stateIndex.Value = 0;
         }
 
+        public bool HasStarted = false;
         protected virtual void Start()
         {
             if (HasAuthority)
@@ -145,10 +144,18 @@ namespace Blessing.Gameplay.Characters
             }
 
             // Invoke(nameof(Initialize), 2.0f);
+
+            // if (GameManager.Singleton.PlayerConnected && isInitialized == false)
+            //     Initialize();
+
+            HasStarted = true;
         }
 
+        private bool isInitialized = false;
+        public bool IsInitialized { get { return isInitialized; } }
         public virtual void Initialize()
         {
+            if (isInitialized) return;
 
             if (ShowDebug) Debug.Log(gameObject.name + ": Initialize");
 
@@ -156,6 +163,8 @@ namespace Blessing.Gameplay.Characters
             StartCoroutine(ChangeByTime());
 
             SynchTraits();
+
+            isInitialized = true;
         }
 
         private void SynchTraits()
@@ -329,11 +338,10 @@ namespace Blessing.Gameplay.Characters
 
             MovementController.HandlePushBack(pushDirection, impact, impulseTime);
 
-            int health = Health.CurrentHealth;
-            if (health > 0)
+            if (Health.IsAlive)
                 CharacterStateMachine.SetNextState(CharacterStateMachine.TakeHitState);
 
-            if (health <= 0)
+            if (Health.IsDead)
                 CharacterStateMachine.SetNextState(CharacterStateMachine.DeadState);
         }
 
@@ -458,6 +466,7 @@ namespace Blessing.Gameplay.Characters
         }
         public void RemoveTrait(TraitData traitData)
         {
+            // TODO: checar se index existe antes de remover
             int indexToRemove = -1;
             for (int i = 0; i < CharacterTraits.Count; i++)
             {
@@ -593,15 +602,31 @@ namespace Blessing.Gameplay.Characters
 
             // Gastar mana e checar duração das passivas
         }
+        // GameEventListeners
+        public void OnIsAliveChanged(Component component, object data)
+        {
+            if (component.gameObject != gameObject) return;
+
+            Debug.Log(gameObject.name + ": Character OnIsAliveChanged");
+
+            bool isAlive = (bool) data;
+
+            if (!isAlive)
+            {
+                OnDeath();
+            }
+
+            if (isAlive)
+            {
+                // Resurrect
+            }
+        }
 
         public virtual void OnDeath()
         {
-            Health.SetCharacterAsDead();
             MovementController.DisableMovement();
             MovementController.DisableCollision();
         }
-
-        // GameEventListeners
         public void OnAddEquipment(Component component, object data)
         {
             if (component.gameObject != gameObject) return;
@@ -612,12 +637,17 @@ namespace Blessing.Gameplay.Characters
 
             InventoryItem inventoryItem = characterEquipment.InventoryItem;
 
-            Backpack backpack = inventoryItem.Item as Backpack;
+            // Backpack backpack = inventoryItem.Item as Backpack;
+            // if (backpack != null)
+            // {
+            //     Gear.AddBackpack(inventoryItem);
+            // }
 
-            if (backpack != null)
-            {
-                Gear.AddBackpack(inventoryItem);
-            }
+            // Utility utility = inventoryItem.Item as Utility;
+            // if (utility != null)
+            // {
+            //     Gear.AddUtility(inventoryItem, characterEquipment.DuplicateIndex);
+            // }
 
             UpdateParameters();
 
@@ -632,10 +662,15 @@ namespace Blessing.Gameplay.Characters
 
             CharacterEquipment characterEquipment = data as CharacterEquipment;
 
-            if (characterEquipment.GearSlotType == Gear.BackpackSlot)
-            {
-                Gear.RemoveBackpack();
-            }
+            // if (characterEquipment.GearSlotType == Gear.BackpackSlot)
+            // {
+            //     Gear.RemoveBackpack();
+            // }
+
+            // if (characterEquipment.GearSlotType == Gear.UtilitySlot)
+            // {
+            //     Gear.RemoveUtility(characterEquipment.DuplicateIndex);
+            // }
 
             UpdateParameters();
 

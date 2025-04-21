@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Blessing.Core.ObjectPooling;
 using Blessing.Gameplay.Characters;
 using Blessing.HealthAndDamage;
 using UnityEngine;
-using UnityEngine.Pool;
 
 namespace Blessing.Gameplay.SkillsAndMagic
 {
@@ -13,6 +11,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         [SerializeField] protected ProjectileSkill projectileSkill;
         [SerializeField] protected TrailRenderer[] trails;
+        [SerializeField] protected HitEffect hitEffect;
         [SerializeField] protected float speed;
         [SerializeField] protected float lifeTime;
         [SerializeField] protected bool isDestroyedOnHit;
@@ -24,7 +23,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
         public HitInfo HitInfo { get; protected set; }
         public Skill ActiveSkill { get; set; }
         public Transform SkillOrigin { get { return transform; } }
-        protected Vector3 skillDirection = Vector3.right;
+        [SerializeField] protected Vector3 skillDirection = Vector3.right;
         public Vector3 SkillDirection { get { return skillDirection; }}
         public Dictionary<Stat, int> ValueByStat { get { return owner.ValueByStat;}}
 
@@ -48,7 +47,10 @@ namespace Blessing.Gameplay.SkillsAndMagic
             speed = projectileSkill.Speed;
             lifeTime = projectileSkill.LifeTime;
             isDestroyedOnHit = projectileSkill.IsDestroyedOnHit;
-            transform.SetPositionAndRotation(owner.SkillOrigin.position, owner.SkillOrigin.rotation);
+            transform.SetPositionAndRotation(
+                    owner.SkillOrigin.position + new Vector3(0, Random.Range(-projectileSkill.PositionPrecision.y, projectileSkill.PositionPrecision.y), Random.Range(-projectileSkill.PositionPrecision.x, projectileSkill.PositionPrecision.x)),
+                    owner.SkillOrigin.rotation * Quaternion.Euler(0, 0, Random.Range(-projectileSkill.AnglePrecision, projectileSkill.AnglePrecision))
+            );
             direction = transform.rotation * owner.SkillDirection;
 
             return this;
@@ -59,7 +61,6 @@ namespace Blessing.Gameplay.SkillsAndMagic
             if (!HasAuthority) return false;
 
             // TODO: create logic to not hit itself
-
             if (TargetList.Contains(target))
             {
                 // hit failed, target was already hit;
@@ -76,8 +77,6 @@ namespace Blessing.Gameplay.SkillsAndMagic
         {
             if (!gameObject.activeSelf) return;
 
-            Debug.Log(gameObject.name + ": OnCollisionEnter");
-
             if (other.gameObject.TryGetComponent(out HurtBox hurtBox))
             {
                 if (Hit(hurtBox.Owner))
@@ -87,7 +86,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
                 }
                 if (isDestroyedOnHit) 
                 {
-                    projectileSkill.AfterSkill.Trigger(this);
+                    projectileSkill.AfterSkill?.Trigger(this);
 
                     Pool.Release(this);
                 }
@@ -96,11 +95,23 @@ namespace Blessing.Gameplay.SkillsAndMagic
             {
                 if (isDestroyedOnHit) 
                 {
-                    projectileSkill.AfterSkill.Trigger(this);
+                    
+                    projectileSkill.AfterSkill?.Trigger(this);
 
                     Pool.Release(this);
                 }
             }
+
+            if (hitEffect != null)
+            {
+                HitEffect newHitEffect = PoolManager.Singleton.Get(hitEffect) as HitEffect;
+                newHitEffect.transform.SetPositionAndRotation(other.ClosestPointOnBounds(transform.position), this.transform.rotation);
+                newHitEffect.transform.position = other.ClosestPointOnBounds(transform.position);
+                // newHitEffect.transform.SetParent(other.transform, true);
+                newHitEffect.SetParentConstrain(other.transform);
+            }
+
+            Debug.Log(other.gameObject.name + " - foi acertado");
         }
         public override void GetFromPool()
         {

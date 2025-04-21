@@ -5,6 +5,7 @@ namespace Blessing.Ai.Goap.Actions
 {
     public class AttackAction : BaseAction
     {
+        private ICharacterAgent characterAgent;
         private bool finished = false;
         private const bool requiresInRange = true;
         public AttackAction(GoapStateMachine goapStateMachine) : base(goapStateMachine)
@@ -12,6 +13,8 @@ namespace Blessing.Ai.Goap.Actions
             AddEffect("AttackTarget", true);
 
             Cost = 3f;
+
+            characterAgent = (ICharacterAgent) aiAgent;
         }
 
         public override void OnEnter()
@@ -93,8 +96,6 @@ namespace Blessing.Ai.Goap.Actions
         }
         public override Vector3 SetMinRange()
         {
-            ICharacterAgent characterAgent = (ICharacterAgent) aiAgent; ;
-
             // // Setar no bot um range mínimo para atirar
             minRange = characterAgent.MinRange;
 
@@ -117,7 +118,10 @@ namespace Blessing.Ai.Goap.Actions
         public override void HandleActionMove(Vector3 direction)
         {
             // Debug.Log("AttackAction handleActionMove");
-            aiAgent.OnMovementInput(direction);
+
+            // aiAgent.OnMovementInput(direction);
+
+            characterAgent.AiCharacter.MoveToTargetPosition(TargetPosition);
         }
     }
 }

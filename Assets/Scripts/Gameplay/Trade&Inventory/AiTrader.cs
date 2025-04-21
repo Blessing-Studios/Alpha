@@ -18,14 +18,14 @@ namespace Blessing.AI.Goap
         [Header("Ai Trader")]
         public Character Customer;
         [field: SerializeField] public Vector3 MinRange { get; private set;}
-        public Inventory Inventory { get { return character.Gear.Inventory; } }
+        public Inventory Inventory { get { return AiCharacter.Gear.Inventory; } }
         [SerializeField] private FixedString64Bytes reservedItemGuid;
         private Vector2Int reservedItemPosition;
         protected Animator animator;
         protected int isOpenHash;
         private AiMovementController aiMovementController;
-        private AiCharacter character;
-        public bool CanInteract { get { return character.Health.IsAlive; } }
+        [field: SerializeField] public  AiCharacter AiCharacter { get; private set; }
+        public bool CanInteract { get { return AiCharacter.Health.IsAlive; } }
 
         // Para debugar
         [SerializeField] private InventoryItem reservedItem;
@@ -36,7 +36,7 @@ namespace Blessing.AI.Goap
             aiMovementController = GetComponent<AiMovementController>();
             animator = GetComponent<Animator>();
 
-            character = GetComponent<AiCharacter>();
+            AiCharacter = GetComponent<AiCharacter>();
 
             isOpenHash = Animator.StringToHash("IsOpen");
         }
@@ -75,6 +75,7 @@ namespace Blessing.AI.Goap
         }
         public void Interact(Interactor interactor)
         {
+            // TODO: precisa refazer
             if (interactor.gameObject.TryGetComponent(out Character customer))
             {
                 Inventory.GetOwnership();
@@ -87,7 +88,7 @@ namespace Blessing.AI.Goap
                 //     CloseTrader();
                 // }
 
-                GameManager.Singleton.InventoryController.OtherCharacter = null;
+                // GameManager.Singleton.InventoryController.LootCharacter = null;
 
                 if (!GameManager.Singleton.InventoryController.IsGridsOpen)
                 {

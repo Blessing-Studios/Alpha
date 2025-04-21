@@ -85,5 +85,13 @@ namespace Blessing.HealthAndDamage
         {
             // characterHealth.OnHealthChanged -= HandleOnHealthChanged;
         }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                UpdateHealthBars();
+            }
+        }
     }
 }

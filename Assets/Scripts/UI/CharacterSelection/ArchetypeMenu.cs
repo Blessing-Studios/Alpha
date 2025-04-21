@@ -10,17 +10,18 @@ namespace Blessing.UI.CharacterSelection
 {
     public class ArchetypeMenu : MonoBehaviour
     {
-        [SerializeField] private Button archetypeButtonPrefab;
+        [SerializeField] private ArchetypeElement archetypeElementPrefab;
         private List<Button> buttons = new();
         void Start()
         {
             foreach (Archetype archetype in GameManager.Singleton.Archetypes)
             {
-                Button archetypeButton = Instantiate(archetypeButtonPrefab, this.transform);
+                ArchetypeElement archetypeElement = Instantiate(archetypeElementPrefab, this.transform);
 
-                archetypeButton.GetComponentInChildren<TextMeshProUGUI>().text = archetype.Label;
+                archetypeElement.Name.text = archetype.Label;
+                archetypeElement.Icon.sprite = archetype.Icon;
 
-                archetypeButton.onClick.AddListener(() =>
+                archetypeElement.Button.onClick.AddListener(() =>
                 {
                     Debug.Log("archetypeButton.onClick");
 
@@ -29,19 +30,13 @@ namespace Blessing.UI.CharacterSelection
                         button.interactable = true;
                     }
 
-                    buttons.Add(archetypeButton);
+                    buttons.Add(archetypeElement.Button);
 
-                    archetypeButton.interactable = false;
+                    archetypeElement.Button.interactable = false;
 
                     GameplayEventHandler.ArchetypeButtonPressed(archetype);
                 });
             }
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
     }
 }

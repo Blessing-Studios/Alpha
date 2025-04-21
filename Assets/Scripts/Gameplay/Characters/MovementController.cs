@@ -13,7 +13,7 @@ public abstract class MovementController : NetworkBehaviour
     public float GroundedGravity;
     public Vector3 AttackMovement = Vector3.zero;
     public Vector2 direction; // Talvez deletar essa variável
-    protected bool canMove;
+    [SerializeField] protected bool canMove;
     protected Animator animator;
 
     // Delcare reference variables
@@ -34,7 +34,7 @@ public abstract class MovementController : NetworkBehaviour
     [SerializeField] protected Vector2 currentMovementInput;
 
     // The child Classes give value to currentMovement
-    protected Vector3 currentMovement = Vector3.zero;
+    [SerializeField] protected Vector3 currentMovement = Vector3.zero;
 
     // ###################### Teste
     public Vector3 CurrentMovement;
@@ -197,7 +197,8 @@ public abstract class MovementController : NetworkBehaviour
 
     public void DisableCollision()
     {
-        // GetCharacterController().excludeLayers = LayerMask.GetMask("Player");
+        Debug.Log("DisableCollision()");
+        GetCharacterController().excludeLayers = LayerMask.GetMask("Characters");
     }
 
     // this script pushes all rigidbodies that the character touches

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8686660332753613610}
   - component: {fileID: 1848037958074440654}
   - component: {fileID: 6263961530785237612}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: ProjectileBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -150,9 +150,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectileSkill: {fileID: 0}
+  trails: []
+  hitEffect: {fileID: 0}
   speed: 0
   lifeTime: 0
   isDestroyedOnHit: 0
   Timer: 0
   direction: {x: 0, y: 0, z: 0}
-  owner: {fileID: 0}
+  skillDirection: {x: 1, y: 0, z: 0}

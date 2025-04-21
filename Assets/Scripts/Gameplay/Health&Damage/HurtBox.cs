@@ -9,7 +9,6 @@ namespace Blessing.HealthAndDamage
     {
         [Tooltip("Owner of this HurtBox")][field: SerializeField] public GameObject OwnerGameObject { get; private set; }
         public IHittable Owner { get; private set; }
-        public bool IsActive = true;
         [Tooltip("Damage multiplier when hitting this hurbox")][field: SerializeField] public float DmgMultiplier { get; private set; }
         public ParticleSystem TakeHitEffect;
 

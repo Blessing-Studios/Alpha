@@ -14,7 +14,7 @@ namespace Blessing.Gameplay.Characters
         public Character Character { get; private set; }
         public NetworkVariable<FixedString32Bytes> CharacterName = new();
         [field: SerializeField] protected NetworkVariable<bool> isTraveling = new NetworkVariable<bool>(false);
-        public bool IsTraveling { get { return isTraveling.Value; } set { isTraveling.Value = value;}}
+        public bool IsTraveling { get { return isTraveling.Value; } set { isTraveling.Value = value; } }
 
         [field: SerializeField]
         protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(0,
@@ -35,12 +35,13 @@ namespace Blessing.Gameplay.Characters
             NetworkVariableWritePermission.Owner
         );
         public List<TraitData> TraitDataLocalList = new();
-        
+
         public Vector2Int ComboMoveIndex { get { return comboMoveIndex.Value; } }
 
         public CharacterStateMachine CharacterStateMachine { get; private set; }
         // private NetworkObject networkObject;
-        
+        public bool HasSpawned = false;
+
         void Awake()
         {
             // networkObject = GetComponent<NetworkObject>();
@@ -69,6 +70,8 @@ namespace Blessing.Gameplay.Characters
             stateIndex.OnValueChanged += OnNetworkStateIndexChanged;
             comboMoveIndex.OnValueChanged += OnNetworkComboMoveIndexChanged;
             TraitDataNetworkList.OnListChanged += OnTraitDataNetworkListChanged;
+
+            HasSpawned = true;
 
             if (GameManager.Singleton.PlayerConnected)
                 Character.Initialize();
@@ -125,7 +128,7 @@ namespace Blessing.Gameplay.Characters
             if (HasAuthority) return;
 
             if (!UpdateLocalList(ref TraitDataLocalList, TraitDataNetworkList)) return;
-            
+
             Debug.Log(gameObject.name + ": UpdateLocalList Passou");
 
             Debug.Log(gameObject.name + ": changeEvent.Type - " + changeEvent.Type);
@@ -189,11 +192,49 @@ namespace Blessing.Gameplay.Characters
         public void HandleTraitVisualEffectRpc(int traitId)
         {
             Trait trait = Character.GetTrait(traitId);
-            
+
             if (trait == null) return;
 
-            VisualEffect visualEffect = Instantiate(trait.VisualEffect, transform.position, Quaternion.identity);
+            Vector3 targetLocation = transform.position;
+            if (trait.SpawnVFXOnGround)
+            {
+                /*
+            * Create the hit object
+            * This will later hold the data for the hit
+            * (location, collided collider etc.)
+            */
+                RaycastHit hit;
+
+                /*
+                 * The ray length.
+                 * Modify it to change the length of the Ray.
+                 */
+                float distance = 100f;
+
+                /*
+                 * A variable to store the location of the hit.
+                 */
+
+
+                /*
+                 * Cast a raycast.
+                 * If it hits something:
+                 */
+                if (Physics.Raycast(transform.position, Vector3.down, out hit, distance))
+                {
+                    /*
+                     * Get the location of the hit.
+                     * This data can be modified and used to move your object.
+                     */
+                    targetLocation = hit.point;
+                }
+            }
+
+            VisualEffect visualEffect = Instantiate(trait.VisualEffect, targetLocation + new Vector3(0, 0.05f, 0), Quaternion.identity);
             
+            if (trait.VFXFollowChar)
+                visualEffect.transform.SetParent(transform, true);
+
             visualEffect.Play();
 
             Destroy(visualEffect.gameObject, visualEffect.GetFloat("LifeTime"));

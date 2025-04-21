@@ -5,12 +5,9 @@ using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.Characters.Traits;
 using Blessing.Gameplay.Interation;
 using Blessing.Gameplay.TradeAndInventory;
-using NUnit.Framework;
-using TMPro;
 using Unity.Netcode;
-using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -26,19 +23,23 @@ namespace Blessing.Gameplay.Characters
         public NetworkList<InventoryItemData> EquipmentNetworkList;
 
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
-        public ScriptableObjectReference BackpackSlotType;
-        [SerializeField] public EquipmentType BackpackSlot { get { return BackpackSlotType.value as EquipmentType; } }
-        
-        [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
-        public ScriptableObjectReference BodyArmorSlotType;
-        [SerializeField] public EquipmentType BodyArmorSlot { get { return BodyArmorSlotType.value as EquipmentType; } }
+        [SerializeField] private ScriptableObjectReference backpackSlot;
+        public EquipmentType BackpackSlot { get { return backpackSlot.value as EquipmentType; } set { backpackSlot.value = value; }}
 
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
-        public ScriptableObjectReference WeaponSlotType;
-        [SerializeField] public EquipmentType WeaponSlot { get { return WeaponSlotType.value as EquipmentType; } }
-        
+        [SerializeField] private ScriptableObjectReference utilitySlot;
+        public EquipmentType UtilitySlot { get { return utilitySlot.value as EquipmentType; } set { utilitySlot.value = value; }}
+
+        [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
+        [SerializeField] private ScriptableObjectReference bodyArmorSlot;
+        public EquipmentType BodyArmorSlot { get { return bodyArmorSlot.value as EquipmentType; } set { bodyArmorSlot.value = value; }}
+
+        [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
+        [SerializeField] private ScriptableObjectReference weaponSlot;
+        [SerializeField] public EquipmentType WeaponSlot { get { return weaponSlot.value as EquipmentType; } set { weaponSlot.value = value; }}
         public Inventory Inventory;
-        public List<InventoryItemData> EquipmentLocalList;
+        public List<Inventory> UtilityInventories = new();
+        public List<InventoryItemData> EquipmentLocalList = new();
         private bool isEquipmentsInitialized = false;
         private Character looter;
         public bool CanInteract { get { return !character.Health.IsAlive; } }
@@ -100,19 +101,30 @@ namespace Blessing.Gameplay.Characters
 
         private void InitializeEquipments()
         {
-            RemoveAllEquipments();
+            // Remove and Add all equipment to force Sync
+            
+            foreach (CharacterEquipment equipment in Equipments)
+            {
+                RemoveEquipmentTraits(equipment);
+                equipment.Unequip();
+            }
 
             foreach (InventoryItemData itemData in EquipmentNetworkList)
             {
                 InventoryItem inventoryItem = FindItem(itemData);
                 AddEquipment(inventoryItem);
 
-                Backpack backpack = inventoryItem.Item as Backpack;
+                // Backpack backpack = inventoryItem.Item as Backpack;
+                // if (backpack != null)
+                // {
+                //     AddBackpack(inventoryItem);
+                // }
 
-                if (backpack != null)
-                {
-                    SetInventory(inventoryItem);
-                }
+                // Utility utility = inventoryItem.Item as Utility;
+                // if (utility != null)
+                // {
+                //     AddUtility(inventoryItem);
+                // }
             }
 
             isEquipmentsInitialized = true;
@@ -167,7 +179,7 @@ namespace Blessing.Gameplay.Characters
             {
                 return false;
             }
-            if (equipment.GearSlotType == gear.GearType)
+            if (equipment.GearSlotType == gear.EquipmentType)
             {
 
                 if (!equipment.SetEquipment(inventoryItem)) return false;
@@ -176,6 +188,18 @@ namespace Blessing.Gameplay.Characters
                     ApplyEquipmentTraits(equipment);
 
                 inventoryItem.Data.Position = Vector2Int.zero;
+
+                Backpack backpack = inventoryItem.Item as Backpack;
+                if (backpack != null)
+                {
+                    AddBackpack(inventoryItem);
+                }
+
+                Utility utility = inventoryItem.Item as Utility;
+                if (utility != null)
+                {
+                    AddUtility(inventoryItem, equipment.DuplicateIndex);
+                }
 
                 // Raise Events
                 if (OnAddEquipment != null)
@@ -193,19 +217,10 @@ namespace Blessing.Gameplay.Characters
             return false;
         }
 
-        private void RemoveAllEquipments()
-        {
-            foreach (CharacterEquipment equipment in Equipments)
-            {
-                RemoveEquipmentTraits(equipment);
-                equipment.Unequip();
-            }
-        }
-
         public bool RemoveEquipment(CharacterEquipment equipment, InventoryItem inventoryItem)
         {
             Gear gear = inventoryItem.Item as Gear;
-            if (equipment.GearSlotType == gear.GearType)
+            if (equipment.GearSlotType == gear.EquipmentType)
             {
                 if (HasAuthority)
                 {
@@ -216,6 +231,16 @@ namespace Blessing.Gameplay.Characters
                 RemoveEquipmentTraits(equipment);
 
                 equipment.Unequip();
+
+                if (equipment.GearSlotType == BackpackSlot)
+                {
+                    RemoveBackpack();
+                }
+
+                if (equipment.GearSlotType == UtilitySlot)
+                {
+                    RemoveUtility(equipment.DuplicateIndex);
+                }
 
                 // Raise Events
                 if (OnRemoveEquipment != null)
@@ -244,6 +269,16 @@ namespace Blessing.Gameplay.Characters
                     RemoveEquipmentTraits(equipment);
 
                     equipment.Unequip();
+
+                    if (equipment.GearSlotType == BackpackSlot)
+                    {
+                        RemoveBackpack();
+                    }
+
+                    if (equipment.GearSlotType == UtilitySlot)
+                    {
+                        RemoveUtility(equipment.DuplicateIndex);
+                    }
 
                     if (OnRemoveEquipment != null)
                         OnRemoveEquipment.Raise(this, equipment);
@@ -278,18 +313,11 @@ namespace Blessing.Gameplay.Characters
         public void ApplyAllEquipmentsTraits()
         {
             if (HasAuthority)
-            foreach (CharacterEquipment equipment in Equipments)
-            {
-                ApplyEquipmentTraits(equipment);
-            }
+                foreach (CharacterEquipment equipment in Equipments)
+                {
+                    ApplyEquipmentTraits(equipment);
+                }
         }
-
-        public void ValidateEquipments()
-        {
-            // TODO:
-            // CharactersEquipments can't repeat slots
-        }
-
         protected InventoryItem CreateItem(InventoryItemData data)
         {
             return GameManager.Singleton.InventoryController.CreateItem(data);
@@ -306,30 +334,32 @@ namespace Blessing.Gameplay.Characters
         }
         public virtual void AddBackpack(InventoryItem inventoryItem)
         {
-            if (inventoryItem != null)
+            
+            if (inventoryItem != null && inventoryItem.Inventory == null)
             {
-                SetInventory(inventoryItem);
-            }
-        }
-        public virtual void RemoveBackpack()
-        {
-            UnequipInventory();
-        }
-
-        protected virtual void SetInventory(InventoryItem inventoryItem)
-        {
-            if (inventoryItem.Inventory == null)
-            {
-                Debug.Log(gameObject.name + ": inventoryItem.Inventory == null - " + inventoryItem.Item.name);
+                Debug.LogError(gameObject.name + ": inventoryItem.Inventory == null - " + inventoryItem.Item.name);
                 return;
             }
 
             Inventory = inventoryItem.Inventory;
         }
+        public virtual void AddUtility(InventoryItem inventoryItem, int duplicatedIndex = 0)
+        {
+            if (inventoryItem != null && inventoryItem.Inventory == null)
+            {
+                Debug.LogError(gameObject.name + ": inventoryItem.Inventory == null - " + inventoryItem.Item.name);
+            }
 
-        protected void UnequipInventory()
+            UtilityInventories[duplicatedIndex] = inventoryItem.Inventory;
+        }
+        public virtual void RemoveBackpack()
         {
             Inventory = null;
+        }
+
+        public virtual void RemoveUtility(int duplicatedIndex)
+        {
+            UtilityInventories[duplicatedIndex] = null;
         }
         public Vector2Int GetWeaponDamageAndPen(List<CharacterTrait> traits)
         {
@@ -343,7 +373,7 @@ namespace Blessing.Gameplay.Characters
 
             int damage = weapon.Attack;
 
-            foreach(WeaponModifier modifier in weapon.WeaponModifiers)
+            foreach (WeaponModifier modifier in weapon.WeaponModifiers)
             {
                 damage += character.Stats.GetStatValue(modifier.Stat) * modifier.Value;
             }
@@ -358,17 +388,17 @@ namespace Blessing.Gameplay.Characters
 
         internal Vector2Int GetArmorDefenseAndPen(List<CharacterTrait> traits)
         {
-            Vector2Int defaultValue = new Vector2Int(0, 0);
+            Vector2Int defaultValue = new(0, 0);
 
             Gear gear = GetEquippedGearByType(BodyArmorSlot);
             if (gear == null) return defaultValue;
 
-            BodyArmor bodyArmor = gear as BodyArmor;
+            Chest bodyArmor = gear as Chest;
             if (bodyArmor == null) return defaultValue;
 
             int defense = defaultValue.x + bodyArmor.Defense;
 
-            foreach(BodyArmorModifier modifier in bodyArmor.BodyArmorModifiers)
+            foreach (BodyArmorModifier modifier in bodyArmor.BodyArmorModifiers)
             {
                 defense += character.Stats.GetStatValue(modifier.Stat) * modifier.Value;
             }
@@ -381,15 +411,15 @@ namespace Blessing.Gameplay.Characters
             return new Vector2Int(defense, bodyArmor.ArmorClass);
         }
 
-        public Gear GetEquippedGearByType(EquipmentType gearType)
+        public Gear GetEquippedGearByType(EquipmentType equipmentType)
         {
-            foreach(CharacterEquipment equipment in Equipments)
+            foreach (CharacterEquipment equipment in Equipments)
             {
                 if (equipment.InventoryItem == null) continue;
 
                 Gear gear = equipment.InventoryItem.Item as Gear;
 
-                if (gear.GearType == gearType)
+                if (gear.EquipmentType == equipmentType)
                 {
                     return gear;
                 }
@@ -397,7 +427,7 @@ namespace Blessing.Gameplay.Characters
 
             return null;
         }
-        
+
 
         public void Interact(Interactor interactor)
         {
@@ -411,16 +441,16 @@ namespace Blessing.Gameplay.Characters
 
                 this.looter = looter;
 
-                GameManager.Singleton.InventoryController.OtherCharacter = character;
+                GameManager.Singleton.InventoryController.LootCharacterInventoryUI.SetCharacter(character);
 
                 if (!GameManager.Singleton.InventoryController.IsGridsOpen)
                 {
-                    GameManager.Singleton.InventoryController.OpenAllGrids();
+                    GameManager.Singleton.InventoryController.OpenLootGrids();
                 }
                 else if (GameManager.Singleton.InventoryController.IsGridsOpen)
                 {
                     Debug.Log(gameObject.name + ": CharacterGear Interact IsGridsOpen = true");
-                    GameManager.Singleton.InventoryController.CloseAllGrids();
+                    GameManager.Singleton.InventoryController.CloseLootGrids();
                 }
             }
         }
@@ -438,6 +468,51 @@ namespace Blessing.Gameplay.Characters
                 GameManager.Singleton.InventoryController.CloseAllGrids();
             }
         }
+#if UNITY_EDITOR
+        void OnValidate()
+        {
+            // Default Values for the slots
+            if (BackpackSlot == null)
+                BackpackSlot = FindEquipmentType("Back");
+
+            if (WeaponSlot == null)
+                WeaponSlot = FindEquipmentType("Weapon");
+
+            if (BodyArmorSlot == null)
+                BodyArmorSlot = FindEquipmentType("Chest");
+
+            if (UtilitySlot == null)
+                UtilitySlot = FindEquipmentType("Utility");
+            
+            // Create index to differentiate duplicated slots
+            Dictionary<string, int> qtyBySlotName = new();
+
+            foreach (CharacterEquipment slot in Equipments)
+            {
+                if (qtyBySlotName.ContainsKey(slot.GearSlotType.name))
+                    qtyBySlotName[slot.GearSlotType.name]++;
+                else
+                    qtyBySlotName[slot.GearSlotType.name] = 0;
+
+                slot.DuplicateIndex = qtyBySlotName[slot.GearSlotType.name];
+            }
+
+            if(qtyBySlotName.ContainsKey(UtilitySlot.name))
+            {
+                UtilityInventories = new List<Inventory>(new Inventory[qtyBySlotName[UtilitySlot.name] + 1]);
+            }
+        }
+        public EquipmentType FindEquipmentType(string equipmentTypeName)
+        {
+            string[] guids = AssetDatabase.FindAssets($"t:EquipmentType {equipmentTypeName}", new[] { "Assets/Items/Gears/Type" });
+            if (guids.Length == 0)
+                Debug.LogError($"EquipmentType {equipmentTypeName} not found");
+            
+
+            string pathAsset = AssetDatabase.GUIDToAssetPath(guids[0]);
+            return (EquipmentType) AssetDatabase.LoadAssetAtPath(pathAsset, typeof(EquipmentType));
+        }
+#endif
     }
 }
 

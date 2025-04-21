@@ -1,6 +1,5 @@
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Characters.Traits;
-using Blessing.Gameplay.TradeAndInventory.Containers;
 using Blessing.Player;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -11,22 +10,13 @@ namespace Blessing.Gameplay.TradeAndInventory
 {
     public class InventoryController : MonoBehaviour
     {
-        public PlayerCharacter PlayerCharacter;
-        public Character OtherCharacter;
-        public Canvas InventoryCanvas;
-        public InventoryGrid PlayerInventoryGrid;
-        public GameObject PlayerEquipmentsFrame;
-        public CharacterStatsInfo PlayerStatsInfo;
-        public InventoryGrid OtherInventoryGrid;
-        public GameObject OtherEquipmentsCanvas;
-        // public CharacterStatsInfo OtherStatsInfo;
-        public List<BaseGrid> Grids;
-        public List<BaseGrid> OtherGrids;
+        [Header("Teste CharacterInventoryUI")]
+        public CharacterInventoryUI PlayerCharacterInventoryUI;
+        public CharacterInventoryUI LootCharacterInventoryUI;
+        public Character LootCharacter;
         public IGrid SelectedGrid;
-
         [SerializeField] public ItemList SpawnableItems { get { return GameManager.Singleton.AllItems; } }
         public NetworkObject LooseItemPrefab { get { return GameManager.Singleton.LooseItemPrefab; } }
-        private Transform canvasTransform { get { return InventoryCanvas.transform; } }
         [SerializeField] private InventoryItem selectedItem;
         [SerializeField] private bool isGridsOpen = false;
         public bool IsGridsOpen { get { return isGridsOpen; } }
@@ -45,33 +35,12 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             // Criar lógica para desativar o inventory controller dos outros players nesse Client
 
-            if (InventoryCanvas == null)
-            {
-                Debug.LogError(gameObject.name + " InventoryCanvas is missing");
-            }
-
-            if (PlayerInventoryGrid == null)
-            {
-                Debug.LogError(gameObject.name + " PlayerInventoryGrid is missing");
-            }
-
-            if (PlayerEquipmentsFrame == null)
-            {
-                Debug.LogError(gameObject.name + " PlayerEquipmentsFrame is missing");
-            }
-
-            if (PlayerStatsInfo == null)
-            {
-                Debug.LogError(gameObject.name + " PlayerStatsInfo is missing");
-            }
-
             if (SpawnableItems == null)
             {
                 Debug.LogError(gameObject.name + " SpawnableItems is missing");
             }
 
-            CloseGrids();
-            CloseOtherGrids();
+            CloseAllGrids();
         }
 
         void Update()
@@ -103,8 +72,9 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void CloseAllGrids()
         {
-            CloseGrids();
-            CloseOtherGrids();
+            PlayerCharacterInventoryUI.CloseInventoryUI();
+            LootCharacterInventoryUI.CloseInventoryUI();
+            
             SelectedGrid = null;
         }
 
@@ -120,6 +90,9 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void SyncGrids()
         {
+            PlayerCharacterInventoryUI.SyncGrids();
+            LootCharacterInventoryUI.SyncGrids();
+
             // TODO: Refatorar
             if (isGridsOpen)
             {
@@ -131,77 +104,71 @@ namespace Blessing.Gameplay.TradeAndInventory
                 CloseGrids();
                 CloseOtherGrids();
             }
-
-
-            PlayerStatsInfo.UpdateStatInfo();
-            // OtherStatsInfo.UpdateStatInfo();
         }
 
         public void OpenGrids()
         {
+            Debug.Log(gameObject.name + ": OpenGrids");
             if (!CanOpenGrids()) return;
+            Debug.Log(gameObject.name + ": OpenGrids Passou");
 
-            foreach (var grid in Grids)
-            {
-                grid.OpenGrid();
-            }
+            // foreach (var grid in Grids)
+            // {
+            //     grid.OpenGrid();
+            // }
 
-            PlayerEquipmentsFrame.SetActive(true);
-            gameObject.SetActive(true);
-
+            // PlayerEquipmentsFrame.SetActive(true);
             isGridsOpen = true;
+
+            GameManager.Singleton.AddBlurToBackground();
+
+            // Teste
+            PlayerCharacterInventoryUI.OpenInventoryUI();
         }
 
         public void CloseGrids()
         {
-            foreach (var grid in Grids)
-            {
-                grid.CloseGrid();
-            }
+            // foreach (var grid in Grids)
+            // {
+            //     grid.CloseGrid();
+            // }
 
-            PlayerEquipmentsFrame.SetActive(false);
-            gameObject.SetActive(false);
-
+            // PlayerEquipmentsFrame.SetActive(false);
             isGridsOpen = false;
+
+            GameManager.Singleton.RemoveBlurFromBackground();
+
+            // Teste
+            PlayerCharacterInventoryUI.CloseInventoryUI();
+        }
+        public void OpenLootGrids()
+        {
+            isGridsOpen = true;
+
+            PlayerCharacterInventoryUI.OpenInventoryUI();
+            LootCharacterInventoryUI.OpenInventoryUI();
+
+            GameManager.Singleton.AddBlurToBackground();
+        }
+
+        public void CloseLootGrids()
+        {
+            isGridsOpen = false;
+
+            PlayerCharacterInventoryUI.CloseInventoryUI();
+            LootCharacterInventoryUI.CloseInventoryUI();
+
+            GameManager.Singleton.RemoveBlurFromBackground();
         }
 
         public void OpenOtherGrids()
         {
-            if (OtherCharacter != null)
-            {
-                OtherInventoryGrid.Inventory = OtherCharacter.Gear.Inventory;
-                // OtherStatsInfo.CharacterStats = OtherCharacter.Gear.GetStats();
-                // OtherStatsInfo.Initialize();
-                OtherEquipmentsCanvas.SetActive(true);
-
-                foreach (var grid in OtherGrids)
-                {
-                    grid.Owner = OtherCharacter.gameObject;
-                    grid.InitializeGrid();
-                    grid.OpenGrid();
-                }
-            }
-
-            if (OtherCharacter == null)
-            {
-                OtherInventoryGrid.OpenGrid();
-            }
+            
         }
 
         public void CloseOtherGrids()
         {
-            foreach (var grid in OtherGrids)
-            {
-                grid.CloseGrid();
-                grid.Owner = null;
-            }
-
-            // OtherStatsInfo.CharacterStats = null;
-            OtherCharacter = null;
-
-            OtherEquipmentsCanvas.SetActive(false);
-
-            OtherInventoryGrid.Inventory = null;
+            
         }
 
         public void RotateItem()
@@ -230,7 +197,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (selectedItem == null) return;
 
-            selectedItem.RectTransform.SetParent(canvasTransform, false);
+            selectedItem.RectTransform.SetParent(PlayerCharacterInventoryUI.Canvas.transform, false);
             selectedItem.RectTransform.position = Input.mousePosition;
         }
         private void HandleHighlight()
@@ -278,7 +245,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             InventoryItem inventoryItem = GetInventoryItem();
             inventoryItem.gameObject.SetActive(true);
-            inventoryItem.RectTransform.SetParent(canvasTransform, false);
+            inventoryItem.RectTransform.SetParent(PlayerCharacterInventoryUI.Canvas.transform, false);
 
             inventoryItem.Set(item);
 
@@ -294,7 +261,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             InventoryItem inventoryItem = GetInventoryItem();
             inventoryItem.gameObject.SetActive(true);
-            inventoryItem.RectTransform.SetParent(canvasTransform, false);
+            inventoryItem.RectTransform.SetParent(PlayerCharacterInventoryUI.Canvas.transform, false);
 
             foreach (Item item in SpawnableItems.Items)
             {
@@ -320,7 +287,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             InventoryItem inventoryItem = GetInventoryItem();
 
-            inventoryItem.RectTransform.SetParent(canvasTransform, false);
+            inventoryItem.RectTransform.SetParent(PlayerCharacterInventoryUI.Canvas.transform, false);
             inventoryItem.Set(SpawnableItems.Items[UnityEngine.Random.Range(0, SpawnableItems.Items.Length)]);
 
             inventoryItemDic.Add(inventoryItem.Data.Id, inventoryItem);
@@ -370,7 +337,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                 position.y += (selectedItem.Height - 1) * BaseGrid.TileSizeHeight / 2;
             }
 
-            return SelectedGrid.GetTileGridPosition(position, InventoryCanvas.scaleFactor);
+            return SelectedGrid.GetTileGridPosition(position, SelectedGrid.Canvas.scaleFactor);
         }
         private void PlaceItem()
         {
@@ -385,8 +352,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (selectedItem == null) return;
             if (SelectedGrid == null) return;
 
-            if (SelectedGrid.PlaceItem(selectedItem, position))
-                selectedItem = null;
+            if (SelectedGrid.PlaceItem(selectedItem, position)) selectedItem = null;
         }
 
         private void PickUpItem(Vector2Int position)
@@ -398,7 +364,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             InventoryItem inventoryItem = selectedItem;
 
-            GameObject owner = PlayerInventoryGrid.Owner;
+            // GameObject owner = PlayerInventoryGrid.Owner;
+            GameObject owner = PlayerCharacterInventoryUI.Character.gameObject;
 
             Vector3 randomVector = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), UnityEngine.Random.Range(0.2f, 0.5f), UnityEngine.Random.Range(-0.5f, 0.5f));
 
@@ -424,7 +391,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             // Apply item buff to Player Character
             foreach (Buff buff in consumable.Buffs)
             {
-                PlayerCharacter.ApplyBuff(buff);
+                PlayerCharacterInventoryUI.Character.ApplyBuff(buff);
             }
 
             // Send inventory Item back to pool

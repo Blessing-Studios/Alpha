@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Characters.Traits;
+using UnityEditor;
 using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
@@ -10,9 +11,20 @@ namespace Blessing.Gameplay.TradeAndInventory
     public class Consumable : Item
     {
         [Header("Consumable Info")]
-        [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)] 
-        public ScriptableObjectReference EquipmentType;
-        [SerializeField] public EquipmentType GearType { get { return EquipmentType.value as EquipmentType; } set { EquipmentType.value = value;}}
         public Buff[] Buffs;
+#if UNITY_EDITOR
+        protected virtual void OnValidate()
+        {
+            string[] guids = AssetDatabase.FindAssets("t:ItemType Consumable", new[] { "Assets/Items/Type" });
+
+            if (guids.Length == 0)
+            {
+                Debug.Log("ItemType Consumable not found");
+            }
+
+            string pathAsset = AssetDatabase.GUIDToAssetPath(guids[0]);
+            ItemType = (ItemType) AssetDatabase.LoadAssetAtPath(pathAsset, typeof(ItemType));   
+        }
+#endif
     }
 }

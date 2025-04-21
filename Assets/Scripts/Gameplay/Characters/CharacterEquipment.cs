@@ -16,6 +16,8 @@ namespace Blessing.Gameplay.Characters
         public ScriptableObjectReference SlotType;
         [SerializeField] public EquipmentType GearSlotType { get { return SlotType.value as EquipmentType; } }
         public InventoryItem InventoryItem;
+        [Tooltip("Index to control duplicated Equipment Slot")]
+        public int DuplicateIndex = 0;
         public bool SetEquipment(InventoryItem inventoryItem)
         {
             if (InventoryItem != null) return false;
@@ -24,7 +26,7 @@ namespace Blessing.Gameplay.Characters
 
             if (gear == null) return false;
 
-            if (gear.GearType != GearSlotType) return false;
+            if (gear.EquipmentType != GearSlotType) return false;
 
             InventoryItem = inventoryItem;
             

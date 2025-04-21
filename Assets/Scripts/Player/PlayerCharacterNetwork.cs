@@ -17,13 +17,10 @@ namespace Blessing.Player
         public int ChangeOwnershipTime = 2;
         public PlayerCharacter PlayerCharacter { get; private set; }
         public TextMeshPro GuidText;
+
         void Awake()
         {
             PlayerCharacter = GetComponent<PlayerCharacter>();
-
-            OwnerName.OnValueChanged += OnOwnerNameValueChanged;
-
-            m_TickToChangeOwnership.Value = ChangeOwnershipTime;
         }
 
         void Update()
@@ -31,10 +28,22 @@ namespace Blessing.Player
             if (ShowDebug)
             {
                 GuidText.gameObject.SetActive(true);
-                GuidText.text = NetworkObject.OwnerClientId.ToString(); ;
+                GuidText.text = NetworkObject.OwnerClientId.ToString();
             }
             else
                 GuidText.gameObject.SetActive(false);
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            
+            if (HasAuthority)
+                m_TickToChangeOwnership.Value = ChangeOwnershipTime;
+
+            OwnerName.OnValueChanged += OnOwnerNameValueChanged;
+
+            PlayerCharacter.InitializePlayerChar();
         }
 
         public override void OnNetworkDespawn()

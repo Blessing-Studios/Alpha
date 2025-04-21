@@ -10,7 +10,6 @@ namespace Blessing.Player
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerMovementController : MovementController
     {
-        [SerializeField] private bool canGiveInputs = false;
         [field: SerializeField] public bool IsOffline {get; private set;}
         protected PlayerInput playerInput;
         protected InputAction moveAction;
@@ -24,11 +23,6 @@ namespace Blessing.Player
             base.Awake();
             playerInput = GetComponent<PlayerInput>();
             playerCharacter = GetComponent<PlayerCharacter>();
-        }
-
-        void Start()
-        {
-            canGiveInputs = GameDataManager.Singleton.ValidateOwner(playerCharacter.GetPlayerOwnerName());
         }
 
         // Update is called once per frame
@@ -53,7 +47,7 @@ namespace Blessing.Player
         /// <param name="context"></param>
         public void OnMove(InputAction.CallbackContext context)
         {
-            if (!HasAuthority || !canGiveInputs) return;
+            if (!HasAuthority || !playerCharacter.CanGiveInputs) return;
 
             if (context.performed || context.canceled)
             {
@@ -76,11 +70,6 @@ namespace Blessing.Player
             {
                 animator.SetBool(isWalkingHash, false);
             }
-        }
-
-        protected override void OnOwnershipChanged(ulong previous, ulong current)
-        {
-            canGiveInputs = GameDataManager.Singleton.ValidateOwner(playerCharacter.GetPlayerOwnerName());
         }
     }
 }

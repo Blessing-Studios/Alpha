@@ -32,7 +32,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
         public string Description;
         public AudioClip[] AudioClips = new AudioClip[] {};
         public HitType HitType = HitType.Nothing;
-        public SkillType Type;
+        // public SkillType Type;
         [Tooltip("Damage and Pen of this skill will be applied in the next hit")]
         public bool ActiveSkillOnHit = false;
         // public SkillTrigger Trigger;

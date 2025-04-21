@@ -18,4 +18,6 @@ MonoBehaviour:
   Height: 2
   Weight: 1
   Sprite: {fileID: 21300000, guid: 8041233e0a2ed5448ac69ae24a07e7c5, type: 3}
-  Id: 27
+  Id: 24
+  itemType:
+    value: {fileID: 0}

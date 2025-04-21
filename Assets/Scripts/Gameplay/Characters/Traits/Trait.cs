@@ -27,6 +27,8 @@ namespace Blessing.Gameplay.Characters.Traits
         public string Description;
         public Effect[] Effects;
         public VisualEffect VisualEffect;
+        public bool SpawnVFXOnGround = false;
+        public bool VFXFollowChar = false;
         public bool CanStack;
 
         public int GetStatChange(Stat stat)

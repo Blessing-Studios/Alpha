@@ -48,12 +48,7 @@ namespace Blessing.Gameplay.Guild
 
         public void TakeQuest(Adventurer adventurer, int questId)
         {
-            // Adicionar check se adventurer já pegou ou concluiu quest
-            Quest quest = Quests.First(s => s.Id == questId);
-            if (quest != null)
-            {
-                adventurer.Quests.Add(quest);
-            }
+            adventurer.TakeQuest(questId);
         }
 
         public void CompleteQuest(Adventurer adventurer, int questId)

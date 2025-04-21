@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
+using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public InventoryItem Owner; // Para testar
         [field: SerializeField] public string Name { get; private set; }
+        public ItemType ContainerType;
+        public int ItemsMaxStack = 1;
         public int Width = 20;
         public int Height = 10;
 
@@ -61,8 +64,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             GridSize.Value = new Vector2Int(Width, Height);
             ItemSlot = new InventoryItem[Width, Height];
 
-            if (InventoryGrid == null)
-                InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
+            // if (InventoryGrid == null)
+            //     InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
 
             if (inventoryItem == null) return;
 
@@ -75,8 +78,8 @@ namespace Blessing.Gameplay.TradeAndInventory
             // Delay Initalize
             if (isInitialized) return;
 
-            if (InventoryGrid == null)
-                InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
+            // if (InventoryGrid == null)
+            //     InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
 
             Width = GridSize.Value.x;
             Height = GridSize.Value.y;
@@ -204,7 +207,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (InventoryGrid == null)
             {
                 // TODO: temporário
-                InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
+                // InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
             }
         }
         protected virtual void Update()
@@ -254,6 +257,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         public bool AddInventoryItem(InventoryItem inventoryItem, Vector2Int position)
         {
             if (inventoryItem == null) return false;
+
+            if (ContainerType != null && ContainerType != inventoryItem.Item.ItemType) return false;
 
             // If item is already in inventory, return false
             if (ItemList.Contains(inventoryItem))

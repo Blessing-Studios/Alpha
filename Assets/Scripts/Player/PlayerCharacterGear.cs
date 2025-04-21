@@ -28,53 +28,52 @@ namespace Blessing.Player
         {
             if (HasAuthority)
             { 
-                GameManager.Singleton.InventoryController.PlayerCharacter = character as PlayerCharacter;
-                GameManager.Singleton.InventoryController.PlayerStatsInfo.CharacterStats = character.Stats;
-                GameManager.Singleton.InventoryController.PlayerStatsInfo.Initialize();
-
-                if (Inventory != null)
-                    SetInventory();
-
-                // Temporário
-                foreach (BaseGrid grid in GameManager.Singleton.InventoryController.Grids)
-                {
-                    grid.Owner = this.gameObject;
-                    grid.InitializeGrid();
-                }
+                GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetCharacter(character);   
             }
         }
 
-        private void SetInventory()
-        {
-            Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
-            GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
-            Inventory.InventoryGrid.Owner = gameObject;
-            GameManager.Singleton.InventoryController.PlayerInventoryGrid.InitializeGrid();
-        }
-
-        public override void AddBackpack(InventoryItem inventoryItem)
-        {
-            base.AddBackpack(inventoryItem);
+        // public override void AddBackpack(InventoryItem inventoryItem)
+        // {
+        //     base.AddBackpack(inventoryItem);
             
-            // If this is the Local Player, change PlayerInventoryGrid
-            if (HasAuthority)
-            { 
-                GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = Inventory;
-                Inventory.InventoryGrid = GameManager.Singleton.InventoryController.PlayerInventoryGrid;
-            }
-        }
+        //     // If this is the Local Player, change PlayerInventoryGrid
+        //     if (HasAuthority)
+        //     { 
+        //         GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetBackpackInventoryGrid(Inventory);
+        //     }
+        // }
+        // public override void AddUtility(InventoryItem inventoryItem, int duplicatedIndex = 0)
+        // {
+        //     base.AddUtility(inventoryItem, duplicatedIndex);
 
-        public override void RemoveBackpack()
-        {
-            // If this is the Local Player, change PlayerInventoryGrid
-            if (Inventory != null && HasAuthority)
-            {
-                GameManager.Singleton.InventoryController.PlayerInventoryGrid.Inventory = null;
-                Inventory.InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
-            }
+        //     if (HasAuthority)
+        //     {
+        //         GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetUtilityInventoryGrids(UtilityInventories);
+        //     }
+        // }
 
-            base.RemoveBackpack();
-        }
+        // public override void RemoveBackpack()
+        // {
+        //     base.RemoveBackpack();
+
+        //     // If this is the Local Player, change PlayerInventoryGrid
+        //     if (HasAuthority)
+        //     {
+        //         GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetBackpackInventoryGrid(Inventory);
+        //     }
+
+            
+        // }
+
+        // public override void RemoveUtility(int duplicatedIndex)
+        // {
+        //     base.RemoveUtility(duplicatedIndex);
+
+        //     if (HasAuthority)
+        //     {
+        //         GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetUtilityInventoryGrids(UtilityInventories);
+        //     }
+        // }
     }
 }
 
