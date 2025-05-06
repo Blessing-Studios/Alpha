@@ -1,37 +1,44 @@
 using System;
 using Blessing.Gameplay.TradeAndInventory;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 namespace Blessing.Gameplay.Guild.Quests
 {
     [Serializable]
+    public struct Reward
+    {
+        public Item Item;
+        public int Quantity;
+    }
+    [Serializable]
     public class Quest
     {
-        public int Id;
+        public int Id { get { return QuestSO.Id;} }
         public Rank Rank;
-        public string Name;
-        public string Label;
-        public string Description;
+        public string Name { get { return QuestSO.Name;} }
+        public string Label { get { return QuestSO.Label;} }
+        public string Description { get { return QuestSO.Description;} }
+        public Sprite Icon { get { return QuestSO.Icon;} }
+        public Sprite Banner { get { return QuestSO.Banner;} }
         public bool IsCompleted;
         public bool CanComplete;
         public bool IsActive;
         public Objective[] Objectives;
-        public Item[] Rewards;
+        public Reward[] Rewards;
+        public QuestScriptableObject QuestSO;
 
-        public Quest(int id, Rank rank, string name, string label, string description, Objective[] objectives, Item[] rewards)
+        public Quest(Rank rank, Objective[] objectives, Reward[] rewards, QuestScriptableObject questSO)
         {
-            Id = id;
             Rank = rank;
-            Name = name;
-            Label = label;
-            Description = description;
             Objectives = objectives;
             Rewards = rewards;
 
             IsCompleted = false;
             CanComplete = false;
             IsActive = false;
+
+            QuestSO = questSO;
         }
 
         public bool Validate(Adventurer adventurer)
@@ -73,14 +80,17 @@ namespace Blessing.Gameplay.Guild.Quests
                 return false; 
             }
 
-            foreach (Item item in Rewards)
+            foreach (Reward reward in Rewards)
             {
-                InventoryItem inventoryItem = GameManager.Singleton.GetInventoryItem();
-                inventoryItem.Set(item);
+                for (int i = 0; i < reward.Quantity; i++)
+                {
+                    InventoryItem inventoryItem = GameManager.Singleton.GetInventoryItem();
+                    inventoryItem.Set(reward.Item);
 
-                lootInventory.AddItem(inventoryItem);
-                inventoryItem.transform.SetParent(adventurer.transform, false);
-                inventoryItem.gameObject.SetActive(false);
+                    lootInventory.AddItem(inventoryItem);
+                    inventoryItem.transform.SetParent(adventurer.transform, false);
+                    inventoryItem.gameObject.SetActive(false);
+                }
             }
 
             return true;

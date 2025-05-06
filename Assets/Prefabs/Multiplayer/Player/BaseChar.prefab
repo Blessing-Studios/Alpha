@@ -353,8 +353,8 @@ GameObject:
   - component: {fileID: 655986913388950610}
   - component: {fileID: 2259359815306742575}
   - component: {fileID: -6873965126545705189}
-  - component: {fileID: 2959266363100497720}
   - component: {fileID: 1043140347493080583}
+  - component: {fileID: 2959266363100497720}
   m_Layer: 3
   m_Name: BaseChar
   m_TagString: Player
@@ -790,7 +790,7 @@ MonoBehaviour:
   CharacterTraits: []
   CharacterSkills: []
   <ActiveSkill>k__BackingField: {fileID: 0}
-  <SkillOrigin>k__BackingField: {fileID: 6931712906820337884}
+  <SkillOrigin>k__BackingField: {fileID: 3334433750886424618}
   SpawnLocation: {x: 0, y: 0, z: 0}
   HasStarted: 0
   <Network>k__BackingField: {fileID: 0}
@@ -1100,8 +1100,9 @@ MonoBehaviour:
     ExitEarlier: 0.1
     DamageMultiplier: 1
     ImpactMultiplier: 1
-    ShakeEffect: {fileID: 0}
+    CanMultiHit: 0
     CanUseSkill: 0
+    ShakeEffect: {fileID: 0}
   combos:
   - {fileID: 11400000, guid: f8d096a5c0289fa4ba19f62f4eb3ed78, type: 2}
 --- !u!114 &-6873965126545705189
@@ -1120,27 +1121,6 @@ MonoBehaviour:
   SourceOffset: {x: 0, y: 0, z: 0}
   InteractRange: 2
   MaxDistance: 5
---- !u!114 &2959266363100497720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6028631068472643565}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8772b7e38b81b7f409bc79b3cc25e32d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  target: {fileID: 6370903744886762439}
-  fadedAlpha: 0.33
-  retainShadows: 1
-  targetPositionOffset: {x: 0, y: 1, z: 0}
-  fadeSpeed: 1
-  objectsBlockingView: []
 --- !u!114 &1043140347493080583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1194,6 +1174,29 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &2959266363100497720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8772b7e38b81b7f409bc79b3cc25e32d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ShowDebug>k__BackingField: 1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  target: {fileID: 6370903744886762439}
+  fadedAlpha: 0.33
+  retainShadows: 1
+  fadeSpeed: 1
+  waitTime: 0.1
+  offsetCameraPosition: {x: 0, y: 0, z: 0}
+  objectsBlockingView: []
 --- !u!1 &6275102321004740793
 GameObject:
   m_ObjectHideFlags: 0

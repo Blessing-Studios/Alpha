@@ -320,7 +320,7 @@ namespace Blessing.Gameplay.Characters
         }
         protected InventoryItem CreateItem(InventoryItemData data)
         {
-            return GameManager.Singleton.InventoryController.CreateItem(data);
+            return UIController.Singleton.CreateItem(data);
         }
 
         protected InventoryItem FindItem(InventoryItemData data)
@@ -441,16 +441,16 @@ namespace Blessing.Gameplay.Characters
 
                 this.looter = looter;
 
-                GameManager.Singleton.InventoryController.LootCharacterInventoryUI.SetCharacter(character);
+                UIController.Singleton.LootCharacterInventoryUI.SetCharacter(character);
 
-                if (!GameManager.Singleton.InventoryController.IsGridsOpen)
+                if (!UIController.Singleton.IsGridsOpen)
                 {
-                    GameManager.Singleton.InventoryController.OpenLootGrids();
+                    UIController.Singleton.OpenLootGrids();
                 }
-                else if (GameManager.Singleton.InventoryController.IsGridsOpen)
+                else if (UIController.Singleton.IsGridsOpen)
                 {
                     Debug.Log(gameObject.name + ": CharacterGear Interact IsGridsOpen = true");
-                    GameManager.Singleton.InventoryController.CloseLootGrids();
+                    UIController.Singleton.CloseLootGrids();
                 }
             }
         }
@@ -465,7 +465,7 @@ namespace Blessing.Gameplay.Characters
             if (distance > maxDistance)
             {
                 looter = null;
-                GameManager.Singleton.InventoryController.CloseAllGrids();
+                UIController.Singleton.CloseAllGrids();
             }
         }
 #if UNITY_EDITOR

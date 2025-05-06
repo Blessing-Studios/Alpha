@@ -207,7 +207,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <OwnerGameObject>k__BackingField: {fileID: 6028631068472643565}
-  IsActive: 1
   <DmgMultiplier>k__BackingField: 0
   TakeHitEffect: {fileID: 0}
 --- !u!1 &2243204490460183400
@@ -258,7 +257,7 @@ MonoBehaviour:
   Response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 455372507877744232}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Blessing.AI.Goap.AiTrader, Assembly-CSharp
         m_MethodName: OnRemoveItem
         m_Mode: 0
@@ -345,15 +344,17 @@ GameObject:
   - component: {fileID: 1646976488681774380}
   - component: {fileID: 3296479451506363367}
   - component: {fileID: 6483174246542211240}
+  - component: {fileID: -1348704988292752163}
   - component: {fileID: 2066221182297512520}
   - component: {fileID: 2299523755292424415}
   - component: {fileID: 4503081129959420447}
   - component: {fileID: 2009963721499363617}
-  - component: {fileID: 455372507877744232}
+  - component: {fileID: -6868605974916035393}
   - component: {fileID: 5403675160440229388}
   - component: {fileID: 2259359815306742575}
   - component: {fileID: 2620648292840096135}
   - component: {fileID: 655986913388950610}
+  - component: {fileID: 8228401257819008161}
   - component: {fileID: -6873965126545705189}
   - component: {fileID: 9197522367180269322}
   - component: {fileID: 5877992701568407557}
@@ -395,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3754965063
+  GlobalObjectIdHash: 4156917789
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 3
@@ -561,6 +562,21 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: -0.03, y: -0.04, z: 0}
+--- !u!114 &-1348704988292752163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87645bd1c70e3ad4cb4c92a0f056e783, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Inventory>k__BackingField: {fileID: 0}
+  Customer: {fileID: 0}
+  reservedItem: {fileID: 0}
 --- !u!114 &2066221182297512520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,11 +591,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   AttackPressedTimerWindow: 0.2
+  characterHitAudios: []
   actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
+  CharacterTraits: []
+  CharacterSkills: []
+  <ActiveSkill>k__BackingField: {fileID: 0}
+  <SkillOrigin>k__BackingField: {fileID: 0}
   SpawnLocation: {x: 0, y: 0, z: 0}
+  HasStarted: 0
+  AiMovementController: {fileID: 0}
   ViewRange: 15
 --- !u!114 &2299523755292424415
 MonoBehaviour:
@@ -595,10 +618,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   <ShowDebug>k__BackingField: 0
+  CharacterName:
+    m_InternalValue:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0016: 0
+        byte0017: 0
+        byte0018: 0
+        byte0019: 0
+        byte0020: 0
+        byte0021: 0
+        byte0022: 0
+        byte0023: 0
+        byte0024: 0
+        byte0025: 0
+        byte0026: 0
+        byte0027: 0
+        byte0028: 0
+        byte0029: 0
+  isTraveling:
+    m_InternalValue: 0
   stateIndex:
     m_InternalValue: 1
   comboMoveIndex:
     m_InternalValue: {x: 0, y: 0}
+  TraitDataLocalList: []
+  HasSpawned: 0
 --- !u!114 &4503081129959420447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,15 +674,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  CharacterSpeed: 2
+  CharacterSpeed: 0
   Gravity: -2
   GroundedGravity: -0.5
   AttackMovement: {x: 0, y: 0, z: 0}
   direction: {x: 0, y: 0}
+  canMove: 0
   isPushable: 1
   currentMovementInput: {x: 0, y: 0}
+  currentMovement: {x: 0, y: 0, z: 0}
   CurrentMovement: {x: 0, y: 0, z: 0}
-  CanMove: 0
+  CanMove: 1
 --- !u!114 &2009963721499363617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -640,29 +704,36 @@ MonoBehaviour:
     SlotType:
       value: {fileID: 11400000, guid: f68856620dc4b274f91832e3ca80cafe, type: 2}
     InventoryItem: {fileID: 0}
+    DuplicateIndex: 0
   - Name: Chest
     SlotType:
       value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
     InventoryItem: {fileID: 0}
+    DuplicateIndex: 0
   - Name: Weapon
     SlotType:
       value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
     InventoryItem: {fileID: 0}
+    DuplicateIndex: 0
   - Name: Back
     SlotType:
       value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
     InventoryItem: {fileID: 0}
-  BackpackSlotType:
+    DuplicateIndex: 0
+  backpackSlot:
     value: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
-  BodyArmorSlotType:
-    value: {fileID: 0}
-  WeaponSlotType:
-    value: {fileID: 0}
+  utilitySlot:
+    value: {fileID: 11400000, guid: 651669212bcb079449ee47829bd5d45e, type: 2}
+  bodyArmorSlot:
+    value: {fileID: 11400000, guid: 9440c08d560064546a8c5cf792d991fe, type: 2}
+  weaponSlot:
+    value: {fileID: 11400000, guid: a4105cde5ecd9a54480f92938ba13c1d, type: 2}
   Inventory: {fileID: 0}
+  UtilityInventories: []
   EquipmentLocalList: []
   OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
   OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
---- !u!114 &455372507877744232
+--- !u!114 &-6868605974916035393
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -671,16 +742,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 6028631068472643565}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2102f6fe61cec74d937cd3e8e72062a, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b19ffb2048256545a6ef487bdebf29d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   <Target>k__BackingField: {fileID: 0}
-  Goals:
-  - value: {fileID: 11400000, guid: 0339ed0f829916247b7afa3b2c445dae, type: 2}
+  Goals: []
   Actions:
   - value: {fileID: 11400000, guid: c22f638626ca8924da614ab0cd0560c3, type: 2}
-  - value: {fileID: 11400000, guid: 4696a26a463f42243b79326b8c0cc109, type: 2}
   AgentModels:
   - value: {fileID: 11400000, guid: b5478313cb6690c4e8a9ca0cbf14f667, type: 2}
   TimeToUpdateModels: 3
@@ -691,77 +760,8 @@ MonoBehaviour:
   CurrentActionsList: []
   QueuedActionsHistoryList: []
   numActionsInQueue: 0
-  Customer: {fileID: 0}
-  <MinRange>k__BackingField: {x: 0, y: 0, z: 0}
-  reservedItemGuid:
-    utf8LengthInBytes: 0
-    bytes:
-      offset0000:
-        byte0000: 0
-        byte0001: 0
-        byte0002: 0
-        byte0003: 0
-        byte0004: 0
-        byte0005: 0
-        byte0006: 0
-        byte0007: 0
-        byte0008: 0
-        byte0009: 0
-        byte0010: 0
-        byte0011: 0
-        byte0012: 0
-        byte0013: 0
-        byte0014: 0
-        byte0015: 0
-      offset0016:
-        byte0000: 0
-        byte0001: 0
-        byte0002: 0
-        byte0003: 0
-        byte0004: 0
-        byte0005: 0
-        byte0006: 0
-        byte0007: 0
-        byte0008: 0
-        byte0009: 0
-        byte0010: 0
-        byte0011: 0
-        byte0012: 0
-        byte0013: 0
-        byte0014: 0
-        byte0015: 0
-      offset0032:
-        byte0000: 0
-        byte0001: 0
-        byte0002: 0
-        byte0003: 0
-        byte0004: 0
-        byte0005: 0
-        byte0006: 0
-        byte0007: 0
-        byte0008: 0
-        byte0009: 0
-        byte0010: 0
-        byte0011: 0
-        byte0012: 0
-        byte0013: 0
-        byte0014: 0
-        byte0015: 0
-      byte0048: 0
-      byte0049: 0
-      byte0050: 0
-      byte0051: 0
-      byte0052: 0
-      byte0053: 0
-      byte0054: 0
-      byte0055: 0
-      byte0056: 0
-      byte0057: 0
-      byte0058: 0
-      byte0059: 0
-      byte0060: 0
-      byte0061: 0
-  reservedItem: {fileID: 0}
+  <AiCharacter>k__BackingField: {fileID: 0}
+  <MinRange>k__BackingField: {x: 2, y: 2, z: 2}
 --- !u!114 &5403675160440229388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,8 +794,24 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
-  <MoveIndex>k__BackingField: 0
-  <ComboIndex>k__BackingField: 0
+  <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
+  <CurrentMove>k__BackingField:
+    Name: 
+    Description: 
+    AudioClips: []
+    AnimationParamRef:
+      value: {fileID: 0}
+    Duration: 0
+    Action:
+      value: {fileID: 0}
+    Direction:
+      value: {fileID: 0}
+    ExitEarlier: 0.1
+    DamageMultiplier: 1
+    ImpactMultiplier: 1
+    CanMultiHit: 0
+    CanUseSkill: 0
+    ShakeEffect: {fileID: 0}
   combos:
   - {fileID: 11400000, guid: 44ce49ae2cf51c94eabc66d0fcf161a4, type: 2}
 --- !u!114 &2620648292840096135
@@ -810,14 +826,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c15fa3ae0bd0e4cad31c66f732fcbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Attack: 0
-  Strength: 0
-  Constitution: 0
-  Dexterity: 0
-  Intelligence: 0
-  Wisdom: 0
-  Charisma: 0
-  Luck: 0
+  Strength: 5
+  Constitution: 5
+  Dexterity: 5
+  Intelligence: 5
+  Wisdom: 5
+  Charisma: 5
+  Luck: 5
   BaseStrength: 5
   BaseConstitution: 5
   BaseDexterity: 5
@@ -846,13 +861,40 @@ MonoBehaviour:
     m_InternalValue: 100
   constitution: 0
   maxHealth: 0
-  lifeRegen: 1
-  damageOverTime: 0
+  baseRegen: 1
+  baseDecay: 0
+  regen: 0
+  decay: 0
   waitTime: 0.5
-  isAlive: 1
+  <HurtBoxes>k__BackingField: []
+  isAlive:
+    m_InternalValue: 1
   <MaxWounds>k__BackingField: 0
   woundHealth: 25
   wounds: 0
+  OnReceiveDamage: {fileID: 11400000, guid: 6fc6e6b241d183940ad504bd2b7324d6, type: 2}
+  OnHealthChanged: {fileID: 11400000, guid: 3bbd1987fc8c19145b088bcac9f1f0c8, type: 2}
+  OnIsAliveChanged: {fileID: 11400000, guid: b420b84d68bc2f24bb1855a9d4d915c3, type: 2}
+--- !u!114 &8228401257819008161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028631068472643565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69678fbecf5f5bd4b8ec8e14a7e60481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  manaReserve:
+    manas: []
+  reserveMax:
+    manas: []
+  statsMultiplier: 5
+  manaChange: 2
+  manaChangeTime: 0.5
 --- !u!114 &-6873965126545705189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -866,6 +908,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InteractorSource: {fileID: 6370903744886762439}
+  SourceOffset: {x: 0, y: 0, z: 0}
   InteractRange: 2
   MaxDistance: 5
 --- !u!114 &9197522367180269322
@@ -1015,7 +1058,7 @@ MonoBehaviour:
   Response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 455372507877744232}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Blessing.AI.Goap.AiTrader, Assembly-CSharp
         m_MethodName: OnAddItem
         m_Mode: 0

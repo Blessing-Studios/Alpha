@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Blessing.Gameplay.Interation;
-using Blessing.UI.QuestSelection;
+using Blessing.Gameplay.TradeAndInventory;
+using Blessing.UI.Quests;
 using UnityEngine;
 
 namespace Blessing.Gameplay.Guild.Quests
@@ -8,7 +9,6 @@ namespace Blessing.Gameplay.Guild.Quests
     public class QuestBoard : MonoBehaviour, IInteractable
     {
         public bool CanInteract { get { return true; } }
-        public QuestBoardMenu QuestBoardMenu { get { return GameManager.Singleton.QuestBoardMenu;} }
 
         public void Interact(Interactor interactor)
         {
@@ -16,7 +16,7 @@ namespace Blessing.Gameplay.Guild.Quests
 
             if (adventurer == null) return;
 
-            QuestBoardMenu.AddQuests(ListAllQuests(), adventurer);
+            UIController.Singleton.OpenQuestsGrid(ListAllQuests(), adventurer);
         }
 
         // TODO: Add validations to get Task

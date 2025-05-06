@@ -38,12 +38,12 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (interactor.gameObject.TryGetComponent(out Character looter))
             {
-                if (!GameManager.Singleton.InventoryController.IsGridsOpen)
+                if (!UIController.Singleton.IsGridsOpen)
                 {
                     Debug.Log(gameObject.name + " OpenGrids");
                     OpenGrids(looter);
                 }
-                else if (GameManager.Singleton.InventoryController.IsGridsOpen)
+                else if (UIController.Singleton.IsGridsOpen)
                 {
                     Debug.Log(gameObject.name + " CloseGrids");
                     CloseGrids();
@@ -75,13 +75,13 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
             
             this.looter = looter;
-            GameManager.Singleton.InventoryController.OpenAllGrids();
+            UIController.Singleton.OpenAllGrids();
         }
 
         private void CloseGrids()
         {
             looter = null;
-            GameManager.Singleton.InventoryController.CloseAllGrids();
+            UIController.Singleton.CloseAllGrids();
         }
     }
 }

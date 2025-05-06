@@ -36,10 +36,6 @@ namespace Blessing.Gameplay.TradeAndInventory
         public List<InventoryItemData> InventoryLocalList;
         public InventoryItem[,] ItemSlot;
 
-        [Header("Events")]
-        public GameEvent OnAddItem;
-        public GameEvent OnRemoveItem;
-
         [Header("Debug")]
         public int ItemSlotX;
         public int ItemSlotY;
@@ -65,7 +61,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             ItemSlot = new InventoryItem[Width, Height];
 
             // if (InventoryGrid == null)
-            //     InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
+            //     InventoryGrid = UIController.Singleton.OtherInventoryGrid;
 
             if (inventoryItem == null) return;
 
@@ -79,7 +75,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (isInitialized) return;
 
             // if (InventoryGrid == null)
-            //     InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
+            //     InventoryGrid = UIController.Singleton.OtherInventoryGrid;
 
             Width = GridSize.Value.x;
             Height = GridSize.Value.y;
@@ -207,7 +203,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (InventoryGrid == null)
             {
                 // TODO: temporário
-                // InventoryGrid = GameManager.Singleton.InventoryController.OtherInventoryGrid;
+                // InventoryGrid = UIController.Singleton.OtherInventoryGrid;
             }
         }
         protected virtual void Update()
@@ -225,7 +221,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (inventoryItem != null) return inventoryItem;
 
-            return GameManager.Singleton.InventoryController.CreateItem(data, this);
+            return UIController.Singleton.CreateItem(data, this);
         }
 
         protected bool UpdateLocalList(ref List<InventoryItemData> localList, NetworkList<InventoryItemData> networkList)
@@ -247,9 +243,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             // InventoryNetworkList has to be changed after InventoryLocalList
             InventoryLocalList.Add(inventoryItem.GetData());
             InventoryNetworkList.Add(inventoryItem.GetData());
-
-            if (OnAddItem != null)
-                OnAddItem.Raise(this, inventoryItem);
 
             return true;
         }
@@ -298,9 +291,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             // InventoryNetworkList has to be changed after InventoryLocalList
             InventoryLocalList.Remove(inventoryItem.GetData());
             InventoryNetworkList.Remove(inventoryItem.GetData());
-
-            if (OnRemoveItem != null)
-                OnRemoveItem.Raise(this, inventoryItem);
 
             return true;
         }

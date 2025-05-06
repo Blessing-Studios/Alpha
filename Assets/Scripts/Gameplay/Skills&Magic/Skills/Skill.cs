@@ -29,7 +29,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
     {
         public string Name;
         public string Label;
-        public string Description;
+        [TextArea] public string Description;
         public AudioClip[] AudioClips = new AudioClip[] {};
         public HitType HitType = HitType.Nothing;
         // public SkillType Type;
@@ -39,6 +39,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
         public SkillModifier[] Modifiers;
         public int Attack = 0;
         public int DamageClass = 0;
+        public float ImpactMultiplier = 1;
         public Buff[] Buffs;
         [field: SerializeField] public Skill AfterSkill { get; protected set; }
         [Tooltip("How much mana it will cost to use")] public ManaSpectrum ManaCost;
@@ -63,6 +64,27 @@ namespace Blessing.Gameplay.SkillsAndMagic
                 }
 
             return skillDamage;
+        }
+
+        public virtual float GetSkillImpact(Dictionary<Stat, int> stats)
+        {
+            // O impacto da skill vai ser uma média ponderada dos SkillModifiers
+            float skillImpact = 0;
+            float totalModifier = 0;
+
+            if (Modifiers.Length == 0) return 0;
+            
+            foreach (SkillModifier modifier in Modifiers)
+            {
+                totalModifier += modifier.Value;
+                skillImpact += stats[modifier.Stat] * modifier.Value;
+            }
+            
+            if (totalModifier == 0) return 0;
+
+            skillImpact = skillImpact * ImpactMultiplier / totalModifier;
+
+            return skillImpact;
         }
     }
 }

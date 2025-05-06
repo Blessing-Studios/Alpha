@@ -1,6 +1,9 @@
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Characters.Traits;
+using Blessing.Gameplay.Guild;
+using Blessing.Gameplay.Guild.Quests;
 using Blessing.Player;
+using Blessing.UI.Quests;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Netcode;
@@ -8,27 +11,35 @@ using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    public class InventoryController : MonoBehaviour
+    public class UIController : MonoBehaviour
     {
-        [Header("Teste CharacterInventoryUI")]
+        // TODO: Refatorar lógica
+        public static UIController Singleton { get; private set; }
         public CharacterInventoryUI PlayerCharacterInventoryUI;
         public CharacterInventoryUI LootCharacterInventoryUI;
+        public TraderInventoryUI TraderInventoryUI;
+        public QuestsUI QuestsUI;
         public Character LootCharacter;
         public IGrid SelectedGrid;
         [SerializeField] public ItemList SpawnableItems { get { return GameManager.Singleton.AllItems; } }
         public NetworkObject LooseItemPrefab { get { return GameManager.Singleton.LooseItemPrefab; } }
+        public ItemInfoBox ItemInfoBox { get { return GameManager.Singleton.ItemInfoBox; } }
         [SerializeField] private InventoryItem selectedItem;
         [SerializeField] private bool isGridsOpen = false;
         public bool IsGridsOpen { get { return isGridsOpen; } }
         private Dictionary<FixedString64Bytes, InventoryItem> inventoryItemDic = new();
-        public void ClearInventoryItemDic()
-        {
-            inventoryItemDic.Clear();
-        }
 
         void Awake()
         {
-            // GameManager.Singleton.InventoryController = this;
+            if (Singleton != null && Singleton != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                Singleton = this;
+            }
         }
 
         void Start()
@@ -57,6 +68,16 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
+        public void SetPlayerCharacter(Character playerCharacter)
+        {
+            PlayerCharacterInventoryUI.SetCharacter(playerCharacter);
+
+        }
+        public void ClearInventoryItemDic()
+        {
+            inventoryItemDic.Clear();
+        }
+
         private bool CanOpenGrids()
         {
             if (GameManager.Singleton.SceneStarter != null) return true;
@@ -74,8 +95,16 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             PlayerCharacterInventoryUI.CloseInventoryUI();
             LootCharacterInventoryUI.CloseInventoryUI();
+            TraderInventoryUI.CloseInventoryUI();
+            ItemInfoBox.CloseInfoBox();
+
+            QuestsUI.CloseQuestsUI();
             
             SelectedGrid = null;
+
+            GameManager.Singleton.RemoveBlurFromBackground();
+
+            isGridsOpen = false;
         }
 
         public void ToggleGrids()
@@ -85,25 +114,26 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (!isGridsOpen)
                 OpenGrids();
             else
-                CloseGrids();
+                CloseAllGrids();
         }
 
         public void SyncGrids()
         {
             PlayerCharacterInventoryUI.SyncGrids();
             LootCharacterInventoryUI.SyncGrids();
+            TraderInventoryUI.SyncGrids();
 
             // TODO: Refatorar
-            if (isGridsOpen)
-            {
-                OpenGrids();
-                OpenOtherGrids();
-            }
-            else
-            {
-                CloseGrids();
-                CloseOtherGrids();
-            }
+            // if (isGridsOpen)
+            // {
+            //     OpenGrids();
+            //     OpenOtherGrids();
+            // }
+            // else
+            // {
+            //     CloseGrids();
+            //     CloseOtherGrids();
+            // }
         }
 
         public void OpenGrids()
@@ -157,6 +187,42 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             PlayerCharacterInventoryUI.CloseInventoryUI();
             LootCharacterInventoryUI.CloseInventoryUI();
+            ItemInfoBox.CloseInfoBox();
+
+            GameManager.Singleton.RemoveBlurFromBackground();
+        }
+        public void OpenTraderGrids(Trader trader)
+        {
+            isGridsOpen = true;
+
+            TraderInventoryUI.OpenInventoryUI(trader);
+
+            GameManager.Singleton.AddBlurToBackground();
+        }
+
+        public void CloseTraderGrids()
+        {
+            isGridsOpen = false;
+
+            TraderInventoryUI.CloseInventoryUI();
+
+            GameManager.Singleton.RemoveBlurFromBackground();
+        }
+
+        public void OpenQuestsGrid(List<Quest> quests, Adventurer adventurer)
+        {
+            isGridsOpen = true;
+
+            QuestsUI.OpenQuestsUI(quests, adventurer);
+
+            GameManager.Singleton.AddBlurToBackground();
+        }
+        
+        public void CloseQuestsGrid()
+        {
+            isGridsOpen = false;
+
+            QuestsUI.CloseQuestsUI();
 
             GameManager.Singleton.RemoveBlurFromBackground();
         }
@@ -196,8 +262,10 @@ namespace Blessing.Gameplay.TradeAndInventory
         private void HandleItemDrag()
         {
             if (selectedItem == null) return;
+            
+            if (SelectedGrid != null)
+                selectedItem.RectTransform.SetParent(SelectedGrid.Canvas.transform, false);
 
-            selectedItem.RectTransform.SetParent(PlayerCharacterInventoryUI.Canvas.transform, false);
             selectedItem.RectTransform.position = Input.mousePosition;
         }
         private void HandleHighlight()
@@ -219,14 +287,17 @@ namespace Blessing.Gameplay.TradeAndInventory
                 if (item != null)
                 {
                     SelectedGrid.SetHighlight(item);
+                    ItemInfoBox.OpenInfoBox(item, SelectedGrid.ItemHighlight.transform.position);
                 }
                 else
                 {
                     SelectedGrid.RemoveHighlight();
+                    ItemInfoBox.CloseInfoBox();
                 }
             }
             else if (selectedItem != null)
             {
+                ItemInfoBox.CloseInfoBox();
                 SelectedGrid.SetHighlight(selectedItem, GetTileGridPosition());
             }
         }

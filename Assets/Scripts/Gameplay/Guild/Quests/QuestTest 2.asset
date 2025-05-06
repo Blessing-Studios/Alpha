@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: QuestTest 2
   m_EditorClassIdentifier: 
   Id: 2
+  RankScore: 0
+  RankStrike: 0
   Name: QuestTest2
   Label: Quest Teste 2
   Description: Quest Teste de pegar item
-  IsCompleted: 0
-  IsActive: 0
+  Icon: {fileID: 21300000, guid: e1961797aa0f6b14d81a7a7c8ac0b52a, type: 3}
+  Banner: {fileID: 21300000, guid: e1961797aa0f6b14d81a7a7c8ac0b52a, type: 3}
   KillObjectives:
   - IsCompleted: 0
     CanComplete: 0
@@ -25,4 +27,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 708fbf99de0e34d44b719ec8c7022b39, type: 2}
     Quantity: 3
   Rewards:
-  - {fileID: 11400000, guid: 2c1d6d1ac841fc54c910e7dc41b339da, type: 2}
+  - Item: {fileID: 11400000, guid: 1cd3e2c8d84ce2b45a4521119ed2a83f, type: 2}
+    Quantity: 1
+  - Item: {fileID: 11400000, guid: ed8346f4c4fd1214d916a4dcad7b0214, type: 2}
+    Quantity: 2

@@ -83,8 +83,8 @@ namespace Blessing.Player
         public void Initialize(PlayerCharacter playerCharacter)
         {
             PlayerCharacter = playerCharacter;
-            PlayerCanvas.gameObject.SetActive(true);
 
+            PlayerCanvas.gameObject.SetActive(true);
             HealthBar.Initialize(playerCharacter.Health);
         }
         void FixedUpdate()
@@ -153,7 +153,7 @@ namespace Blessing.Player
 
         public void OnHealthChange(Component component, object data)
         {
-            if (component.gameObject == PlayerController.PlayerCharacter.gameObject)
+            if (PlayerController.PlayerCharacter != null && component.gameObject == PlayerController.PlayerCharacter.gameObject)
                 HealthBar.UpdateHealthBars();
         }
     }

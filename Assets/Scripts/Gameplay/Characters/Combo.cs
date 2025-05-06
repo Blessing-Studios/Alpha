@@ -11,7 +11,7 @@ namespace Blessing.Gameplay.Characters
     public class Move
     {
         [SerializeField] public string Name;
-        [SerializeField] public string Description;
+        [SerializeField][TextArea] public string Description;
         [SerializeField] public AudioClip[] AudioClips;
         [ScriptableObjectDropdown(typeof(AnimationParamReference))] public ScriptableObjectReference AnimationParamRef;
         [SerializeField] public string AnimationParam { get { return (AnimationParamRef.value as AnimationParamReference).Name; } }
@@ -23,15 +23,17 @@ namespace Blessing.Gameplay.Characters
         [SerializeField] public float ExitEarlier = 0.1f;
         [SerializeField] public float DamageMultiplier = 1.0f;
         [SerializeField] public float ImpactMultiplier = 1.0f;
-        [SerializeField] public CameraShakeEffect ShakeEffect;
+        [Tooltip("Let hit the same target multiple times with the same attack")][SerializeField] public bool CanMultiHit = false;
         [SerializeField] public bool CanUseSkill = false; // Teste
+        [SerializeField] public CameraShakeEffect ShakeEffect;
+
     }
 
     [CreateAssetMenu(fileName = "Combo", menuName = "Scriptable Objects/Combo")]
     public class Combo : ScriptableObject
     {
         public string Name;
-        public string Description;
+        [TextArea] public string Description;
         
         public Move[] Moves;
         

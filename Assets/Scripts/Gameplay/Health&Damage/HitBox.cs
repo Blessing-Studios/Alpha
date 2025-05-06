@@ -15,7 +15,7 @@ namespace Blessing.HealthAndDamage
         // [Tooltip("Character that owns this HitBox")][SerializeField] private Character character;
         [Tooltip("Will only hit this Layer Mask")][SerializeField] private LayerMask layerMask;
         [Tooltip("CapsuleCollider of the hitbox")][SerializeField] private CapsuleCollider capsuleCollider;
-        [Tooltip("Controls how much the hitbox will be cast in the frame")][SerializeField] private float thickness = 0.1f;
+        [Tooltip("Controls how much the hitbox will be cast in the frame")][Range(0,1f)][SerializeField] private float thickness = 0.1f;
 
         public Vector3 ColliderCenter { get; private set; }
         private Vector3 gizmoP1;
@@ -30,9 +30,6 @@ namespace Blessing.HealthAndDamage
 
             if (capsuleCollider == null)
                 Debug.LogWarning("capsuleCollider Field is required: " + gameObject.transform.parent.name);
-
-            if (thickness <= 0)
-                Debug.LogWarning("thickness Field needs to be greater than zero: " + gameObject.transform.parent.name);
 
             Owner = OwnerGameObject.GetComponent<IHitter>();
             if (Owner == null)

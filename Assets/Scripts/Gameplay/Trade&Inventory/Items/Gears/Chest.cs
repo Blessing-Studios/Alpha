@@ -19,6 +19,11 @@ namespace Blessing.Gameplay.TradeAndInventory
         public int ArmorClass;
         public int Defense;
         public BodyArmorModifier[] BodyArmorModifiers;
+
+        public override string GetInfo()
+        {
+            return $"Defense {Defense} Class {ArmorClass}";
+        }
 #if UNITY_EDITOR
         protected override void OnValidate()
         {

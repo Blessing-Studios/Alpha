@@ -14,6 +14,11 @@ namespace Blessing.Gameplay.TradeAndInventory
         public int GridSizeWidth;
         public int GridSizeHeight;
 
+        public override string GetInfo()
+        {
+            return $"Size {GridSizeWidth}x{GridSizeHeight} Stack {ItemsMaxStack}";
+        }
+
         public override void Initialize(InventoryItem inventoryItem)
         {
             base.Initialize(inventoryItem);

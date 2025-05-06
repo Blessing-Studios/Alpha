@@ -49,7 +49,7 @@ namespace Blessing.Gameplay.Characters
     {
         public string Name;
         public string Label;
-        public string Description;
+        [TextArea] public string Description;
         public StatChange[] StatChanges;
         public HealthChange[] HealthChanges;
         public ManaChange[] ManaChanges;

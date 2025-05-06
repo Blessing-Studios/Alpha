@@ -25,6 +25,11 @@ namespace Blessing.Gameplay.TradeAndInventory
             //
         }
 
+        public virtual string GetInfo()
+        {
+            return "";
+        }
+
 #if UNITY_EDITOR
         public virtual void Awake()
         {

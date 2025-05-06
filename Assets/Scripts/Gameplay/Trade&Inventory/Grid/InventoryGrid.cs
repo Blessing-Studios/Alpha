@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Blessing.Core.GameEventSystem;
 using TMPro;
 using Unity.Collections;
 using Unity.VisualScripting;
@@ -16,6 +17,9 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public Inventory Inventory;
         public TextMeshProUGUI NameText;
+        [Header("Events")]
+        public GameEvent OnAddItem;
+        public GameEvent OnRemoveItem;
 
         public override void InitializeGrid()
         {
@@ -138,6 +142,10 @@ namespace Blessing.Gameplay.TradeAndInventory
                 return false;
             }
 
+            // Raise Events
+            if (OnAddItem != null)
+                OnAddItem.Raise(this, inventoryItem);
+
             return true;
         }
         public bool DeleteItem(InventoryItem inventoryItem)
@@ -170,6 +178,9 @@ namespace Blessing.Gameplay.TradeAndInventory
             Inventory.RemoveItem(inventoryItem);
 
             GridItems.Remove(inventoryItem);
+
+            if (OnRemoveItem != null)
+                OnRemoveItem.Raise(this, inventoryItem);
 
             return inventoryItem;
         }

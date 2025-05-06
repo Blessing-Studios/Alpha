@@ -154,12 +154,10 @@ namespace Blessing.Player
 
                 if (GameManager.Singleton.PlayerCharactersDic.ContainsKey(GetPlayerName()))
                 {
-                    Debug.Log(gameObject.name + ": Found Player");
                     FindPlayerCharacter();
                 }
                 else // This player doesn't have a Char in this session, Spawn a new Char
                 {
-                    Debug.Log(gameObject.name + ": Spawn Player");
                     SpawnPlayerCharacter();
                 }
 

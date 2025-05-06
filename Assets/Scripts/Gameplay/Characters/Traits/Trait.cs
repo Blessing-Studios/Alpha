@@ -24,7 +24,7 @@ namespace Blessing.Gameplay.Characters.Traits
         public int Id;
         public string Name;
         public string Label;
-        public string Description;
+        [TextArea] public string Description;
         public Effect[] Effects;
         public VisualEffect VisualEffect;
         public bool SpawnVFXOnGround = false;

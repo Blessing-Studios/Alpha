@@ -88,9 +88,9 @@ namespace Blessing.AI.Goap
                 //     CloseTrader();
                 // }
 
-                // GameManager.Singleton.InventoryController.LootCharacter = null;
+                // UIController.Singleton.LootCharacter = null;
 
-                if (!GameManager.Singleton.InventoryController.IsGridsOpen)
+                if (!UIController.Singleton.IsGridsOpen)
                 {
                     OpenGrids(customer);
 
@@ -99,7 +99,7 @@ namespace Blessing.AI.Goap
                     animator.SetTrigger("Open");
                     animator.SetBool(isOpenHash, true);
                 }
-                else if (GameManager.Singleton.InventoryController.IsGridsOpen)
+                else if (UIController.Singleton.IsGridsOpen)
                 {
                     CloseGrids();
 
@@ -120,13 +120,13 @@ namespace Blessing.AI.Goap
             }
             
             Customer = customer;
-            GameManager.Singleton.InventoryController.OpenAllGrids();
+            UIController.Singleton.OpenAllGrids();
         }
 
         private void CloseGrids()
         {
             Customer = null;
-            GameManager.Singleton.InventoryController.CloseAllGrids();
+            UIController.Singleton.CloseAllGrids();
         }
 
         // private void OpenTrader(Character customer)

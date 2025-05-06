@@ -14,7 +14,7 @@ namespace Blessing.Gameplay.Characters
         public int Id;
         public string Name;
         public string Label;
-        public string Description;
+        [TextArea] public string Description;
         public Sprite Icon;
         public Sprite CharacterSprite;
         public NetworkObject Prefab;

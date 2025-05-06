@@ -8,18 +8,21 @@ namespace Blessing.Gameplay
 {
     public class FadeObjectsBlocking : MonoBehaviour
     {
+        [field: SerializeField] public bool ShowDebug { get; private set; }
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private Transform target;
         [SerializeField][Range(0, 1f)] private float fadedAlpha = 0.33f;
         [SerializeField] private bool retainShadows = true;
-        [SerializeField] private Vector3 targetPositionOffset = Vector3.up;
         [SerializeField] private float fadeSpeed = 1f;
+        [SerializeField] private float waitTime = 0.1f;
+        [Header("Rays")]
+        [SerializeField] private Vector3 offsetCameraPosition = Vector3.zero;
 
         [Header("Read Only Data")]
         [SerializeField] private List<FadingObject> objectsBlockingView = new();
         private Dictionary<FadingObject, Coroutine> runningCoroutines = new();
 
-        private RaycastHit[] hits = new RaycastHit[5];
+        private RaycastHit[] hits = new RaycastHit[10];
 
         private void Start()
         {
@@ -30,12 +33,15 @@ namespace Blessing.Gameplay
         {
             while (true)
             {
-                Vector3 directionToCam = GameManager.Singleton.MainCamera.transform.position - transform.position;
+                yield return new WaitForSeconds(waitTime);
+
+                Vector3 cameraPosition = GameManager.Singleton.MainCamera.transform.position;
+                Vector3 direction = cameraPosition + offsetCameraPosition - transform.position;
                 int numHits = Physics.RaycastNonAlloc(
                         transform.position,
-                        directionToCam,
+                        direction,
                         hits,
-                        directionToCam.magnitude,
+                        direction.magnitude,
                         layerMask
                 );
 

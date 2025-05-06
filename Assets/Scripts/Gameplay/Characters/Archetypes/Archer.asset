@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d0913d8e1ae0f4ea552ff087d1ccda, type: 3}
   m_Name: Archer
   m_EditorClassIdentifier: 
-  Id: 5
+  Id: 2
   Name: Archer
   Label: Archer
   Description: "They are durable, have great armor, and provide plenty of damage

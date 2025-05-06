@@ -9,7 +9,7 @@ namespace Blessing.Gameplay.Guild.Quests
         public abstract ObjectiveType Type { get; }
         public bool IsCompleted = false;
         public bool CanComplete = false;
-
+        public abstract string Description { get; }
         public abstract bool Validate(Adventurer adventurer);
         public abstract bool Complete(Adventurer adventurer);
     }

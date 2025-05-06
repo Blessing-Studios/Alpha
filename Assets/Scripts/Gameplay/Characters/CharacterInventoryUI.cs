@@ -25,8 +25,9 @@ namespace Blessing.Gameplay.Characters
         {
             if (CharacterStatsInfo == null)
                 TryGetComponent(out CharacterStatsInfo);
-
-            Canvas = GetComponent<Canvas>();
+                
+            if (Canvas == null)
+                Canvas = GetComponent<Canvas>();
         }
         public void SetCharacter(Character character)
         {
@@ -92,6 +93,8 @@ namespace Blessing.Gameplay.Characters
         {
             gameObject.SetActive(true);
 
+            SyncGrids();
+
             foreach (EquipmentSlot slot in Slots)
             {
                 slot.OpenGrid();
@@ -111,6 +114,8 @@ namespace Blessing.Gameplay.Characters
         }
         public void SyncGrids()
         {
+            if (!gameObject.activeSelf) return;
+
             if (Character == null) return;
 
             SetBackpackInventoryGrid(Character.Gear.Inventory);

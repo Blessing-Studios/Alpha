@@ -13894,7 +13894,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1443816520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13907,13 +13907,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe277ab0553cb545b69b3c78b6ddf7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_NetworkObjectToSpawn: {fileID: 5369011401359272698, guid: 82060f3317216524a891129a5317c83a, type: 3}
+  m_NetworkObjectToSpawn: {fileID: 5369011401359272698, guid: 6fad6cc4543952a448e8d9a3eb90a422, type: 3}
   items:
   - {fileID: 11400000, guid: 708fbf99de0e34d44b719ec8c7022b39, type: 2}
-  - {fileID: 11400000, guid: 2c1d6d1ac841fc54c910e7dc41b339da, type: 2}
-  - {fileID: 11400000, guid: 2c1d6d1ac841fc54c910e7dc41b339da, type: 2}
-  - {fileID: 11400000, guid: 2c1d6d1ac841fc54c910e7dc41b339da, type: 2}
-  - {fileID: 11400000, guid: 2c1d6d1ac841fc54c910e7dc41b339da, type: 2}
+  - {fileID: 11400000, guid: ed8346f4c4fd1214d916a4dcad7b0214, type: 2}
+  - {fileID: 11400000, guid: 1cd3e2c8d84ce2b45a4521119ed2a83f, type: 2}
+  - {fileID: 11400000, guid: ed8346f4c4fd1214d916a4dcad7b0214, type: 2}
+  - {fileID: 11400000, guid: 1cd3e2c8d84ce2b45a4521119ed2a83f, type: 2}
   - {fileID: 11400000, guid: f745ac46ca93bf94997daf6f0eace319, type: 2}
   - {fileID: 11400000, guid: 1bad63832a9d89a41a7fe803ae97fd98, type: 2}
   gears:
@@ -13953,7 +13953,7 @@ Transform:
   m_GameObject: {fileID: 1443816519}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.26, y: -3.664779, z: 9.84}
+  m_LocalPosition: {x: -0.74, y: -3.664779, z: 3.8400002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

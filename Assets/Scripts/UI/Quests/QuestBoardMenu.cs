@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Blessing.UI.QuestSelection
+namespace Blessing.UI.Quests
 {
     public class QuestBoardMenu : MonoBehaviour
     {

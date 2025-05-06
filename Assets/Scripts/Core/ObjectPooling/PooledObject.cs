@@ -9,5 +9,10 @@ namespace Blessing.Core.ObjectPooling
         public abstract void GetFromPool();
         public abstract void ReleaseToPool();
         public abstract void DestroyPooledObject();
+
+        public virtual void Release()
+        {
+            Pool.Release(this);
+        }
     }
 }

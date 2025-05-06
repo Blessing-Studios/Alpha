@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Blessing.Gameplay.TradeAndInventory;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.LookDev;
 
 namespace Blessing.Gameplay.Guild.Quests
 {
@@ -12,10 +13,25 @@ namespace Blessing.Gameplay.Guild.Quests
         public override ObjectiveType Type { get {return ObjectiveType.Kill; } }
         public Item[] Trophies;
         public int Quantity;
+        public override string Description { get { return GetDescription(); }}
         public KillObjective(Item[] trophies, int quantity)
         {
             Trophies = trophies;
             Quantity = quantity;
+        }
+        public string GetDescription()
+        {
+            if (Trophies.Length == 0) return "Kill";
+
+            string itemsName = Trophies[0].Label;
+
+            if (Trophies.Length > 1)
+            for (int i = 1; i < Trophies.Length; i++)
+            {
+                itemsName += " or " + Trophies[i].Label;
+            }
+
+            return $"Bring {Quantity} of the following item: {itemsName}";
         }
         public override bool Validate(Adventurer adventurer)
         {

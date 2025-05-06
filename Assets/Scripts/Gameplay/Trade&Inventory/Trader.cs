@@ -1,49 +1,55 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Interation;
 using Unity.Collections;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
-    [RequireComponent(typeof(Inventory))]
+    public enum TradeOperation { Buy, Sell }
+    [Serializable] public struct Trade
+    {
+        public InventoryItem InventoryItem;
+        public int Value;
+        public TradeOperation Operation; 
+        public Vector2Int OriginalPosition;
+    }
     public class Trader : MonoBehaviour, IInteractable
     {
-        public int GridSizeWidth = 5;
-        public int GridSizeHeight = 5;
-        [field: SerializeField] public Inventory Inventory { get; private set; }
+        [field: SerializeField] public bool ShowDebug { get; private set; }
+        [field: SerializeField] public Inventory Inventory { get; protected set; }
         public Character Customer;
+        public List<Trade> CurrentTrades;
+        public int CurrentTradesTotalValue;
         private FixedString64Bytes reservedItemGuid;
         private Vector2Int reservedItemPosition;
+        private bool isItemMoving = false;
         protected Animator animator;
         protected int isOpenHash;
+        public TraderInventoryUI TraderInventoryUI { get { return UIController.Singleton.TraderInventoryUI; } }
         public bool CanInteract { get { return true; } }
 
         // Para debugar
         [SerializeField] private InventoryItem reservedItem;
-        
-        void Awake()
+        private Vector2Int selectedItemPosition;
+
+        protected virtual void Awake()
         {
-            Inventory = GetComponent<Inventory>();
             animator = GetComponent<Animator>();
 
             isOpenHash = Animator.StringToHash("IsOpen");
         }
 
-        void Start()
+        protected virtual void Start()
         {
-            Inventory.SetNetworkVariables(GridSizeWidth, GridSizeHeight);
-            Inventory.Initialize();
-
-            if (Inventory.InventoryGrid == null)
-            {
-                Debug.Log(gameObject.name + " InventoryGrid can't be null");
-            }
+            // 
         }
 
-        void Update()
+        protected virtual void Update()
         {
             HandleAutoClose();
         }
@@ -54,7 +60,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (!Inventory.InventoryGrid.IsOpen) return;
 
-            float maxDistance = (float ) (Customer.Stats.Dexterity + Customer.Stats.Luck) / 3;
+            float maxDistance = (float)(Customer.Stats.Dexterity + Customer.Stats.Luck) / 3;
 
             float distance = Vector3.Distance(transform.position, Customer.transform.position);
 
@@ -63,16 +69,17 @@ namespace Blessing.Gameplay.TradeAndInventory
                 CloseTrader();
             }
         }
-        public void Interact(Interactor interactor)
+        public virtual void Interact(Interactor interactor)
         {
             if (interactor.gameObject.TryGetComponent(out Character customer))
             {
                 Inventory.GetOwnership();
-                if (!Inventory.InventoryGrid.IsOpen)
+
+                if (!UIController.Singleton.IsGridsOpen)
                 {
                     OpenTrader(customer);
                 }
-                else if (Inventory.InventoryGrid.IsOpen)
+                else if (UIController.Singleton.IsGridsOpen)
                 {
                     CloseTrader();
                 }
@@ -81,8 +88,9 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private void OpenTrader(Character customer)
         {
-            this.Customer = customer;
-            Inventory.InventoryGrid.OpenGrid();
+            Customer = customer;
+
+            UIController.Singleton.OpenTraderGrids(this);
 
             if (animator.GetBool(isOpenHash)) return;
 
@@ -93,7 +101,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         private void CloseTrader()
         {
             Customer = null;
-            Inventory.InventoryGrid.CloseGrid();
+
+            UIController.Singleton.CloseTraderGrids();
 
             if (!animator.GetBool(isOpenHash)) return;
 
@@ -105,39 +114,89 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (Customer == null) return;
 
+            if (isItemMoving == true) return;
+
             if (data is not InventoryItem)
             {
                 return;
             }
 
             InventoryItem item = data as InventoryItem;
+
             
-            // Temporariamente comentado
-            // if (component.gameObject == Customer.gameObject
-            //     && item.Data.Id == reservedItemGuid)
-
-            if (item.Data.Id == reservedItemGuid)
+            if (UIController.Singleton.TraderInventoryUI.TraderInventoryGrid.gameObject == component.gameObject)
             {
-                PurchaseItem(item);
+                // Foi adicionado no grid do trader
+                AddItemToShoppingList(item, TradeOperation.Sell);
+            }
+            else
+            {
+                AddItemToShoppingList(item, TradeOperation.Buy);
+            }    
+
+            CleanReserveItem();
+            TraderInventoryUI.UpdateTraderItems();
+        }
+
+        public void AddItemToShoppingList(InventoryItem item, TradeOperation operation)
+        {
+            // Can't sell Reserved item, This item is coming from trader
+            if (item.Data.Id == reservedItemGuid && operation == TradeOperation.Sell)
+            {
+                ReturnReserveItemToTrader();
+                return;
             }
 
-            if (component.gameObject == gameObject
-                && item.Data.Id != reservedItemGuid)
+            // Can only buy Reserved Item, This is coming from customer
+            if (item.Data.Id != reservedItemGuid && operation == TradeOperation.Buy)
             {
-                SellItem(item);
+                return;
             }
+
+            // Procura se esse item já está na lista
+            Trade foundTrade = CurrentTrades.SingleOrDefault(x => x.InventoryItem == item);
+            if (foundTrade.InventoryItem != null)
+            {
+                if (foundTrade.Operation != operation)
+                {
+                    CurrentTrades.Remove(foundTrade);
+                    return;
+                }
+
+                if (foundTrade.Operation != operation)
+                {
+                    return;
+                }
+            }
+
+            // If foundTrade doesn't have item, create new Trade for the item
+            CurrentTrades.Add(new Trade() {
+                InventoryItem = item,
+                Value = item.Value,
+                Operation = operation,
+                OriginalPosition = selectedItemPosition
+            });
+        }
+
+        public void RemoveItemFromShoppingList(InventoryItem inventoryItem)
+        {
+
         }
 
         public void OnRemoveItem(Component component, object data)
         {
-            if (component.gameObject != gameObject) return;
-
             if (Customer == null) return;
-
+            if (isItemMoving == true) return;
             if (data is not InventoryItem) return;
 
             InventoryItem item = data as InventoryItem;
+
+            selectedItemPosition = item.GridPosition;
+
+            if (UIController.Singleton.TraderInventoryUI.TraderInventoryGrid != component) return;
+
             
+
             ReserveItem(item);
 
             ShowItemInfo(item);
@@ -163,6 +222,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             reservedItemGuid = item.Data.Id;
             reservedItemPosition = item.GridPosition;
             reservedItem = item;
+
         }
 
         private void CleanReserveItem()
@@ -172,10 +232,110 @@ namespace Blessing.Gameplay.TradeAndInventory
             reservedItem = null;
         }
 
+        private void ReturnReserveItemToTrader()
+        {
+            if (reservedItem != null)
+            {
+                isItemMoving = true;
+                Inventory.RemoveItem(reservedItem);
+                Inventory.InventoryGrid.PlaceItem(reservedItem, reservedItemPosition);
+                CleanReserveItem();
+                isItemMoving = false;
+            }
+        }
+
+        public bool ConfirmTrades()
+        {
+            // Pegar Customer Gold
+            int customerGold = Customer.Gear.Gold;
+
+            // Validar compras
+            // Chegar se Customer pode pagar por tudo
+            int totalToPay = 0;
+
+            foreach(Trade trade in CurrentTrades)
+            {
+                totalToPay = trade.Operation switch
+                {
+                    TradeOperation.Sell => totalToPay -= trade.Value,
+                    _ => totalToPay += trade.Value
+                };
+            }
+
+            if (totalToPay > customerGold) return false;
+
+
+            for (int i = CurrentTrades.Count - 1; i >= 0; i--)
+            {
+                bool validate = CurrentTrades[i].Operation switch
+                {
+                    TradeOperation.Sell => Customer.Gear.GainGold(CurrentTrades[i].Value),
+                    _ => Customer.Gear.SpendGold(CurrentTrades[i].Value)
+                };
+
+                if (validate)
+                {
+                    // Remove symbol that item is in shopping list
+                    CurrentTrades.RemoveAt(i);
+                }
+                else
+                {
+                    Debug.LogError(gameObject.name + ": Error Shopping product name: " + CurrentTrades[i].InventoryItem.name + " id: " + CurrentTrades[i].InventoryItem.Item.Id);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool CancelTrades()
+        {
+            Debug.Log("CancelTrades");
+            bool validate = true;
+
+            for (int i = CurrentTrades.Count - 1; i >= 0; i--)
+            {
+                validate = CancelTrade(CurrentTrades[i]);
+                if (validate)
+                {
+                    if (ShowDebug) Debug.Log(gameObject.name + ": Trade canceled");
+                }
+                else
+                {
+                    Debug.LogError(gameObject.name + ": Error Canceling trade - product name: " + CurrentTrades[i].InventoryItem.name + " id: " + CurrentTrades[i].InventoryItem.Item.Id);
+                    return false;
+                }
+            }
+
+            return validate;
+        }
+
+        public bool CancelTrade(Trade trade)
+        {
+            Debug.Log("CancelTrade");
+
+            isItemMoving = true;
+            if (trade.Operation == TradeOperation.Buy)
+            {
+                Customer.Gear.Inventory.RemoveItem(trade.InventoryItem);
+                Inventory.InventoryGrid.PlaceItem(trade.InventoryItem, trade.OriginalPosition);
+            }
+
+            if (trade.Operation == TradeOperation.Sell)
+            {
+                Inventory.RemoveItem(trade.InventoryItem);
+                Customer.Gear.Inventory.InventoryGrid.PlaceItem(trade.InventoryItem, trade.OriginalPosition);
+            }
+            isItemMoving = false;
+
+            bool validate = CurrentTrades.Remove(trade);
+
+            return validate;
+        }
 
         private void PurchaseItem(InventoryItem item)
         {
-            
+
 
             // Get Gold from player
             bool itemBought = Customer.Gear.SpendGold(item.Value);
@@ -187,7 +347,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                 CancelPurchase(item);
                 return;
             }
-            
+
             // If success, show message that item was bought
             Debug.Log(gameObject.name + "PurchaseItem Customer: " + Customer.gameObject.name);
 

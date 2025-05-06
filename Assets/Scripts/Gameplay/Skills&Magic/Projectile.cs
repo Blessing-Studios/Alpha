@@ -68,13 +68,17 @@ namespace Blessing.Gameplay.SkillsAndMagic
             }
 
             target.GetOwnership();
+            Debug.Log(gameObject.name + ": Hit Time - " + Time.time);
 
-            HitInfo = new HitInfo(projectileSkill.GetSkillDamage(owner.ValueByStat), projectileSkill.DamageClass, 0f, projectileSkill.Buffs);
+
+
+            HitInfo = new HitInfo(projectileSkill.GetSkillDamage(owner.ValueByStat), projectileSkill.DamageClass, projectileSkill.GetSkillImpact(owner.ValueByStat), projectileSkill.Buffs);
             return true;
         }
 
         void OnTriggerEnter(Collider other)
         {
+            Debug.Log(gameObject.name + ": OnTriggerEnter Time - " + Time.time);
             if (!gameObject.activeSelf) return;
 
             if (other.gameObject.TryGetComponent(out HurtBox hurtBox))

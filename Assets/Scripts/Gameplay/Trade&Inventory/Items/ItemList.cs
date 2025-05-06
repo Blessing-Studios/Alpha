@@ -7,7 +7,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     public class ItemList : ScriptableObject
     {
         [SerializeField] public string Name;
-        [SerializeField] public string Description;
+        [SerializeField][TextArea] public string Description;
         public Item[] Items;
     }
 }

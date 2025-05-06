@@ -251,14 +251,16 @@ namespace Blessing.Gameplay.Characters
                 return false;
             }
 
+            // If CurrentMove is null, it will throw a error
+            Move currentMove = CharacterStateMachine.CurrentMove;
+
             if (TargetList.Contains(target))
             {
-                // hit failed, target was already hit;
+                // Target was already hit;
                 return false;
             }
 
-            // If CurrentMove is null, it will throw a error
-            Move currentMove = CharacterStateMachine.CurrentMove;
+            
             float impact = Stats.Strength * currentMove.ImpactMultiplier;
             int damage = (int) (DamageAndPen.x * currentMove.DamageMultiplier);
 
@@ -337,6 +339,8 @@ namespace Blessing.Gameplay.Characters
             float impulseTime = impact - Stats.Constitution;
 
             MovementController.HandlePushBack(pushDirection, impact, impulseTime);
+
+            Debug.Log(gameObject.name + ": GotHit Time - " + Time.time);
 
             if (Health.IsAlive)
                 CharacterStateMachine.SetNextState(CharacterStateMachine.TakeHitState);
@@ -651,7 +655,7 @@ namespace Blessing.Gameplay.Characters
 
             UpdateParameters();
 
-            GameManager.Singleton.InventoryController.SyncGrids();
+            UIController.Singleton.SyncGrids();
         }
 
         public void OnRemoveEquipment(Component component, object data)
@@ -674,7 +678,7 @@ namespace Blessing.Gameplay.Characters
 
             UpdateParameters();
 
-            GameManager.Singleton.InventoryController.SyncGrids();
+            UIController.Singleton.SyncGrids();
         }
 
         public void OnAnimationAttack()
@@ -691,6 +695,11 @@ namespace Blessing.Gameplay.Characters
                         HandleSkill(characterSkill.Skill);
                     }
                 }   
+            }
+
+            if (CharacterStateMachine.CurrentMove.CanMultiHit == true)
+            {
+                ClearTargetList();
             }
 
             // Handle Attack Sound

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Blessing.Gameplay.Guild;
 using Blessing.Gameplay.Guild.Quests;
 using Blessing.Gameplay.TradeAndInventory;
+using UnityEngine.UI;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,14 +12,15 @@ namespace Blessing.Gameplay.Guild.Quests
     public class QuestScriptableObject : ScriptableObject
     {
         public int Id;
-        public Rank Rank;
+        public int RankScore;
+        public int RankStrike;
         public string Name;
         public string Label;
-        public string Description;
-        public bool IsCompleted;
-        public bool IsActive;
+        [TextArea] public string Description;
+        public Sprite Icon;
+        public Sprite Banner;
         public KillObjective[] KillObjectives;
-        public Item[] Rewards;
+        public Reward[] Rewards;
 
         public Quest Quest()
         {
@@ -28,7 +30,7 @@ namespace Blessing.Gameplay.Guild.Quests
                 objectives.Add(new KillObjective(objective.Trophies, objective.Quantity));
             }
             
-            return new Quest(Id, Rank, Name, Label, Description, objectives.ToArray(), Rewards);
+            return new Quest(new Rank(RankScore, RankStrike), objectives.ToArray(), Rewards, this);
         }
     }
 }

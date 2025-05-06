@@ -55,7 +55,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
                     if (Item != null) // Item spawned from LooseItemSpawner Class
                     {
-                        InventoryItem = GameManager.Singleton.InventoryController.CreateItem(Item);
+                        InventoryItem = UIController.Singleton.CreateItem(Item);
                     }
 
                     data.Value = InventoryItem.Data;
@@ -63,7 +63,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
                 if (!HasAuthority)
                 {
-                    InventoryItem = GameManager.Singleton.InventoryController.CreateItem(data.Value);
+                    InventoryItem = UIController.Singleton.CreateItem(data.Value);
 
                     if (InventoryItem == null)
                     {

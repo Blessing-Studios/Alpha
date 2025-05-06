@@ -1,20 +1,22 @@
 # Alpha
 
 ### Atual prioridade
-    Sistema de Traits por equipamento quebrou, precisa arrumar
+    Sistema de Traits por equipamento quebrou, precisa arrumar (?)
 
-    Parece que foi resolvido !!Quando recarrega, o player reconectando pode pegar Autoridade de outros player characters
+    Parece que foi resolvido !!Quando recarrega, o player reconectando pode pegar Autoridade de outros player characters (?)
 
     Fazer sistema de pooling dos objetos online
     Limpar Poolers depois de trocar de mapa
 
-    Criar sistema de interação mais complexo, para ter ter a opção de ter mais de um tipo de interação por objeto
+    Criar sistema de interação mais complexo, para ter ter a opção de ter mais de um tipo de interação por objeto (Em progresso)
 
     Quando um Personagem morrer, desligar as principais funções para ele não pesar no processamento
 
     Unificar o relógio interno do personagen para melhor controlar Buffs e Mana/Life Regen
 
     Arrumar lógica de personagens acertarem/aplicarem buffs  outros personagens (IA e Player acertando uns aos outros)
+
+    Limitar a área na tela que pode jogar o item no chão, bloquar jogar item no chão quando tiver no menu do vendedor
 
     
 

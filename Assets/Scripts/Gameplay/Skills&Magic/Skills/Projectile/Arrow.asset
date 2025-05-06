@@ -19,9 +19,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a3cf21d4935b66a4dbd1536be84f8ddd, type: 3}
   HitType: 1
   ActiveSkillOnHit: 0
-  Modifiers: []
+  Modifiers:
+  - Stat: 2
+    Value: 5
   Attack: 50
   DamageClass: 1
+  ImpactMultiplier: 4.2
   Buffs: []
   <AfterSkill>k__BackingField: {fileID: 0}
   ManaCost:

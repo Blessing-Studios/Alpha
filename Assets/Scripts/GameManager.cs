@@ -19,7 +19,7 @@ using Blessing.Core.ObjectPooling;
 using Blessing.Gameplay;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Interation;
-using Blessing.UI.QuestSelection;
+using Blessing.UI.Quests;
 using UnityEngine.Rendering.Universal;
 
 namespace Blessing
@@ -42,7 +42,7 @@ namespace Blessing
         private Dictionary<string, PlayerCharacter> playerCharactersDic = new();
         public Dictionary<string, PlayerCharacter> PlayerCharactersDic { get { return playerCharactersDic; } }
         public SceneStarter SceneStarter;
-        public InventoryController InventoryController;
+        public UIController UIController { get { return UIController.Singleton; } }
         [field: SerializeField] public NetworkObject ContainerPrefab { get; private set; }
         [field: SerializeField] public NetworkObject LooseItemPrefab { get; private set; }
         [Header("Pooling")]
@@ -52,7 +52,11 @@ namespace Blessing
         public bool PlayerConnected = false;
         [Header("Misc")]
         public ContextDropDownMenu ContextDropDownMenu;
-        public QuestBoardMenu QuestBoardMenu;
+        public ItemInfoBox ItemInfoBox;
+        public TraderItem TraderItemPrefab;
+        public QuestUIElement QuestUIElementPrefab;
+        public QuestItem QuestItemPrefab;
+        public TextMeshProUGUI SimpleTextPrefab;
         public float GlobalShakeForce = 1f;
         public float GroundGravity = -0.2f;
         public float Gravity = -0.8f;
@@ -93,16 +97,15 @@ namespace Blessing
                 Debug.LogError(base.gameObject.name + ": VirtualCamera is missing");
             }
 
-            if (InventoryController == null)
+            if (UIController == null)
             {
-                Debug.LogError(base.gameObject.name + ": InventoryController is missing");
+                Debug.LogError(base.gameObject.name + ": UIController is missing");
             }
 
             if (InventoryItemPooler == null)
                 Debug.LogError(gameObject.name + ": Missing InventoryItemPooler");
 
             ContextDropDownMenu.gameObject.SetActive(false);
-            QuestBoardMenu.gameObject.SetActive(false);
 
             InventoryItemPool = InventoryItemPooler.Pool;
         }
@@ -111,22 +114,22 @@ namespace Blessing
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                InventoryController.ToggleGrids();
+                UIController.ToggleGrids();
             }
 
             if (Input.GetKeyDown(KeyCode.P))
             {
-                InventoryController.CreateRandomItem();
+                UIController.CreateRandomItem();
             }
 
             if (Input.GetKeyDown(KeyCode.L))
             {
-                InventoryController.InsertRandomItem();
+                UIController.InsertRandomItem();
             }
 
             if (Input.GetKeyDown(KeyCode.R))
             {
-                InventoryController.RotateItem();
+                UIController.RotateItem();
             }
 
             if (Input.GetKeyDown(KeyCode.N))
@@ -136,7 +139,7 @@ namespace Blessing
 
             if (Input.GetKeyDown(KeyCode.F))
             {
-                InventoryController.ConsumeSelectedItem();
+                UIController.ConsumeSelectedItem();
             }
         }
 
@@ -193,7 +196,7 @@ namespace Blessing
 
         internal InventoryItem FindInventoryItem(InventoryItemData data, bool createNew = true)
         {
-            return InventoryController.FindInventoryItem(data, createNew);
+            return UIController.FindInventoryItem(data, createNew);
         }
         public void InitializeSpawners()
         {
@@ -315,7 +318,7 @@ namespace Blessing
 
             // Clean Pooled InventoryItems
             InventoryItemPool.Clear();
-            InventoryController.ClearInventoryItemDic();
+            UIController.ClearInventoryItemDic();
 
             // Clean Other Pools
             PoolManager.Singleton.ClearAllPools();

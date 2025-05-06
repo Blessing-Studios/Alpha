@@ -22,7 +22,7 @@ namespace Blessing.Gameplay.Characters.States
             duration = 2.0f / characterStateMachine.Character.Stats.Dexterity;
 
             movementController.DisableMovement();
-
+            Debug.Log(": Enter TakeHitState Time - " + Time.time);
             networkAnimator.SetTrigger("TakeHit");
         }
 

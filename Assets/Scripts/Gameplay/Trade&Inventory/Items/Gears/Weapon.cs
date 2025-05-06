@@ -20,6 +20,11 @@ namespace Blessing.Gameplay.TradeAndInventory
         [Tooltip("Damage Class is the penetration power of the damage source")] public int DamageClass;
         public int Attack;
         public WeaponModifier[] WeaponModifiers;
+
+        public override string GetInfo()
+        {
+            return $"Attack {Attack} Class {DamageClass}";
+        }
 #if UNITY_EDITOR
         protected override void OnValidate()
         {

@@ -7,7 +7,7 @@ namespace Blessing.Gameplay.Characters.Traits
     public class TraitList : ScriptableObject
     {
         [SerializeField] public string Name;
-        [SerializeField] public string Description;
+        [SerializeField][TextArea] public string Description;
         public Trait[] Traits;
     }
 }

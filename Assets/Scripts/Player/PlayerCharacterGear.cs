@@ -9,26 +9,26 @@ namespace Blessing.Player
     {
         protected override void Start()
         {
-            if (GameManager.Singleton.InventoryController == null)
+            if (UIController.Singleton == null)
             {
-                Debug.LogError(gameObject.name + " InventoryController is missing");
+                Debug.LogError(gameObject.name + " UIController is missing");
             }
 
             base.Start();
-            SetGrids();
+            SetInventoryGrids();
         }
 
         protected override void OnOwnershipChanged(ulong previous, ulong current) // Mover para PlayerCharacterNetwork
         {
             base.OnOwnershipChanged(previous, current);
-            SetGrids();
+            SetInventoryGrids();
         }
 
-        private void SetGrids()
+        private void SetInventoryGrids()
         {
             if (HasAuthority)
             { 
-                GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetCharacter(character);   
+                UIController.Singleton.SetPlayerCharacter(character);   
             }
         }
 
@@ -39,7 +39,7 @@ namespace Blessing.Player
         //     // If this is the Local Player, change PlayerInventoryGrid
         //     if (HasAuthority)
         //     { 
-        //         GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetBackpackInventoryGrid(Inventory);
+        //         UIController.Singleton.PlayerCharacterInventoryUI.SetBackpackInventoryGrid(Inventory);
         //     }
         // }
         // public override void AddUtility(InventoryItem inventoryItem, int duplicatedIndex = 0)
@@ -48,7 +48,7 @@ namespace Blessing.Player
 
         //     if (HasAuthority)
         //     {
-        //         GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetUtilityInventoryGrids(UtilityInventories);
+        //         UIController.Singleton.PlayerCharacterInventoryUI.SetUtilityInventoryGrids(UtilityInventories);
         //     }
         // }
 
@@ -59,7 +59,7 @@ namespace Blessing.Player
         //     // If this is the Local Player, change PlayerInventoryGrid
         //     if (HasAuthority)
         //     {
-        //         GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetBackpackInventoryGrid(Inventory);
+        //         UIController.Singleton.PlayerCharacterInventoryUI.SetBackpackInventoryGrid(Inventory);
         //     }
 
             
@@ -71,7 +71,7 @@ namespace Blessing.Player
 
         //     if (HasAuthority)
         //     {
-        //         GameManager.Singleton.InventoryController.PlayerCharacterInventoryUI.SetUtilityInventoryGrids(UtilityInventories);
+        //         UIController.Singleton.PlayerCharacterInventoryUI.SetUtilityInventoryGrids(UtilityInventories);
         //     }
         // }
     }
