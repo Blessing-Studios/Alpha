@@ -24,6 +24,16 @@ namespace Blessing.Services
         Task m_SessionTask;
 
         ISession m_CurrentSession;
+        public bool IsHost
+        {
+            get
+            {
+                if (m_CurrentSession != null)
+                    return m_CurrentSession.IsHost;
+                else
+                    return false;
+            }
+        }
         public ISession CurrentSession { get { return m_CurrentSession; } }
         bool m_IsLeavingSession;
 
@@ -177,7 +187,7 @@ namespace Blessing.Services
         }
         void OnExitedSession()
         {
-            
+
         }
 
         async void LeaveSession()
@@ -333,7 +343,7 @@ namespace Blessing.Services
         void ExitedSession()
         {
             GameManager.Singleton.ClearGameStates();
-            
+
             if (m_CurrentSession != null)
             {
                 m_CurrentSession.RemovedFromSession -= RemovedFromSession;

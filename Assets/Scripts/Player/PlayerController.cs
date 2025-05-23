@@ -16,7 +16,6 @@ namespace Blessing.Player
     public class PlayerController : NetworkBehaviour, IDataPersistence
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
-        public NetworkObject CharacterToSpawn;
         private CharacterData characterData;
         public Vector3 SpawnLocation;
         public PlayerHUD PlayerHUD;
@@ -87,8 +86,6 @@ namespace Blessing.Player
         }
         private void OnSceneSessionNetworkListChanged(NetworkListEvent<MapTravelData> changeEvent)
         {
-            Debug.Log(gameObject.name + ": OnSceneSessionNetworkListChanged");
-             
             GameDataManager.Singleton.UpdateSceneSessionDic(changeEvent.Value);
 
             // if (!UpdateLocalList(ref SceneSessionLocalList, SceneSessionNetworkList)) return;
@@ -191,7 +188,7 @@ namespace Blessing.Player
 
             if (characterData == null)
             {
-                Debug.Log(gameObject.name + ": characterData can't be null to spawn character");
+                Debug.LogError(gameObject.name + ": characterData can't be null to spawn character");
             }
 
             Archetype archetype = GameManager.Singleton.GetArchetypeById(characterData.ArchetypeId);
@@ -199,7 +196,7 @@ namespace Blessing.Player
             var spawnedNetworkObject = archetype.Prefab.InstantiateAndSpawn(NetworkManager, ownerClientId: OwnerClientId);
 
             PlayerCharacter = spawnedNetworkObject.GetComponent<PlayerCharacter>();
-            PlayerCharacter.SpawnLocation = SpawnLocation;
+            PlayerCharacter.SpawnLocation = SpawnLocation + Vector3.up;
             PlayerCharacter.SetPlayerOwnerName(GetPlayerName());
 
             PlayerCharacter.InitializePlayerChar();
@@ -231,8 +228,6 @@ namespace Blessing.Player
         private void SpawnGear()
         {
             if (!HasAuthority) return;
-
-            Debug.Log(gameObject.name + ": SpawnGear");
 
             foreach (InventoryItemData gear in characterData.Gears)
             {
@@ -279,7 +274,9 @@ namespace Blessing.Player
         private void SetPlayer()
         {
             PlayerHUD.Initialize(PlayerCharacter);
-            
+
+            UIController.Singleton.SetPlayerCharacter(PlayerCharacter);
+
             GameManager.Singleton.VirtualCamera.LookAt = PlayerCharacter.transform;
             GameManager.Singleton.VirtualCamera.Target.TrackingTarget = PlayerCharacter.transform;
         }

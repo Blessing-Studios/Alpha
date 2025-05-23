@@ -34,29 +34,37 @@ namespace Blessing.Gameplay.SkillsAndMagic
 
             if (Timer >= lifeTime)
             {
-                Pool.Release(this);
+                Release();
             }
 
             Timer += Time.deltaTime;
         }
 
-        public Projectile Initialize(ProjectileSkill projectileSkill, ISkillTrigger owner)
+        public Projectile Initialize(ProjectileSkill projectileSkill, ISkillTrigger owner, float precision)
         {
             this.projectileSkill = projectileSkill;
             this.owner = owner;
             speed = projectileSkill.Speed;
             lifeTime = projectileSkill.LifeTime;
             isDestroyedOnHit = projectileSkill.IsDestroyedOnHit;
+
+            float rnd1 = Mathf.Floor(precision * 100);
+            float rnd2 = Mathf.Floor(precision * 10000) - rnd1* 100;
+
+            rnd1 = rnd1 / 100;
+            rnd2 = rnd2 / 100;
+
             transform.SetPositionAndRotation(
-                    owner.SkillOrigin.position + new Vector3(0, Random.Range(-projectileSkill.PositionPrecision.y, projectileSkill.PositionPrecision.y), Random.Range(-projectileSkill.PositionPrecision.x, projectileSkill.PositionPrecision.x)),
-                    owner.SkillOrigin.rotation * Quaternion.Euler(0, 0, Random.Range(-projectileSkill.AnglePrecision, projectileSkill.AnglePrecision))
+                    owner.SkillOrigin.position + new Vector3(0, Mathf.Lerp(-projectileSkill.PositionPrecision.y, projectileSkill.PositionPrecision.y, rnd1), Mathf.Lerp(-projectileSkill.PositionPrecision.x, projectileSkill.PositionPrecision.x, rnd2)),
+                    owner.SkillOrigin.rotation * Quaternion.Euler(0, Mathf.Lerp(-projectileSkill.AnglePrecision, projectileSkill.AnglePrecision, rnd1), Mathf.Lerp(-projectileSkill.AnglePrecision, projectileSkill.AnglePrecision, rnd2))
             );
+
             direction = transform.rotation * owner.SkillDirection;
 
             return this;
         }
 
-        public bool Hit(IHittable target)
+        public bool Hit(IHittable target, Vector3 hitPosition)
         {
             if (!HasAuthority) return false;
 
@@ -68,31 +76,32 @@ namespace Blessing.Gameplay.SkillsAndMagic
             }
 
             target.GetOwnership();
-            Debug.Log(gameObject.name + ": Hit Time - " + Time.time);
 
-
-
-            HitInfo = new HitInfo(projectileSkill.GetSkillDamage(owner.ValueByStat), projectileSkill.DamageClass, projectileSkill.GetSkillImpact(owner.ValueByStat), projectileSkill.Buffs);
+            HitInfo = new HitInfo(projectileSkill.GetSkillDamage(owner.ValueByStat), projectileSkill.DamageClass, projectileSkill.GetSkillImpact(owner.ValueByStat), hitPosition, projectileSkill.Buffs);
             return true;
         }
 
         void OnTriggerEnter(Collider other)
         {
-            Debug.Log(gameObject.name + ": OnTriggerEnter Time - " + Time.time);
             if (!gameObject.activeSelf) return;
 
             if (other.gameObject.TryGetComponent(out HurtBox hurtBox))
             {
-                if (Hit(hurtBox.Owner))
+                Vector3 hitPosition = other.ClosestPoint(transform.position);
+                // Set position.z to the target position z to simplify push
+                hitPosition.y = hurtBox.Owner.transform.position.y;
+                hitPosition.z = hurtBox.Owner.transform.position.z;
+
+                if (Hit(hurtBox.Owner, hitPosition))
                 {
                     // Pegar informação do dano e mantar para o target
-                    hurtBox.Owner.GotHit(this);
+                    hurtBox.GotHit(this);
                 }
                 if (isDestroyedOnHit) 
                 {
                     projectileSkill.AfterSkill?.Trigger(this);
 
-                    Pool.Release(this);
+                    Release();
                 }
             }
             else
@@ -101,8 +110,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
                 {
                     
                     projectileSkill.AfterSkill?.Trigger(this);
-
-                    Pool.Release(this);
+                    Release();
                 }
             }
 
@@ -114,8 +122,6 @@ namespace Blessing.Gameplay.SkillsAndMagic
                 // newHitEffect.transform.SetParent(other.transform, true);
                 newHitEffect.SetParentConstrain(other.transform);
             }
-
-            Debug.Log(other.gameObject.name + " - foi acertado");
         }
         public override void GetFromPool()
         {

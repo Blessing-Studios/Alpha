@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
+    // TODO: Precisa refazer
     [RequireComponent(typeof(Inventory))]
     public class Loot : MonoBehaviour, IInteractable
     {
@@ -38,16 +39,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             if (interactor.gameObject.TryGetComponent(out Character looter))
             {
-                if (!UIController.Singleton.IsGridsOpen)
-                {
-                    Debug.Log(gameObject.name + " OpenGrids");
-                    OpenGrids(looter);
-                }
-                else if (UIController.Singleton.IsGridsOpen)
-                {
-                    Debug.Log(gameObject.name + " CloseGrids");
-                    CloseGrids();
-                }
+                
             }
         }
         private void HandleStopInteraction()
@@ -62,26 +54,8 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (distance > maxDistance)
             {
-                CloseGrids();
+                // CloseGrids();
             }
-        }
-
-        private void OpenGrids(Character looter)
-        {
-            if (Inventory.InventoryGrid.Inventory != Inventory)
-            {
-                CloseGrids();
-                Inventory.InventoryGrid.Inventory = Inventory;
-            }
-            
-            this.looter = looter;
-            UIController.Singleton.OpenAllGrids();
-        }
-
-        private void CloseGrids()
-        {
-            looter = null;
-            UIController.Singleton.CloseAllGrids();
         }
     }
 }

@@ -120,6 +120,7 @@ namespace Blessing.Player
             }
 
             string[] infos = new string[]{
+                "AiCharacter Spawned: " + GameManager.Singleton.AiCharacterSpawned,
                 "Player Character Found: " + (PlayerController.PlayerCharacter != null),
                 "PlayerName: " + PlayerCharacter.GetPlayerOwnerName(),
                 "HasAuthority: " + PlayerCharacter.HasAuthority,
@@ -129,6 +130,7 @@ namespace Blessing.Player
                 "Character IsInitialized: " + PlayerCharacter.IsInitialized + " - " + PlayerController.WasInitialize,
                 "Movement Input: " + PlayerCharacter.MovementController.GetCurrentMovementInput(),
                 "Trigger Action: " + triggerActionName,
+                "Last Rnd Number: " + PlayerCharacter.TestRandomFloat
             };
 
             AddInfoText(infos);

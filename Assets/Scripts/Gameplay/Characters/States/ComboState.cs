@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using Blessing.Gameplay.Characters.InputActions;
+using Blessing.Gameplay.Characters.InputDirections;
 using UnityEngine;
 
 namespace Blessing.Gameplay.Characters.States
@@ -7,10 +11,15 @@ namespace Blessing.Gameplay.Characters.States
         protected MovementController movementController;
         protected CharacterController characterController;
         protected Combo[] combos;
+        protected bool shouldCombo;
         public Move CurrentMove;
         private int moveIndex;
         private int comboIndex;
         protected float attackPressedTimer = 0;
+        private List<int> matchedComboIndex = new();
+        private InputActionType inputAction;
+        private InputDirectionType inputDirection;
+        
         public ComboState(CharacterStateMachine _characterStateMachine, int _stateIndex) : base(_characterStateMachine, _stateIndex)
         {
             movementController = characterStateMachine.MovementController;
@@ -21,13 +30,21 @@ namespace Blessing.Gameplay.Characters.States
             base.OnEnter();
             if (!characterStateMachine.Character.HasAuthority) return;
 
+            matchedComboIndex = new List<int>();
+
+            inputAction = null;
+            inputDirection = null;
+
             character.ClearTargetList();
-            
-            combos = characterStateMachine.GetAllCombos();
-            
+
+            combos = characterStateMachine.Combos;
+
             comboIndex = characterStateMachine.ComboMoveIndex.x;
             moveIndex = characterStateMachine.ComboMoveIndex.y;
-            
+
+            // If combo Index is bigger than Length, SetNextStateToMain
+            if (comboIndex < 0) characterStateMachine.SetNextStateToMain();
+
             CurrentMove = combos[comboIndex].Moves[moveIndex];
 
             // Save move in characterStateMachine
@@ -41,8 +58,9 @@ namespace Blessing.Gameplay.Characters.States
             // Zera movementController.AttackMovement
             movementController.AttackMovement = Vector3.zero;
 
-            duration = CurrentMove.Duration;
-            
+            duration = characterStateMachine.AnimationsDuration.First(e => e.Name == CurrentMove.AnimationParam).Duration;
+            // duration = CurrentMove.Duration;
+
             shouldCombo = false;
             attackPressedTimer = 0;
         }
@@ -57,18 +75,17 @@ namespace Blessing.Gameplay.Characters.States
             // Precias setar na animação a variável AttackMovement
             movementController.HandleAttackMovement();
 
-            string nextComboAction = "";
-
             // TODO: Checar erro
-            if (moveIndex + 1 < combos[comboIndex].Moves.Length)
+            
+            foreach(int nextComboIndex in characterStateMachine.MatchedCombosIndex)
+            if (moveIndex + 1 < combos[nextComboIndex].Moves.Length)
             {
-                nextComboAction = combos[comboIndex].Moves[moveIndex + 1].TriggerAction.Name;
-            }
-
-            //  Check if the nextComboAction was pressed
-            if (character.CheckIfActionTriggered(nextComboAction))
-            {
-                attackPressedTimer = character.AttackPressedTimerWindow;
+                if (CheckIfComboMoveTriggered(combos[nextComboIndex].Moves[moveIndex + 1]))
+                {
+                    attackPressedTimer = character.AttackPressedTimerWindow;
+                    comboIndex = nextComboIndex;
+                    if (!matchedComboIndex.Contains(nextComboIndex)) matchedComboIndex.Add(nextComboIndex);
+                }
             }
 
             // Check if the button was pressed in the attack window            
@@ -77,11 +94,17 @@ namespace Blessing.Gameplay.Characters.States
                 shouldCombo = true;
             }
 
+            if (!shouldCombo)
+            {
+                matchedComboIndex.Clear();
+            }
+
             // If conditions are match, call next move
             if (time >= duration - CurrentMove.ExitEarlier)
             {
                 if (shouldCombo && (moveIndex + 1 < combos[comboIndex].Moves.Length))
                 {
+                    characterStateMachine.MatchedCombosIndex = matchedComboIndex;
                     characterStateMachine.SetComboMoveIndex(comboIndex, moveIndex + 1);
                     characterStateMachine.SetNextState(characterStateMachine.ComboState);
                 }
@@ -89,14 +112,37 @@ namespace Blessing.Gameplay.Characters.States
 
             if (time >= duration)
             {
+                
                 characterStateMachine.SetNextStateToMain();
             }
+        }
+        public bool CheckIfComboMoveTriggered(Move move)
+        {   
+            bool checkAction = move.TriggerAction == inputAction;
+
+            bool checkDirection;
+            if (move.TriggerDirection == null || move.TriggerDirection.Name == "Any")
+                checkDirection = true;
+            else
+                checkDirection = move.TriggerDirection == inputDirection;
+
+            return checkAction && checkDirection;
+        }
+        
+        public override bool OnTrigger(InputActionType triggerAction, InputDirectionType triggerDirection)
+        {
+            inputAction = triggerAction;
+            inputDirection = triggerDirection;
+
+            return true;
         }
 
         public override void OnExit()
         {
             base.OnExit();
             movementController.EnableMovement();
+            movementController.AttackMovement = Vector3.zero;
+            characterStateMachine.MatchedCombosIndex = matchedComboIndex;
         }
 
         // Trigger other actions

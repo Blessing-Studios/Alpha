@@ -18,7 +18,9 @@ MonoBehaviour:
   Description: Teste
   Effects:
   - {fileID: 11400000, guid: 789157fc6d04ec94d9117e7227384a49, type: 2}
-  VisualEffect: {fileID: 5047267901870528110, guid: fb0bb91d996e7b14c99c3c7f77c7cdf6, type: 3}
+  VisualEffect: {fileID: 0}
+  ParticleEffect: {fileID: 0}
+  VFX: {fileID: 7823419999349022410, guid: 0f49a696e5957814a80396c7751503f9, type: 3}
   SpawnVFXOnGround: 1
   VFXFollowChar: 1
   CanStack: 0

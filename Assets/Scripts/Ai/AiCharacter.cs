@@ -1,6 +1,8 @@
+using Blessing.Ai.Goap;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Characters.InputActions;
 using Blessing.Gameplay.Characters.InputDirections;
+using Blessing.Gameplay.Characters.States;
 using Blessing.HealthAndDamage;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,18 +11,20 @@ using UnityEngine.AI;
 namespace Blessing.Ai
 {
     [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(AiAgent))]
     [RequireComponent(typeof(AiMovementController))]
     public class AiCharacter : Character
     {
         private NavMeshAgent navMashAgent;
+        private AiAgent aiAgent;
         public AiMovementController AiMovementController;
-
-        public float ViewRange = 15.0f;
+        public Combo CurrentCombo;
 
         protected override void Awake()
         {
             base.Awake();
             navMashAgent = GetComponent<NavMeshAgent>();
+            aiAgent = GetComponent<AiAgent>();
             AiMovementController = GetComponent<AiMovementController>();
         }
         public override void Initialize()
@@ -39,36 +43,81 @@ namespace Blessing.Ai
         protected override void Start()
         {
             base.Start();
-            navMashAgent.enabled = true;
+            if (HasAuthority)
+                navMashAgent.enabled = true;
         }
-        public override bool CheckIfActionTriggered(string actionName)
+        public void EnableNavMashAgent(bool enabled = true)
+        {
+            navMashAgent.enabled = enabled;
+        }
+        public override bool CheckIfActionTriggered(InputActionType actionType)
         {
             return true;
         }
-        public override bool Hit(IHittable target)
+        public override bool CheckIfDirectionTriggered(InputDirectionType directionType)
         {
-            bool baseValue = base.Hit(target);
+            return true;
+        }
+        public override bool CheckIfComboMoveTriggered(Move move)
+        {
+            return true;
+        }
+        public override bool Hit(IHittable target, Vector3 hitPosition)
+        {
+            bool baseValue = base.Hit(target, hitPosition);
 
             // A IA que bateu vai passar autoridade para o player que tomou o hit
             if (!HasAuthority && target.HasAuthority && baseValue) GetOwnership();
 
             return baseValue;
         }
-        public override void GotHit(IHitter hitter)
-        {
-            base.GotHit(hitter);
-        }
         public void OnAttack(InputActionType triggerAction = null, InputDirectionType triggerDirection = null)
         {
-            if (triggerAction == null)
-                triggerAction = CharacterStateMachine.GetAllCombos()[0].Moves[0].TriggerAction;
+            // Temporário
+            if (CurrentCombo == null)
+            {
+                CurrentCombo = CharacterStateMachine.Combos[0];
+            }
 
-            if (triggerAction == null)
-                triggerDirection = CharacterStateMachine.GetAllCombos()[0].Moves[0].TriggerDirection;
+            if (CurrentCombo != null && CharacterStateMachine.ComboIndex < 0)
+            {
+                triggerAction = CurrentCombo.Moves[0].TriggerAction;
+                triggerDirection = CurrentCombo.Moves[0].TriggerDirection;
+            }
+                
+            if (CurrentCombo != null && CharacterStateMachine.ComboIndex >= 0)
+            {
+                if (CharacterStateMachine.Combos[CharacterStateMachine.ComboIndex] == CurrentCombo)
+                {
+                    if (CharacterStateMachine.MoveIndex + 1 < CurrentCombo.Moves.Length)
+                    {
+                        triggerAction = CurrentCombo.Moves[CharacterStateMachine.MoveIndex + 1].TriggerAction;
+                        triggerDirection = CurrentCombo.Moves[CharacterStateMachine.MoveIndex + 1].TriggerDirection;
+                    }
+                }
 
+                // Default Case
+                if (triggerAction == null)
+                    triggerAction = CurrentCombo.Moves[0].TriggerAction;
+
+                if (triggerDirection  == null)
+                    triggerDirection = CurrentCombo.Moves[0].TriggerDirection;
+            }
+
+            
             CharacterStateMachine.CharacterState.OnTrigger(triggerAction, triggerDirection);
-        }
 
+            if (CharacterStateMachine.CurrentMove != null)
+                aiAgent.GoapStateMachine.ActionDuration = CharacterStateMachine.CurrentMove.Duration;
+        }
+        public override void OnDeath()
+        {
+            base.OnDeath();
+
+            // Disable AI
+            navMashAgent.enabled = false;
+            aiAgent.enabled = false;
+        }
         public void MoveToTargetPosition(Vector3 targetPosition)
         {
             if (navMashAgent.isActiveAndEnabled)

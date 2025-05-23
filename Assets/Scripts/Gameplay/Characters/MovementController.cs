@@ -14,6 +14,7 @@ public abstract class MovementController : NetworkBehaviour
     public Vector3 AttackMovement = Vector3.zero;
     public Vector2 direction; // Talvez deletar essa variável
     [SerializeField] protected bool canMove;
+    public bool CanMove { get { return canMove; } }
     protected Animator animator;
 
     // Delcare reference variables
@@ -38,7 +39,6 @@ public abstract class MovementController : NetworkBehaviour
 
     // ###################### Teste
     public Vector3 CurrentMovement;
-    public bool CanMove;
     public CharacterController GetCharacterController()
     {
         return this.characterController;
@@ -79,7 +79,6 @@ public abstract class MovementController : NetworkBehaviour
 
         // Para Testar
         CurrentMovement = currentMovement;
-        CanMove = canMove;
     }
 
     public virtual void DisableMovement()
@@ -135,10 +134,6 @@ public abstract class MovementController : NetworkBehaviour
         float time = 0;
         impact = impact > 20 ? 20 : impact;
         impulseTime = impulseTime > 20 ? 20 : impulseTime;
-
-        Debug.Log("### Entrou Push Back: " + time);
-        Debug.Log("Teste: impulseSpeed - " + impact);
-        Debug.Log("Teste: time < impulseTime - " + (time < impulseTime));
 
         // float time2 = 0;
 

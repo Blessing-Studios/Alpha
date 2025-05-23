@@ -64,10 +64,6 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1736910387813517896, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2019481482737063504, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -4.94
@@ -80,6 +76,10 @@ PrefabInstance:
       propertyPath: combos.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimatorController
+      value: 
+      objectReference: {fileID: 9100000, guid: 9ba46c56afc4ab244b285fc42a652534, type: 2}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: 'combos.Array.data[0]'
       value: 
@@ -96,6 +96,118 @@ PrefabInstance:
       propertyPath: 'combos.Array.data[3]'
       value: 
       objectReference: {fileID: 11400000, guid: 468d36430bfd6a74e84525993c6af3c4, type: 2}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: castActions.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: 'castActions.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: df2441f0af02f29449d6d83d60798b2b, type: 2}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: 'castActions.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 29f876b455c6042428354dc16e5d79b1, type: 2}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.size
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[0].Name
+      value: WalkingForward
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[1].Name
+      value: Idle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[2].Name
+      value: TakeHit
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[3].Name
+      value: Dying
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[4].Name
+      value: Dead
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[5].Name
+      value: LightAttack1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[6].Name
+      value: LightAttack2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[7].Name
+      value: HeavyAttack1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[8].Name
+      value: Cast1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[9].Name
+      value: EndCast1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[10].Name
+      value: HoldingCast
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[11].Name
+      value: HoldCast1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[0].Duration
+      value: 0.8333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[1].Duration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[2].Duration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[3].Duration
+      value: 1.5833334
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[4].Duration
+      value: 0.083333336
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[5].Duration
+      value: 0.8333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[6].Duration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[7].Duration
+      value: 0.8333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[8].Duration
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[9].Duration
+      value: 0.5833333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[10].Duration
+      value: 0.875
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[11].Duration
+      value: 0.5833333
+      objectReference: {fileID: 0}
     - target: {fileID: 2563118656107095010, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_text
       value: Owner Id
@@ -249,6 +361,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 0b35bd7dff00727448e840fb0c02c905, type: 2}
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: abilitiesSO.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: 'abilitiesSO.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 1fae52178c0e39443b56f006d8c76545, type: 2}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: 'abilitiesSO.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 5a05e88e42ff77a45a4e810ccecc9a81, type: 2}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: <ShowDebug>k__BackingField
       value: 1
       objectReference: {fileID: 0}
@@ -264,6 +388,10 @@ PrefabInstance:
       propertyPath: <SkillOrigin>k__BackingField
       value: 
       objectReference: {fileID: 4258558557841337738}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterComboSkills.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: CharacterSkills.Array.data[0].Skill
       value: 
@@ -281,6 +409,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterComboSkills.Array.data[0].Skill
+      value: 
+      objectReference: {fileID: 11400000, guid: 90fc71068a6c78b4a88633a0c4bad469, type: 2}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterComboSkills.Array.data[0].IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: CharacterSkills.Array.data[0].ComboMoveIndex.x
       value: 1
       objectReference: {fileID: 0}
@@ -294,6 +430,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: CharacterSkills.Array.data[1].ComboMoveIndex.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterComboSkills.Array.data[0].ComboMoveIndex.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: CharacterComboSkills.Array.data[0].ComboMoveIndex.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

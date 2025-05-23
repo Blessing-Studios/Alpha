@@ -27,11 +27,11 @@ namespace Blessing.Gameplay.Characters
     [RequireComponent(typeof(CharacterGear))]
     [RequireComponent(typeof(CharacterMana))]
     [RequireComponent(typeof(CharacterStats))]
+    [RequireComponent(typeof(CharacterNetwork))]
     public abstract class Character : MonoBehaviour, IHitter, IHittable, ISkillTrigger
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public float AttackPressedTimerWindow = 0.2f;
-        [field: SerializeField] protected List<CharacterHitAudio> characterHitAudios = new();
         public MovementController MovementController { get; protected set; }
         public CharacterStateMachine CharacterStateMachine { get; protected set; }
         public CharacterHealth Health { get; protected set; }
@@ -45,16 +45,21 @@ namespace Blessing.Gameplay.Characters
         [field: SerializeField] protected InputDirectionList directionList;
         public InputActionType TriggerAction { get; protected set; }
         public InputDirectionType TriggerDirection { get; protected set; }
+
         protected Dictionary<string, InputActionType> inputActionsDic = new();
         protected Dictionary<string, InputDirectionType> inputDirectionsDic = new();
         [field: SerializeField] public Vector2Int DamageAndPen { get; protected set; }
         [field: SerializeField] public Vector2Int DefenseAndPenRes { get; protected set; }
+        public float ViewRange = 15.0f;
 
         // Unificar CharacterTraits e CharacterBuffs quando acabar de testar
         public List<CharacterTrait> CharacterTraits = new();
         
-         // Teste, temporário
-        public List<CharacterSkill> CharacterSkills;
+        [Header("Abilities and Skills")]
+        public List<CharacterComboSkill> CharacterComboSkills;
+        protected CastActionType[] castActions { get { return CharacterStateMachine.CastActions; } }
+        [field: SerializeField] protected List<Ability> abilitiesSO = new();
+        public List<CharacterAbility> Abilities = new();
         [field: SerializeField] public Skill ActiveSkill { get; set; }
         public HashSet<PassiveSkill> PassiveSkills = new();
         [field: SerializeField] public Transform SkillOrigin { get; protected set; }
@@ -68,7 +73,7 @@ namespace Blessing.Gameplay.Characters
         //     NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner); // Mover para CharacterNetwork
 
         // public int StateIndex { get { return stateIndex.Value; }}
-
+        public float RandomFloat { get { return CharacterNetwork.GenerateRandomFloat(); } }
         public int StateIndex
         {
             get
@@ -79,6 +84,8 @@ namespace Blessing.Gameplay.Characters
                     return stateIndex;
             }
         }
+
+        private int stateIndex; // Offline StateIndex
         public void SetStateIndex(int stateIndex) // Gambiarra para funcionar tanto online quanto offline
         {
             if (CharacterNetwork != null)
@@ -92,8 +99,13 @@ namespace Blessing.Gameplay.Characters
             if (CharacterNetwork != null)
                 CharacterNetwork.SetComboMoveIndex(comboMoveIndex);
         }
+        public void SetAbilityIndex(int abilityIndex)
+        {
+            if (CharacterNetwork != null)
+                CharacterNetwork.SetAbilityIndex(abilityIndex);
+        }
 
-        private int stateIndex; // Offline StateIndex
+        
         public Vector3 SpawnLocation;
 
         public bool HasAuthority
@@ -164,7 +176,19 @@ namespace Blessing.Gameplay.Characters
 
             SynchTraits();
 
+            LoadAbilities();
+
             isInitialized = true;
+        }
+
+        private void LoadAbilities()
+        {
+            Abilities.Clear();
+
+            for (int i = 0; i < abilitiesSO.Count; i++)
+            {
+                Abilities.Add(new CharacterAbility(abilitiesSO[i], castActions[i]));
+            }
         }
 
         private void SynchTraits()
@@ -243,7 +267,7 @@ namespace Blessing.Gameplay.Characters
         //     TargetList.Clear();
         // }
 
-        public virtual bool Hit(IHittable target)
+        public virtual bool Hit(IHittable target, Vector3 hitPosition)
         {
             if (target as Character == this)
             {
@@ -271,7 +295,7 @@ namespace Blessing.Gameplay.Characters
                 int skillDamage = ActiveSkill.GetSkillDamage(Stats.ValueByStat);
 
                 // O dano soma com o do ataque normal e a Penetração é trocada pela pen da skill
-                HitInfo = new HitInfo(damage + skillDamage, ActiveSkill.DamageClass, impact, ActiveSkill.Buffs, ActiveSkill.HitType);
+                HitInfo = new HitInfo(damage + skillDamage, ActiveSkill.DamageClass, impact, hitPosition, ActiveSkill.Buffs, ActiveSkill.HitType);
 
                 ActiveSkill = null;
             }
@@ -279,7 +303,7 @@ namespace Blessing.Gameplay.Characters
             {
                 // Pegar Damage Multiplicador do CurrentMove
                 // CharacterStateMachine.CurrentMove
-                HitInfo = new HitInfo(damage, DamageAndPen.y, impact, null, HitType.Slash);
+                HitInfo = new HitInfo(damage, DamageAndPen.y, impact, hitPosition, null, HitType.Slash);
             }
 
             TargetList.Add(target);
@@ -287,29 +311,33 @@ namespace Blessing.Gameplay.Characters
             return true;
         }
 
-        public virtual void GotHit(IHitter hitter)
+        public virtual void GotHit(IHitter hitter, HurtBox hurtBox)
         {
             if (ShowDebug) Debug.Log(gameObject.name + ": Entrou GotHit HitInfo Damage - " + hitter.HitInfo.Damage);
 
-            // TODO: criar sistema mais complexo para selecionar o som dependendo do tipo do hit usando o CharacterStateMachine
-            HandleHitAudio(hitter.HitInfo.HitType);
-
-            if (!HasAuthority) return;
+            if (hurtBox.Owner != (this as IHittable)) return;
 
             // Por enquanto, não pode bater em characters mortos
             if (Health.IsDead) return;
 
+            // TODO: criar sistema mais complexo para selecionar o som dependendo do tipo do hit usando o CharacterStateMachine
+            HandleHitEffect(hitter, hurtBox);
+
+            if (!HasAuthority) return;
+
+            HitInfo hitInfo = hitter.HitInfo;
+
             // Apply Skill buffs
-            if (hitter.HitInfo.Buffs != null)
-                foreach (Buff buff in hitter.HitInfo.Buffs)
+            if (hitInfo.Buffs != null)
+                foreach (Buff buff in hitInfo.Buffs)
                 {
                     ApplyBuff(buff);
                 }
 
             // Subtrair Pen com PenRes
-            int armorPen = hitter.HitInfo.DamageClass - DefenseAndPenRes.y;
+            int armorPen = hitInfo.DamageClass - DefenseAndPenRes.y;
 
-            int damage = hitter.HitInfo.Damage;
+            int damage = hitInfo.Damage;
             int defense = DefenseAndPenRes.x;
 
             if (armorPen < 0)
@@ -333,29 +361,28 @@ namespace Blessing.Gameplay.Characters
             //Receive Damage
             Health.ReceiveDamage(appliedDamage);
 
-            Vector3 pushDirection = (transform.position - hitter.transform.position).normalized;
+            Vector3 pushDirection = (transform.position - hitInfo.HitPosition).normalized;
 
-            float impact = hitter.HitInfo.Impact;
+            // Debug.Log("Teste: impulseDirection - " + pushDirection);
+            // Debug.Log("Teste: transform.position - " + transform.position);
+            // Debug.Log("Teste: hitInfo.HitPosition - " + hitInfo.HitPosition);
+
+            float impact = hitInfo.Impact;
             float impulseTime = impact - Stats.Constitution;
 
             MovementController.HandlePushBack(pushDirection, impact, impulseTime);
 
-            Debug.Log(gameObject.name + ": GotHit Time - " + Time.time);
+            if (ShowDebug) Debug.Log(gameObject.name + ": GotHit Time - " + Time.time);
 
-            if (Health.IsAlive)
+            if (hitInfo.CanTriggerTakeHit())
                 CharacterStateMachine.SetNextState(CharacterStateMachine.TakeHitState);
-
-            if (Health.IsDead)
-                CharacterStateMachine.SetNextState(CharacterStateMachine.DeadState);
         }
 
-        private void HandleHitAudio(HitType hitType)
+        private void HandleHitEffect(IHitter hitter, HurtBox hurtBox)
         {
-            foreach(CharacterHitAudio characterHitAudio in characterHitAudios)
-            {
-                if (characterHitAudio.HitType == hitType)
-                    AudioManager.Singleton.PlaySoundFx(characterHitAudio.Clips, transform);
-            } 
+            // TODO: Aplicar lógica do tipo de hit para definir qual efeito disparar
+
+            hurtBox.TriggerHitEffect(hitter.HitInfo);
         }
         public virtual void GetOwnership()
         {
@@ -370,7 +397,9 @@ namespace Blessing.Gameplay.Characters
         {
             return inputDirectionsDic[name];
         }
-        public abstract bool CheckIfActionTriggered(string actionName);
+        public abstract bool CheckIfActionTriggered(InputActionType actionType);
+        public abstract bool CheckIfDirectionTriggered(InputDirectionType directionType);
+        public abstract bool CheckIfComboMoveTriggered(Move move);
         public void AddTrait(Trait trait)
         {
             if (ShowDebug) Debug.Log(gameObject.name + ": AddTrait trait name - " + trait.name);
@@ -402,10 +431,7 @@ namespace Blessing.Gameplay.Characters
                 data = characterTrait.Data;
             }
 
-            if (trait.VisualEffect != null)
-            {
-                CharacterNetwork.HandleTraitVisualEffectRpc(trait.Id);
-            }
+            CharacterNetwork.HandleTraitVisualEffectRpc(trait.Id);
 
             CharacterNetwork.TraitDataNetworkList.Add(data);
             CharacterNetwork.TraitDataLocalList.Add(data);
@@ -492,6 +518,7 @@ namespace Blessing.Gameplay.Characters
 
         public void ApplyBuff(Buff buff)
         {
+            Debug.Log(gameObject.name + ": ApplyBuff - " + buff.name);
             AddTrait(buff);          
         }
 
@@ -550,13 +577,15 @@ namespace Blessing.Gameplay.Characters
             // Update Mana
             Mana.SetManaParameters(Stats, CharacterTraits);
         }
-
+        public float TestRandomFloat;
         public void HandleSkill(Skill skill)
         {
             // Spent Mana to trigger skill
             if (Mana.SpendManaSpectrum(skill.ManaCost))
             {
-                skill.Trigger(this);
+                TestRandomFloat = RandomFloat;
+                Debug.Log("Skill TestRandomFloat: " + TestRandomFloat);
+                skill.Trigger(this, TestRandomFloat);
 
                 // Add/Remove Passive Skill
                 PassiveSkill activePassiveSkill = skill as PassiveSkill;
@@ -574,6 +603,30 @@ namespace Blessing.Gameplay.Characters
             }
         }
 
+        public void TriggerAbility()
+        {
+            Debug.Log("OnAnimationCast");
+            foreach(Skill skill in Abilities[CharacterStateMachine.AbilityIndex].Ability.Skills)
+            {
+                HandleSkill(skill);
+            }
+        }
+
+        public bool CanCastAbility(int abilityIndex)
+        {
+            bool canCastAbility = true;
+
+            foreach (Skill skill in Abilities[abilityIndex].Skills)
+            {
+                if (!Mana.HasEnoughMana(skill.ManaCost))
+                {
+                    canCastAbility = false;
+                }
+            }
+
+            return canCastAbility;
+        }
+
         private void HandlePassiveSkills()
         {
             if (PassiveSkills.Count == 0) return;
@@ -586,7 +639,7 @@ namespace Blessing.Gameplay.Characters
 
                 if (Mana.SpendManaSpectrum(passive.PassiveManaCost))
                 {
-                    foreach(Buff buff in passive.Buffs)
+                    foreach (Buff buff in passive.Buffs)
                     {
                         ApplyBuff(buff);
                     }
@@ -597,7 +650,7 @@ namespace Blessing.Gameplay.Characters
                 else
                 {
                     PassiveSkills.Remove(passive);
-                    foreach(Buff buff in passive.Buffs)
+                    foreach (Buff buff in passive.Buffs)
                     {
                         RemoveTrait(buff);
                     }
@@ -611,8 +664,6 @@ namespace Blessing.Gameplay.Characters
         {
             if (component.gameObject != gameObject) return;
 
-            Debug.Log(gameObject.name + ": Character OnIsAliveChanged");
-
             bool isAlive = (bool) data;
 
             if (!isAlive)
@@ -623,6 +674,7 @@ namespace Blessing.Gameplay.Characters
             if (isAlive)
             {
                 // Resurrect
+                Debug.Log(gameObject.name + ": Character OnIsAliveChanged: Resurrect?" + isAlive);
             }
         }
 
@@ -630,7 +682,9 @@ namespace Blessing.Gameplay.Characters
         {
             MovementController.DisableMovement();
             MovementController.DisableCollision();
+            StopAllCoroutines();
         }
+        
         public void OnAddEquipment(Component component, object data)
         {
             if (component.gameObject != gameObject) return;
@@ -655,7 +709,7 @@ namespace Blessing.Gameplay.Characters
 
             UpdateParameters();
 
-            UIController.Singleton.SyncGrids();
+            UIController.Singleton.SyncInventoryGrids();
         }
 
         public void OnRemoveEquipment(Component component, object data)
@@ -678,17 +732,17 @@ namespace Blessing.Gameplay.Characters
 
             UpdateParameters();
 
-            UIController.Singleton.SyncGrids();
+            UIController.Singleton.SyncInventoryGrids();
         }
 
-        public void OnAnimationAttack()
+        public virtual void OnAnimationAttack()
         {
             // TODO: create logic to select Skill with combo
             // if (!HasAuthority) return; 
             
             if (CharacterStateMachine.CurrentMove.CanUseSkill == true)
             {
-                foreach (CharacterSkill characterSkill in CharacterSkills)
+                foreach (CharacterComboSkill characterSkill in CharacterComboSkills)
                 {
                     if (characterSkill.IsActive && characterSkill.ComboMoveIndex == CharacterStateMachine.ComboMoveIndex)
                     {
@@ -709,6 +763,10 @@ namespace Blessing.Gameplay.Characters
                 AudioManager.Singleton.PlaySoundFx(attackAudios, transform);
         }
 
-        
+        public virtual void OnAnimationCast()
+        {
+            Debug.Log("OnAnimationCast");
+            TriggerAbility();
+        }
     }
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Blessing.Audio;
 using Blessing.Gameplay.Characters.InputActions;
 using Blessing.Gameplay.Characters.InputDirections;
@@ -9,12 +11,24 @@ using UnityEngine;
 
 namespace Blessing.Gameplay.Characters
 {
+    [Serializable] public struct AnimationDuration
+    {
+        public string Name;
+        public float Duration;
+
+        public AnimationDuration(string name, float duration)
+        {
+            Name = name;
+            Duration = duration;
+        }
+    }
     public class CharacterStateMachine : StateMachine.StateMachine
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
         public CharacterState CharacterState { get { return CurrentState as CharacterState;} }
         public IdleState IdleState;
         public ComboState ComboState;
+        public CastState CastState;
         public TakeHitState TakeHitState;
         public DeadState DeadState;
         public List<CharacterState> StateList = new();
@@ -31,11 +45,18 @@ namespace Blessing.Gameplay.Characters
         public NetworkAnimator NetworkAnimator { get; private set; }
         public CharacterController CharacterController { get; protected set; }
         public MovementController MovementController { get; protected set; }
+        public List<AnimationDuration> AnimationsDuration = new();
         public int ComboIndex { get { return ComboMoveIndex.x;} }
         public int MoveIndex { get { return ComboMoveIndex.y;} }
+        public int AbilityIndex;
         [field: SerializeField] public Vector2Int ComboMoveIndex { get; set; }
         [field: SerializeField] public Move CurrentMove { get; set;}
         [SerializeField] protected Combo[] combos;
+        public Combo[] Combos { get { return combos; } }
+        [SerializeField] protected CastActionType[] castActions;
+        public CastActionType[] CastActions { get { return castActions; } }
+        public List<int> MatchedCombosIndex = new();
+        public bool ActionPressed { get; set; }
 
         protected override void Awake()
         {
@@ -58,12 +79,14 @@ namespace Blessing.Gameplay.Characters
 
             IdleState = new IdleState(this, 0);
             ComboState = new ComboState(this, 1);
-            TakeHitState = new TakeHitState(this, 2);
-            DeadState = new DeadState(this, 3);
+            CastState = new CastState(this, 2);
+            TakeHitState = new TakeHitState(this, 3);
+            DeadState = new DeadState(this, 4);
 
             // TODO: Automatizar essa parte no futuro
             StateList.Add(IdleState);
             StateList.Add(ComboState);
+            StateList.Add(CastState);
             StateList.Add(TakeHitState);
             StateList.Add(DeadState);
 
@@ -104,11 +127,12 @@ namespace Blessing.Gameplay.Characters
             SetNextState(StateList[index]);
         }
 
-        public void StartCombo(InputActionType action, InputDirectionType direction)
+        public bool StartCombo(ComboActionType action, InputDirectionType direction)
         {
+            MatchedCombosIndex.Clear();
             CurrentAction = action;
             CurrentDirectionAction = direction;
-            
+
             for (int comboIndex = 0; comboIndex < combos.Length; comboIndex++)
             {
                 InputActionType triggerAction = combos[comboIndex].Moves[0].TriggerAction;
@@ -116,37 +140,39 @@ namespace Blessing.Gameplay.Characters
 
                 // Tenta achar um golpe considerando a ação e a direção do input
                 if (triggerAction == CurrentAction &&
-                    triggerDirection != null &&
-                    triggerDirection.Name != "Any" &&
-                    triggerDirection == CurrentDirectionAction)
+                    (triggerDirection == null || triggerDirection.Name == "Any" ||
+                    triggerDirection == CurrentDirectionAction))
                 {
-                    // MoveIndex = 0;
-                    // ComboIndex = comboIndex;
-                    SetComboMoveIndex(comboIndex, 0);
-                    SetNextState(ComboState);
-                    return;
+                    MatchedCombosIndex.Add(comboIndex);
                 }
             }
 
-            
-            for (int comboIndex = 0; comboIndex < combos.Length; comboIndex++)
+            if (MatchedCombosIndex.Count > 0)
             {
-                InputActionType triggerAction = combos[comboIndex].Moves[0].TriggerAction;
-                InputDirectionType triggerDirection = combos[comboIndex].Moves[0].TriggerDirection;
+                SetComboMoveIndex(MatchedCombosIndex[^1], 0);
+                SetNextState(ComboState);
+                return true;
+            }
 
-                // Caso o não consiga achar um golpe considerando a ação e a direção, tenta achar consierando apenas a ação
-                if (triggerAction == CurrentAction &&
-                    (triggerDirection == null || triggerDirection.Name == "Any"))
+            SetNextStateToMain();
+            return false;
+        }
+
+        public bool StartCast(CastActionType action)
+        {
+            for (int i= 0; i < castActions.Length; i++)
+            {
+                if (castActions[i] == action)
                 {
-                    // MoveIndex = 0;
-                    // ComboIndex = comboIndex;
-                    SetComboMoveIndex(comboIndex, 0);
-                    SetNextState(ComboState);
-                    return;
+                    if (!Character.CanCastAbility(i)) return false;
+
+                    SetAbilityIndex(i);
+                    SetNextState(CastState);
+                    return true;
                 }
             }
-            
-            SetNextStateToMain();
+
+            return false;
         }
 
         public void SetComboMoveIndex(int comboIndex, int moveIndex)
@@ -155,9 +181,10 @@ namespace Blessing.Gameplay.Characters
             Character.SetComboMoveIndex(ComboMoveIndex);
         }
 
-        public Combo[] GetAllCombos()
+        public void SetAbilityIndex(int abilityIndex)
         {
-            return combos;
+            AbilityIndex = abilityIndex;
+            Character.SetAbilityIndex(AbilityIndex);
         }
 
         // public void OnAnimationAttack()
@@ -175,7 +202,56 @@ namespace Blessing.Gameplay.Characters
 
         public void UpdateCurrentMove()
         {
+            // ComboIndex = -1 means no CurrentMove
+            if (ComboMoveIndex.x < 0)
+            {
+                CurrentMove = null;
+                return;
+            } 
+
             CurrentMove = combos[ComboMoveIndex.x].Moves[ComboMoveIndex.y];
         }
+        
+#if UNITY_EDITOR
+        public UnityEditor.Animations.AnimatorController AnimatorController;
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+
+            AnimationsDuration.Clear();
+            foreach (UnityEditor.Animations.AnimatorControllerLayer layer in AnimatorController.layers)
+            {
+                ValidateStateMachine(layer.stateMachine);
+            }
+        }
+
+        private void ValidateStateMachine(UnityEditor.Animations.AnimatorStateMachine stateMachine)
+        {
+            foreach (UnityEditor.Animations.ChildAnimatorState child in stateMachine.states)
+            {
+                if (child.state.motion == null)
+                {
+                    continue;
+                }
+
+                AnimationClip clip =  child.state.motion as AnimationClip;
+
+                if (child.state.motion.averageDuration != clip.length)
+                {
+                    Debug.LogError(this.name + " - Clip length not matching with Motion average Duration");
+                }
+
+                AnimationsDuration.Add(new AnimationDuration(child.state.name, clip.length));
+            }
+
+            if (stateMachine.stateMachines.Length > 0)
+            {
+                foreach(UnityEditor.Animations.ChildAnimatorStateMachine childMachine in stateMachine.stateMachines)
+                {
+                    ValidateStateMachine(childMachine.stateMachine);
+                }
+            }
+        }
+#endif
     }
 }

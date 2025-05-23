@@ -28,14 +28,10 @@ namespace Blessing.HealthAndDamage
         {
             if (component.gameObject != owner.gameObject) return;
 
-            if (ShowDebug) Debug.Log(gameObject.name + ": DamageNumberHandler OnReceiveDamage");
-
             int damage = (int) data;
 
             // GameManager.Singleton.GetDamageNumber(transform.position, damage);
-
-            DamageNumber damageNumber = PoolManager.Singleton.Get(DamageNumberPrefab) as DamageNumber;
-            damageNumber.Initialize(transform.position, damage);
+            PoolManager.Singleton.Get<DamageNumber>(DamageNumberPrefab).Initialize(transform.position, damage);
         }
     }
 }

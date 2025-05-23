@@ -98,10 +98,10 @@ namespace Blessing.HealthAndDamage
             {
                 if (hit.collider.gameObject.TryGetComponent(out HurtBox hurtBox))
                 {
-                    if (Owner.Hit(hurtBox.Owner))
+                    if (Owner.Hit(hurtBox.Owner, hit.collider.ClosestPoint(center)))
                     {
                         // Pegar informação do dano e mandar para o target
-                        hurtBox.Owner.GotHit(Owner);
+                        hurtBox.GotHit(Owner);
                     }
                 }
 

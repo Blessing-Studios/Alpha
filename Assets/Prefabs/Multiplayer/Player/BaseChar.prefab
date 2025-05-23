@@ -75,10 +75,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1511698797570248328}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -206,7 +206,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <OwnerGameObject>k__BackingField: {fileID: 6028631068472643565}
   <DmgMultiplier>k__BackingField: 0
-  TakeHitEffect: {fileID: 0}
+  defaultHitType: 0
+  hurtEffects: []
 --- !u!1 &2394620303536455781
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3752516906
+  GlobalObjectIdHash: 3936908184
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 2
@@ -543,7 +544,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6028631068472643565}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
@@ -721,6 +722,54 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: b2aceb90-75d6-4663-9e90-915795d9f064
     m_ActionName: 'Player/HoldSpecial[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnAbility1
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 74fc89e3-1e42-4a36-b383-12a278ede758
+    m_ActionName: 'Player/Ability1[/Keyboard/q]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnAbility2
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 6a016b16-7f44-422f-8e68-f876d07f4387
+    m_ActionName: 'Player/Ability2[/Keyboard/e]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnAbility3
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 7efc3357-e218-45ed-a610-f862379d20ff
+    m_ActionName: 'Player/Ability3[/Keyboard/shift]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -781,18 +830,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
-  AttackPressedTimerWindow: 0.2
-  characterHitAudios: []
+  AttackPressedTimerWindow: 0.4
   actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
+  ViewRange: 15
   CharacterTraits: []
-  CharacterSkills: []
+  CharacterComboSkills: []
+  abilitiesSO: []
+  Abilities: []
   <ActiveSkill>k__BackingField: {fileID: 0}
   <SkillOrigin>k__BackingField: {fileID: 3334433750886424618}
   SpawnLocation: {x: 0, y: 0, z: 0}
   HasStarted: 0
+  TestRandomFloat: 0
   <Network>k__BackingField: {fileID: 0}
   Adventurer: {fileID: 0}
   canGiveInputs: 0
@@ -915,7 +967,6 @@ MonoBehaviour:
   currentMovementInput: {x: 0, y: 0}
   currentMovement: {x: 0, y: 0, z: 0}
   CurrentMovement: {x: 0, y: 0, z: 0}
-  CanMove: 0
   <IsOffline>k__BackingField: 0
 --- !u!114 &4065250881899869995
 MonoBehaviour:
@@ -1085,6 +1136,22 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
+  AnimationsDuration:
+  - Name: WalkingForward
+    Duration: 0.5
+  - Name: Idle
+    Duration: 1
+  - Name: TakeHit
+    Duration: 1
+  - Name: Dying
+    Duration: 0.083333336
+  - Name: LightAttack1
+    Duration: 0.4166667
+  - Name: LightAttack2
+    Duration: 0.4166667
+  - Name: HeavyAttack1
+    Duration: 0.6666666
+  AbilityIndex: 0
   <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
   <CurrentMove>k__BackingField:
     Name: 
@@ -1093,7 +1160,7 @@ MonoBehaviour:
     AnimationParamRef:
       value: {fileID: 0}
     Duration: 0
-    Action:
+    triggerAction:
       value: {fileID: 0}
     Direction:
       value: {fileID: 0}
@@ -1105,6 +1172,11 @@ MonoBehaviour:
     ShakeEffect: {fileID: 0}
   combos:
   - {fileID: 11400000, guid: f8d096a5c0289fa4ba19f62f4eb3ed78, type: 2}
+  castActions:
+  - {fileID: 11400000, guid: df2441f0af02f29449d6d83d60798b2b, type: 2}
+  - {fileID: 11400000, guid: 29f876b455c6042428354dc16e5d79b1, type: 2}
+  MatchedCombosIndex: 
+  AnimatorController: {fileID: 9100000, guid: 9765e0e276cdf94408012bb23737d860, type: 2}
 --- !u!114 &-6873965126545705189
 MonoBehaviour:
   m_ObjectHideFlags: 0

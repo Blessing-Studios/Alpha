@@ -43,13 +43,16 @@
 
     Criar um sistema de pooling https://docs-multiplayer.unity3d.com/netcode/current/advanced-topics/object-pooling/
     Sistema de pooling/pooler foi feito
+
+    Atualizar lógica da IA,
+        * AiCharacter.ViewRange tem que depender dos Status
+
+    Precisa revisar FadeObjectsBlocking
     
 
 ### Bugs para arrumar
-Erro CharacterNetwork.SetNextStateByIndex
 
-Erro: Coroutine couldn't be started because the the game object is inactive!
-    Erro acontece quando o segundo jogador entra no novo mapa
+Monstro com vida zero imortal
 
 Apertar tab para mostrar inventário funciona dentro do Menu, precisa criar uma lógica melhor
 

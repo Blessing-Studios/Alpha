@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.Diagnostics;
 using Blessing.Player;
 using Blessing.Gameplay.Transition;
+using Blessing.Services;
 
 namespace Blessing.GameData
 {
@@ -13,12 +14,12 @@ namespace Blessing.GameData
         public static GameDataManager Singleton { get; private set; }
         public bool IsHost = false; // Temporarário
         // public string SessionName = "";
+
         public string PlayerName = "";
         public CharacterData CharacterSelected;
         private Dictionary<string, string> sceneSessionDic = new();
         public List<string> SceneList = new();
         public List<string> SessionList = new();
-
         void Awake()
         {
             if (Singleton != null && Singleton != this)

@@ -76,10 +76,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1511698797570248328}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -115,7 +115,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.12
+  m_Radius: 0.42
   m_Height: 0.68
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 4410562106461084563}
   - component: {fileID: 6431316129197781818}
   - component: {fileID: 7680487914564740950}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BodyHurtBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <OwnerGameObject>k__BackingField: {fileID: 6028631068472643565}
   <DmgMultiplier>k__BackingField: 0
-  TakeHitEffect: {fileID: 0}
+  defaultHitType: 0
+  hurtEffects:
+  - HitType: 0
+    HitEffect: {fileID: -4301740134953378062, guid: cfc6dbffb49d89e40ae1d2daf440878e, type: 3}
+    AudioClips:
+    - {fileID: 8300000, guid: 4b672dc84b1964f46b81aa5d029e2a6f, type: 3}
+  - HitType: 6
+    HitEffect: {fileID: 0}
+    AudioClips: []
 --- !u!1 &2394620303536455781
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,7 +450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 397283245
+  GlobalObjectIdHash: 3178431240
   InScenePlacedSourceGlobalObjectIdHash: 3936908184
   DeferredDespawnTick: 0
   Ownership: 3
@@ -469,6 +477,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
   AuthorityMode: 1
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
@@ -621,20 +639,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
-  AttackPressedTimerWindow: 0.2
-  characterHitAudios: []
+  AttackPressedTimerWindow: 10000
   actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
+  ViewRange: 40
   CharacterTraits: []
-  CharacterSkills: []
+  CharacterComboSkills: []
+  abilitiesSO: []
+  Abilities: []
   <ActiveSkill>k__BackingField: {fileID: 0}
   <SkillOrigin>k__BackingField: {fileID: 0}
   SpawnLocation: {x: 0, y: 0, z: 0}
   HasStarted: 0
+  TestRandomFloat: 0
   AiMovementController: {fileID: 0}
-  ViewRange: 15
+  CurrentCombo: {fileID: 0}
 --- !u!114 &2299523755292424415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -715,7 +736,6 @@ MonoBehaviour:
   currentMovementInput: {x: 0, y: 0}
   currentMovement: {x: 0, y: 0, z: 0}
   CurrentMovement: {x: 0, y: 0, z: 0}
-  CanMove: 0
 --- !u!114 &2009963721499363617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -827,6 +847,20 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
+  AnimationsDuration:
+  - Name: WalkingForward
+    Duration: 1.0833334
+  - Name: Idle
+    Duration: 0.9166666
+  - Name: TakeHit
+    Duration: 0.6666666
+  - Name: Dying
+    Duration: 1.25
+  - Name: Dead
+    Duration: 1
+  - Name: LightAttack1
+    Duration: 1.5
+  AbilityIndex: 0
   <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
   <CurrentMove>k__BackingField:
     Name: 
@@ -835,17 +869,21 @@ MonoBehaviour:
     AnimationParamRef:
       value: {fileID: 0}
     Duration: 0
-    Action:
+    triggerAction:
       value: {fileID: 0}
     Direction:
       value: {fileID: 0}
     ExitEarlier: 0.1
     DamageMultiplier: 1
     ImpactMultiplier: 1
-    ShakeEffect: {fileID: 0}
+    CanMultiHit: 0
     CanUseSkill: 0
+    ShakeEffect: {fileID: 0}
   combos:
   - {fileID: 11400000, guid: 44ce49ae2cf51c94eabc66d0fcf161a4, type: 2}
+  castActions: []
+  MatchedCombosIndex: 
+  AnimatorController: {fileID: 9100000, guid: 6f418fd15cf98aa4092c3481efad96f9, type: 2}
 --- !u!114 &2620648292840096135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -888,7 +926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  <ShowDebug>k__BackingField: 1
+  <ShowDebug>k__BackingField: 0
   health:
     m_InternalValue: 100
   constitution: 0
@@ -982,6 +1020,16 @@ MonoBehaviour:
   statsMultiplier: 5
   manaChange: 2
   manaChangeTime: 0.5
+  white:
+    m_InternalValue: 0
+  red:
+    m_InternalValue: 0
+  green:
+    m_InternalValue: 0
+  blue:
+    m_InternalValue: 0
+  black:
+    m_InternalValue: 0
 --- !u!1 &6340068001389868510
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,7 +1162,7 @@ GameObject:
   - component: {fileID: 5143992474855496680}
   - component: {fileID: 1128820130049227818}
   - component: {fileID: 7222635016937469111}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HeadHurtBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1171,4 +1219,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <OwnerGameObject>k__BackingField: {fileID: 6028631068472643565}
   <DmgMultiplier>k__BackingField: 0
-  TakeHitEffect: {fileID: 0}
+  defaultHitType: 0
+  hurtEffects:
+  - HitType: 0
+    HitEffect: {fileID: -4301740134953378062, guid: cfc6dbffb49d89e40ae1d2daf440878e, type: 3}
+    AudioClips:
+    - {fileID: 8300000, guid: 4b672dc84b1964f46b81aa5d029e2a6f, type: 3}
+  - HitType: 6
+    HitEffect: {fileID: 0}
+    AudioClips: []

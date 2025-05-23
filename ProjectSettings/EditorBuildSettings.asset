@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Bootstrap.unity
     guid: 683531fa085eca2448c23326a8d7f5de
   - enabled: 1
+    path: Assets/Scenes/MultiplayerDATeste.unity
+    guid: 37a2d046a93a5c04f8c1ed6400aac441
+  - enabled: 1
     path: Assets/Scenes/CharacterSelection.unity
     guid: 0789cec4bd225bc43b0170b15e54b05a
   - enabled: 1

@@ -94,18 +94,6 @@ namespace Blessing.Gameplay.Characters
             gameObject.SetActive(true);
 
             SyncGrids();
-
-            foreach (EquipmentSlot slot in Slots)
-            {
-                slot.OpenGrid();
-            }
-
-            BackpackInventoryGrid.OpenGrid();
-
-            for (int i = 0; i < UtilityGrids.Count; i++)
-            {
-                UtilityGrids[i].OpenGrid();
-            }
         }
 
         public void CloseInventoryUI()
@@ -114,6 +102,8 @@ namespace Blessing.Gameplay.Characters
         }
         public void SyncGrids()
         {
+            Debug.Log(gameObject.name + "Entrou Inventory SyncGrids");
+
             if (!gameObject.activeSelf) return;
 
             if (Character == null) return;
@@ -131,6 +121,18 @@ namespace Blessing.Gameplay.Characters
             for (int i = 0; i < UtilityGrids.Count; i++)
             {
                 UtilityGrids[i].InitializeGrid();
+            }
+
+            foreach (EquipmentSlot slot in Slots)
+            {
+                slot.OpenGrid();
+            }
+
+            BackpackInventoryGrid.OpenGrid();
+
+            for (int i = 0; i < UtilityGrids.Count; i++)
+            {
+                UtilityGrids[i].OpenGrid();
             }
 
             if (CharacterStatsInfo != null) CharacterStatsInfo.UpdateStatInfo();

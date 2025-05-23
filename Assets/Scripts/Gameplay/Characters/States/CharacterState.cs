@@ -17,14 +17,11 @@ namespace Blessing.Gameplay.Characters.States
 
         // protected AnimationCrontroller animator;
         // bool to check whether or not the next attack in the sequence should be played or not
-        protected bool shouldCombo;
+        
         // Player Input System
         // Cached Character class
         protected Character character;
         protected CharacterStateMachine characterStateMachine;
-
-        // The Hit Effect to Spawn on the afflicted Enemy
-        private GameObject HitEffectPrefab;
 
         public CharacterState(CharacterStateMachine _characterStateMachine, int _stateIndex)
         {

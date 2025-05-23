@@ -6,7 +6,7 @@ namespace Blessing.Gameplay.Characters.States
 {
     public class TakeHitState : CharacterState
     {
-                protected MovementController movementController;
+        protected MovementController movementController;
         protected CharacterController characterController;
         
 
@@ -22,7 +22,7 @@ namespace Blessing.Gameplay.Characters.States
             duration = 2.0f / characterStateMachine.Character.Stats.Dexterity;
 
             movementController.DisableMovement();
-            Debug.Log(": Enter TakeHitState Time - " + Time.time);
+
             networkAnimator.SetTrigger("TakeHit");
         }
 
@@ -32,7 +32,10 @@ namespace Blessing.Gameplay.Characters.States
 
             if (time >= duration)
             {
-                characterStateMachine.SetNextStateToMain();
+                if (characterStateMachine.Character.Health.IsAlive)
+                    characterStateMachine.SetNextStateToMain();
+                else
+                    characterStateMachine.SetNextState(characterStateMachine.DeadState);
             }
         }
 

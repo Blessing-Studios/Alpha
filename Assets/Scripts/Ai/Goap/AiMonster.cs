@@ -21,6 +21,12 @@ namespace Blessing.AI.Goap
         {
             base.Start();
         }
+
+        public override void FixedUpdate()
+        {
+            if (AiCharacter.HasAuthority)
+                base.FixedUpdate();
+        }
         void OnDrawGizmos()
         {
             if (Target != null)
@@ -66,8 +72,15 @@ namespace Blessing.AI.Goap
         // Actions methods
         private void AttackAction()
         {
+            // Checar os tipos de ataques que a IA tem e decidir qual será o melhor ataque
+
+            // Para testar será escolhido combo 0
+
+            AiCharacter.CurrentCombo = AiCharacter.CharacterStateMachine.Combos[0];
+
             if (ShowDebug) Debug.Log(gameObject.name + ": AttackAction call");
-                AiCharacter.OnAttack();
+
+            AiCharacter.OnAttack();
         }
     }
 

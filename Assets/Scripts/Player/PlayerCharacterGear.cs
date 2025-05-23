@@ -15,21 +15,21 @@ namespace Blessing.Player
             }
 
             base.Start();
-            SetInventoryGrids();
+            // SetInventoryGrids();
         }
 
         protected override void OnOwnershipChanged(ulong previous, ulong current) // Mover para PlayerCharacterNetwork
         {
             base.OnOwnershipChanged(previous, current);
-            SetInventoryGrids();
+            // SetInventoryGrids();
         }
 
         private void SetInventoryGrids()
         {
-            if (HasAuthority)
-            { 
-                UIController.Singleton.SetPlayerCharacter(character);   
-            }
+            // if (HasAuthority)
+            // { 
+            //     UIController.Singleton.SetPlayerCharacter(character);   
+            // }
         }
 
         // public override void AddBackpack(InventoryItem inventoryItem)

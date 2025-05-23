@@ -206,9 +206,65 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 867e106090b5c0245a955e9cdb145816, type: 3}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimatorController
+      value: 
+      objectReference: {fileID: 9100000, guid: bdf453b0550ed7f44a03a41c8f55b039, type: 2}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: 'combos.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 92e8903cdf615f3479afe22bf9ab1bb7, type: 2}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[0].Name
+      value: WalkingForward
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[1].Name
+      value: Idle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[2].Name
+      value: TakeHit
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[3].Name
+      value: Dying
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[4].Name
+      value: Dead
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[5].Name
+      value: LightAttack1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[0].Duration
+      value: 0.016666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[1].Duration
+      value: 0.016666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[2].Duration
+      value: 0.625
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[3].Duration
+      value: 0.625
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[4].Duration
+      value: 0.016666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[5].Duration
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2299523755292424415, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: <ShowDebug>k__BackingField
       value: 0
@@ -239,7 +295,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5369011401359272698, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 4111753248
+      value: 3520008351
       objectReference: {fileID: 0}
     - target: {fileID: 5369011401359272698, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
@@ -357,6 +413,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7680487914564740950, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: hitAudios.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680487914564740950, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: hitAudios.Array.data[0].Clips.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7680487914564740950, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: 'hitAudios.Array.data[0].Clips.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 4b672dc84b1964f46b81aa5d029e2a6f, type: 3}
     - target: {fileID: 8931838090164307470, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: Goals.Array.size
       value: 0

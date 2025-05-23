@@ -5,6 +5,9 @@ using Blessing.Gameplay.Characters.Traits;
 using System.Collections.Generic;
 using UnityEngine.VFX;
 using Unity.Collections;
+using Blessing.HealthAndDamage;
+using Blessing.Core.ObjectPooling;
+using Blessing.VFX;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -17,19 +20,26 @@ namespace Blessing.Gameplay.Characters
         public bool IsTraveling { get { return isTraveling.Value; } set { isTraveling.Value = value; } }
 
         [field: SerializeField]
-        protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(0,
-                NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        protected NetworkVariable<int> stateIndex = new NetworkVariable<int>(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
         public int StateIndex { get { return stateIndex.Value; } }
 
-        public NetworkVariable<Vector2Int> comboMoveIndex = new NetworkVariable<Vector2Int>
-        (
+        protected NetworkVariable<int> abilityIndex = new NetworkVariable<int>(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
+
+        public NetworkVariable<Vector2Int> comboMoveIndex = new NetworkVariable<Vector2Int>(
             new Vector2Int(0, 0),
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
 
-        public NetworkList<TraitData> TraitDataNetworkList = new NetworkList<TraitData>
-        (
+        public NetworkList<TraitData> TraitDataNetworkList = new NetworkList<TraitData>(
             new List<TraitData>(),
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
@@ -64,11 +74,17 @@ namespace Blessing.Gameplay.Characters
             CharacterStateMachine = GetComponent<CharacterStateMachine>();
 
             if (HasAuthority)
+            {
                 stateIndex.Value = 0;
+                GenerateRandomFloat();
+            }
+            
+            SyncRandomFloatRpc();
 
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             stateIndex.OnValueChanged += OnNetworkStateIndexChanged;
             comboMoveIndex.OnValueChanged += OnNetworkComboMoveIndexChanged;
+            abilityIndex.OnValueChanged += OnNetworkAbilityIndexChanged;
             TraitDataNetworkList.OnListChanged += OnTraitDataNetworkListChanged;
 
             HasSpawned = true;
@@ -78,17 +94,18 @@ namespace Blessing.Gameplay.Characters
         }
         public override void OnNetworkDespawn()
         {
-            Debug.Log(gameObject.name + ": OnNetworkDespawn");
+            if (ShowDebug) Debug.Log(gameObject.name + ": OnNetworkDespawn");
 
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
             stateIndex.OnValueChanged -= OnNetworkStateIndexChanged;
             comboMoveIndex.OnValueChanged -= OnNetworkComboMoveIndexChanged;
+            abilityIndex.OnValueChanged -= OnNetworkAbilityIndexChanged;
             TraitDataNetworkList.OnListChanged -= OnTraitDataNetworkListChanged;
         }
 
         private void OnClientConnectedCallback(ulong clientId)
         {
-            Debug.Log(gameObject.name + ": OnClientConnectedCallback");
+            if (ShowDebug) Debug.Log(gameObject.name + ": OnClientConnectedCallback");
             if (NetworkManager.Singleton.LocalClientId == clientId && GameManager.Singleton.PlayerConnected)
             {
                 Character.Initialize();
@@ -113,6 +130,18 @@ namespace Blessing.Gameplay.Characters
             CharacterStateMachine.ComboMoveIndex = newValue;
             CharacterStateMachine.UpdateCurrentMove();
         }
+
+        protected virtual void OnNetworkAbilityIndexChanged(int previousValue, int newValue)
+        {
+            if (ShowDebug) Debug.Log(gameObject.name + ": OnNetworkComboMoveIndexChanged");
+
+            if (HasAuthority) return;
+
+            // CharacterStateMachine.ComboIndex = newValue.x;
+            // CharacterStateMachine.MoveIndex = newValue.y;
+            CharacterStateMachine.AbilityIndex = newValue;
+            CharacterStateMachine.UpdateCurrentMove();
+        }
         protected void OnTraitDataNetworkListChanged(NetworkListEvent<TraitData> changeEvent)
         {
             if (ShowDebug) Debug.Log(gameObject.name + ": OnTraitDataNetworkListChanged");
@@ -129,24 +158,18 @@ namespace Blessing.Gameplay.Characters
 
             if (!UpdateLocalList(ref TraitDataLocalList, TraitDataNetworkList)) return;
 
-            Debug.Log(gameObject.name + ": UpdateLocalList Passou");
-
-            Debug.Log(gameObject.name + ": changeEvent.Type - " + changeEvent.Type);
-
             if (changeEvent.Type == NetworkListEvent<TraitData>.EventType.Add)
             {
-                Debug.Log(gameObject.name + ": Add Passou");
                 Character.AddTrait(changeEvent.Value);
             }
 
             if (changeEvent.Type == NetworkListEvent<TraitData>.EventType.Remove)
             {
-                Debug.Log(gameObject.name + ": Remove Passou");
                 Character.RemoveTrait(changeEvent.Value);
             }
         }
 
-        protected override void OnOwnershipChanged(ulong previous, ulong current) // Mover para PlayerCharacterNetwork
+        protected override void OnOwnershipChanged(ulong previous, ulong current)
         {
             base.OnOwnershipChanged(previous, current);
 
@@ -167,7 +190,7 @@ namespace Blessing.Gameplay.Characters
                 stateIndex.Value = index;
         }
 
-        internal void SetComboMoveIndex(Vector2Int comboMoveIndex)
+        public void SetComboMoveIndex(Vector2Int comboMoveIndex)
         {
             if (HasAuthority)
             {
@@ -175,12 +198,48 @@ namespace Blessing.Gameplay.Characters
             }
         }
 
+        public void SetAbilityIndex(int abilityIndex)
+        {
+            if (HasAuthority)
+            {
+                this.abilityIndex.Value = abilityIndex;
+            }
+        }
+
         public virtual void GetOwnership()
         {
             GameManager.Singleton.GetOwnership(NetworkObject);
         }
+        private float randomFloat = 50;
+        private float newRandomFloat = 50;
+        public float GenerateRandomFloat()
+        {
+            float random = randomFloat;
 
+            if (HasAuthority)
+            {
+                UpdateRandomFloatRpc(UnityEngine.Random.Range(0.0f, 1.0f));
+                // randomFloatNetwork.Value = UnityEngine.Random.Range(0.0f, 1.0f);
+            }
+
+            randomFloat = newRandomFloat;
+
+            return random;
+        }
+        
         // Character RPC`s
+        [Rpc(SendTo.Everyone)]
+        public void SyncRandomFloatRpc()
+        {
+            if (HasAuthority)
+                UpdateRandomFloatRpc(newRandomFloat);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        public void UpdateRandomFloatRpc(float rnd)
+        {
+            newRandomFloat = rnd;
+        }
 
         [Rpc(SendTo.Everyone)]
         public void ClearTargetListRpc()
@@ -230,14 +289,11 @@ namespace Blessing.Gameplay.Characters
                 }
             }
 
-            VisualEffect visualEffect = Instantiate(trait.VisualEffect, targetLocation + new Vector3(0, 0.05f, 0), Quaternion.identity);
-            
+            Debug.Log("VFX foi Pooled");
+            PooledEffect vfx = PoolManager.Singleton.Get<PooledEffect>(trait.VFX).Initialized(targetLocation + new Vector3(0, 0.05f, 0));
+
             if (trait.VFXFollowChar)
-                visualEffect.transform.SetParent(transform, true);
-
-            visualEffect.Play();
-
-            Destroy(visualEffect.gameObject, visualEffect.GetFloat("LifeTime"));
+                vfx.transform.SetParent(transform, true);
         }
     }
 }

@@ -49,8 +49,9 @@ namespace Blessing
         public InventoryItemPooler InventoryItemPooler;
         public IObjectPool<InventoryItem> InventoryItemPool;
         [Header("Multiplayer")]
-        public bool PlayerConnected = false;
+        [HideInInspector] public bool PlayerConnected = false;
         [Header("Misc")]
+        public int AiCharacterSpawned = 0;
         public ContextDropDownMenu ContextDropDownMenu;
         public ItemInfoBox ItemInfoBox;
         public TraderItem TraderItemPrefab;
@@ -112,9 +113,9 @@ namespace Blessing
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Tab))
+            if (Input.GetKeyDown(KeyCode.Tab) && PlayerController != null)
             {
-                UIController.ToggleGrids();
+                UIController.ToggleInventoryUI();
             }
 
             if (Input.GetKeyDown(KeyCode.P))
@@ -141,6 +142,11 @@ namespace Blessing
             {
                 UIController.ConsumeSelectedItem();
             }
+
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                InitializeSpawners();
+            }
         }
 
         public void OnClientConnected(ulong clientId)
@@ -160,6 +166,7 @@ namespace Blessing
         }
         public void AddPlayerCharacter(string playerName, PlayerCharacter playerCharacter)
         {
+            // Error: An item with the same key has already been added
             playerCharactersDic.Add(playerName, playerCharacter);
         }
         public void RemovePlayerCharacter(string playerName)
@@ -200,13 +207,10 @@ namespace Blessing
         }
         public void InitializeSpawners()
         {
-            Debug.Log("InitializeSpawners: " + PlayerConnected + " - " + SceneStarter.HasStarted);
             if (PlayerConnected && GameDataManager.Singleton.IsHost && SceneStarter.HasStarted)
             {
-                Debug.Log("Entrou InitializeSpawners");
                 foreach (SessionOwnerNetworkObjectSpawner spawner in ObjectSpawners)
                 {
-                    Debug.Log(spawner.gameObject.name + " - Spawn");
                     spawner.Spawn();
                 }
             }

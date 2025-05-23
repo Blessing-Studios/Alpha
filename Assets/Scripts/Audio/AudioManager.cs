@@ -85,7 +85,7 @@ namespace Blessing.Audio
             // Destroy(audioSource.gameObject, audioSource.clip.length);
             if (!CanPlayAudioClip(audioClip)) return null;
 
-            AudioEmitter audioEmitter = PoolManager.Singleton.Get(audioEmitterPrefab) as AudioEmitter;
+            AudioEmitter audioEmitter = PoolManager.Singleton.Get<AudioEmitter>(audioEmitterPrefab);
 
             audioEmitter.transform.position = sourceTransform.position;
             audioEmitter.AudioSource.clip = audioClip;

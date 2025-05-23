@@ -18,25 +18,17 @@ namespace Blessing.Scene
 
         void Awake()
         {
-            // Debug.Log(gameObject.name + " Awake");
             GameManager.Singleton.SceneStarter = this;
             SceneManager.Singleton.CurrentScene = Scene;
         }
         
         void Start()
         {
-            Debug.Log(gameObject.name + ": SceneStarter Start" );
-
             HasStarted = true;
 
             GameManager.Singleton.InitializeSpawners();
             
             GameManager.Singleton.InitializePlayers();
-
-            // if (GameDataManager.Singleton.IsHost)
-            // {
-            //     GameManager.Singleton.InitializeSpawners();
-            // }
         }
     }
 }

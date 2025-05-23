@@ -18,6 +18,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
     
     public interface ISkillTrigger
     {
+        public Transform transform { get; }
         public bool HasAuthority { get; }
         public Skill ActiveSkill { get; set; }
         public Dictionary<Stat, int> ValueByStat { get; }
@@ -44,7 +45,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
         [field: SerializeField] public Skill AfterSkill { get; protected set; }
         [Tooltip("How much mana it will cost to use")] public ManaSpectrum ManaCost;
 
-        public virtual void Trigger(ISkillTrigger skillTrigger)
+        public virtual void Trigger(ISkillTrigger skillTrigger, float randomFloat = 0.0f)
         {
             if (ActiveSkillOnHit)
                 skillTrigger.ActiveSkill = this;

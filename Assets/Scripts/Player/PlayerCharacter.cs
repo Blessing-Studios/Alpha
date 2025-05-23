@@ -36,6 +36,7 @@ namespace Blessing.Player
             Network = network;
         }
         private PlayerInput playerInput;
+        public PlayerInput PlayerInput { get { return playerInput; } }
         public Interactor Interactor { get; private set; }
         private bool isPlayerCharacterInitialized = false;
         private CinemachineImpulseSource impulseSource;
@@ -114,6 +115,11 @@ namespace Blessing.Player
             gameObject.name = "Char-" + GetPlayerOwnerName();
             GameManager.Singleton.AddPlayerCharacter(GetPlayerOwnerName(), this);
             canGiveInputs = GameDataManager.Singleton.ValidateOwner(GetPlayerOwnerName());
+            
+            if (canGiveInputs) 
+                playerInput.enabled = true;
+            else
+                playerInput.enabled = false;
 
             foreach(PlayerController player in GameManager.Singleton.Players)
             {
@@ -122,12 +128,12 @@ namespace Blessing.Player
                     player.SetPlayerCharacter(this);
                 }
             }
-
-            isPlayerCharacterInitialized = true;
         }
-        public override bool CheckIfActionTriggered(string actionName)
+        public override bool CheckIfActionTriggered(InputActionType actionType)
         {
             if (!HasAuthority || !canGiveInputs) return false;
+
+            string actionName = actionType.Name;
 
             if (actionName != ""
                 && playerInput.currentActionMap.FindAction(actionName) != null
@@ -139,24 +145,28 @@ namespace Blessing.Player
             return false;
         }
 
-        public override bool Hit(IHittable target)
+        public override bool CheckIfDirectionTriggered(InputDirectionType directionType)
         {
-            bool baseValue = base.Hit(target);
+            if (directionType == null || directionType == GetDirection("Any")) return true;
+
+            return directionType == TriggerDirection;
+        }
+
+        public override bool CheckIfComboMoveTriggered(Move move)
+        {
+            return CheckIfActionTriggered(move.TriggerAction) && CheckIfDirectionTriggered(move.TriggerDirection);
+        }
+
+        public override bool Hit(IHittable target, Vector3 hitPosition)
+        {
+            bool baseValue = base.Hit(target, hitPosition);
 
             if (HasAuthority && baseValue)
-            {
-                if (CharacterStateMachine.CurrentMove.ShakeEffect != null)
-                    GameManager.Singleton.CameraShake(impulseSource, CharacterStateMachine.CurrentMove.ShakeEffect);
-                    
+            {       
                 target.GetOwnership();
             }
 
             return baseValue;
-        }
-
-        public override void GotHit(IHitter hitter)
-        {
-            base.GotHit(hitter);
         }
 
         public void GetPlayerCharacterOwnership()
@@ -221,6 +231,24 @@ namespace Blessing.Player
             HandleActionInput(context);
         }
 
+        public void OnAbility1(InputAction.CallbackContext context)
+        {
+            if (Abilities.Count > 0)
+                HandleActionInput(context);
+        }
+
+        public void OnAbility2(InputAction.CallbackContext context)
+        {
+            if (Abilities.Count > 1)
+                HandleActionInput(context);
+        }
+
+        public void OnAbility3(InputAction.CallbackContext context)
+        {
+            if (Abilities.Count > 2)
+                HandleActionInput(context);
+        }
+
         private void HandleActionInput(InputAction.CallbackContext context)
         {
             if (!HasAuthority || !canGiveInputs) return;
@@ -231,6 +259,12 @@ namespace Blessing.Player
             if (context.performed)
             {
                 TriggerAction = GetAction(context.action.name);
+                CharacterStateMachine.CharacterState.OnTrigger(TriggerAction, TriggerDirection);
+            }
+
+            if (context.canceled)
+            {
+                TriggerAction = null;
                 CharacterStateMachine.CharacterState.OnTrigger(TriggerAction, TriggerDirection);
             }
         }
@@ -268,6 +302,14 @@ namespace Blessing.Player
         public override void OnDeath()
         {
             base.OnDeath();
+        }
+        public override void OnAnimationAttack()
+        {
+            base.OnAnimationAttack();
+
+            if (HasAuthority && CharacterStateMachine.CurrentMove.ShakeEffect != null)
+                    GameManager.Singleton.CameraShake(impulseSource, CharacterStateMachine.CurrentMove.ShakeEffect);
+
         }
     }
 }

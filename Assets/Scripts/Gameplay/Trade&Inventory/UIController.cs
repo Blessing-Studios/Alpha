@@ -85,12 +85,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             return false;
         }
 
-        public void OpenAllGrids()
-        {
-            OpenGrids();
-            OpenOtherGrids();
-        }
-
         public void CloseAllGrids()
         {
             PlayerCharacterInventoryUI.CloseInventoryUI();
@@ -107,69 +101,28 @@ namespace Blessing.Gameplay.TradeAndInventory
             isGridsOpen = false;
         }
 
-        public void ToggleGrids()
+        public void ToggleInventoryUI()
         {
             if (!CanOpenGrids()) return;
 
             if (!isGridsOpen)
-                OpenGrids();
+                OpenInventoryGrids();
             else
                 CloseAllGrids();
         }
 
-        public void SyncGrids()
+        public void SyncInventoryGrids()
         {
             PlayerCharacterInventoryUI.SyncGrids();
             LootCharacterInventoryUI.SyncGrids();
             TraderInventoryUI.SyncGrids();
-
-            // TODO: Refatorar
-            // if (isGridsOpen)
-            // {
-            //     OpenGrids();
-            //     OpenOtherGrids();
-            // }
-            // else
-            // {
-            //     CloseGrids();
-            //     CloseOtherGrids();
-            // }
         }
 
-        public void OpenGrids()
+        public void OpenInventoryGrids()
         {
-            Debug.Log(gameObject.name + ": OpenGrids");
-            if (!CanOpenGrids()) return;
-            Debug.Log(gameObject.name + ": OpenGrids Passou");
-
-            // foreach (var grid in Grids)
-            // {
-            //     grid.OpenGrid();
-            // }
-
-            // PlayerEquipmentsFrame.SetActive(true);
             isGridsOpen = true;
-
-            GameManager.Singleton.AddBlurToBackground();
-
-            // Teste
             PlayerCharacterInventoryUI.OpenInventoryUI();
-        }
-
-        public void CloseGrids()
-        {
-            // foreach (var grid in Grids)
-            // {
-            //     grid.CloseGrid();
-            // }
-
-            // PlayerEquipmentsFrame.SetActive(false);
-            isGridsOpen = false;
-
-            GameManager.Singleton.RemoveBlurFromBackground();
-
-            // Teste
-            PlayerCharacterInventoryUI.CloseInventoryUI();
+            GameManager.Singleton.AddBlurToBackground();
         }
         public void OpenLootGrids()
         {
@@ -225,16 +178,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             QuestsUI.CloseQuestsUI();
 
             GameManager.Singleton.RemoveBlurFromBackground();
-        }
-
-        public void OpenOtherGrids()
-        {
-            
-        }
-
-        public void CloseOtherGrids()
-        {
-            
         }
 
         public void RotateItem()

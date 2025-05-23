@@ -18,14 +18,14 @@ namespace Blessing.Ai.Goap.Sensors
         public List<Character> CloseAllyList;
         private float timeLastUpdate;
         private AiAgent aiAgent;
-        private AiCharacter aiCharacter;
+        private Character Character;
         public GameObject ClosestEnemy = null;
 
         void Awake()
         {
             // aiPilot = GetComponent<AiPilot>();
             aiAgent = GetComponent<AiAgent>();
-            aiCharacter = GetComponent<AiCharacter>();
+            Character = GetComponent<Character>();
 
             timeLastUpdate = 0.0f;
 
@@ -56,7 +56,7 @@ namespace Blessing.Ai.Goap.Sensors
             CloseEnemyList = new List<Character>();
 
             // Collider2D[] colliders = Physics2D.OverlapCircleAll((Vector2)transform.position, aiCharacter.ViewRange);
-            Collider[] colliders = Physics.OverlapSphere(transform.position, aiCharacter.ViewRange);
+            Collider[] colliders = Physics.OverlapSphere(transform.position, Character.ViewRange);
             
             ClosestEnemy = null;
             float nearestDistance = float.MaxValue;
@@ -69,22 +69,18 @@ namespace Blessing.Ai.Goap.Sensors
                     if (gameObject.tag == character.gameObject.tag)
                     {
                         if (!CloseAllyList.Contains(character))
-                        {
                             CloseAllyList.Add(character);
-                        }
                     }
                     else
                     {
                         if (!CloseEnemyList.Contains(character))
-                        {
                             CloseEnemyList.Add(character);
 
-                            distance = (transform.position - character.transform.position).sqrMagnitude;
-                            if (distance < nearestDistance)
-                            {
-                                nearestDistance = distance;
-                                ClosestEnemy = character.gameObject;
-                            }
+                        distance = (transform.position - character.transform.position).sqrMagnitude;
+                        if (distance < nearestDistance)
+                        {
+                            nearestDistance = distance;
+                            ClosestEnemy = character.gameObject;
                         }
                     }
                 }

@@ -97,7 +97,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  explosion: {fileID: 9019088891013821338}
+  particleEffect: {fileID: 9019088891013821338}
+  visualEffect: {fileID: 0}
 --- !u!1001 &7172434994541124206
 PrefabInstance:
   m_ObjectHideFlags: 0

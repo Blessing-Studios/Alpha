@@ -13,7 +13,7 @@ namespace Blessing.HealthAndDamage
         /// </summary>
         /// <param name="target"></param>
         /// <returns>false if already hit, true if it is a new target</returns>
-        public bool Hit(IHittable target);
+        public bool Hit(IHittable target, Vector3 hitPosition);
     }
 }
 

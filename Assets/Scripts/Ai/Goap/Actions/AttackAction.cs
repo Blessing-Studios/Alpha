@@ -1,3 +1,4 @@
+using System.Threading;
 using Blessing.AI.Goap;
 using UnityEngine;
 
@@ -26,11 +27,12 @@ namespace Blessing.Ai.Goap.Actions
         {
             base.OnFixedUpdate();
 
-            if (time >= duration)
+            if (fixedtime >= duration / 2)
             {
                 if (CheckPositionForAction())
                 {
                     Perform(gameObject);
+                    fixedtime = 0.0f;
                 }
                 
                 finished = true;

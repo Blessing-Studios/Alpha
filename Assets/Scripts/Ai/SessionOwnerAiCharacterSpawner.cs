@@ -12,12 +12,14 @@ namespace Blessing.Ai
     {
         [SerializeField] private Item[] items;
         [SerializeField] private Gear[] gears;
-
         AiCharacter spawnedAiCharacter;
         protected int m_TickToSpawnLoot;
         public int SpawnTime = 2;
+
         public override void Spawn()
         {
+            GameManager.Singleton.AiCharacterSpawned ++;
+
             Debug.Log(gameObject.name + ": Spawn");
             var spawnedNetworkObject = m_NetworkObjectToSpawn.InstantiateAndSpawn(NetworkManager.Singleton);
             
@@ -32,6 +34,10 @@ namespace Blessing.Ai
 
             var spawnable = spawnedNetworkObject.GetComponent<ISpawnable>();
             spawnable.Init(this);
+
+            spawnedAiCharacter.gameObject.name = m_NetworkObjectToSpawn.name;
+
+            spawnedAiCharacter.gameObject.name += "-" + spawnedAiCharacter.GetComponent<NetworkObject>().GetHashCode();
 
             spawnedAiCharacter.Initialize();
 

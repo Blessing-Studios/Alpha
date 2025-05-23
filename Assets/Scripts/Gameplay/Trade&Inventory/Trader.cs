@@ -4,8 +4,6 @@ using System.Linq;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Interation;
 using Unity.Collections;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace Blessing.Gameplay.TradeAndInventory
@@ -51,10 +49,10 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         protected virtual void Update()
         {
-            HandleAutoClose();
+            HandleStopInteraction();
         }
 
-        private void HandleAutoClose()
+        private void HandleStopInteraction()
         {
             if (Customer == null) return;
 
@@ -331,60 +329,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             bool validate = CurrentTrades.Remove(trade);
 
             return validate;
-        }
-
-        private void PurchaseItem(InventoryItem item)
-        {
-
-
-            // Get Gold from player
-            bool itemBought = Customer.Gear.SpendGold(item.Value);
-
-            if (!itemBought)
-            {
-                // If failed, show message that the item was not bought
-                // Block Item from being bought
-                CancelPurchase(item);
-                return;
-            }
-
-            // If success, show message that item was bought
-            Debug.Log(gameObject.name + "PurchaseItem Customer: " + Customer.gameObject.name);
-
-            CleanReserveItem();
-        }
-
-        private void SellItem(InventoryItem item)
-        {
-            bool itemSell = Customer.Gear.GainGold(item.Value);
-
-            if (!itemSell)
-            {
-                CancelSell(item);
-                return;
-            }
-
-            // If success, show message that item was bought
-            Debug.Log(gameObject.name + "SellItem Seller: " + Customer.gameObject.name);
-        }
-
-        private void CancelPurchase(InventoryItem item)
-        {
-            // Remove Item from buyer inventory
-            Customer.Gear.Inventory.RemoveItem(item);
-
-            // Add Item to original place from trader
-            Inventory.InventoryGrid.PlaceItem(item, reservedItemPosition);
-            Debug.Log(gameObject.name + "CancelPurchase: " + Customer.gameObject.name);
-        }
-
-        private void CancelSell(InventoryItem item)
-        {
-            // Remove Item from Trader inventory
-            Inventory.RemoveItem(item);
-
-            // Add Item to original seller
-            Customer.Gear.Inventory.AddItem(item);
         }
     }
 }

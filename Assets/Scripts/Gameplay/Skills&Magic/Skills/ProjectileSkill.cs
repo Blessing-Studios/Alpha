@@ -15,12 +15,12 @@ namespace Blessing.Gameplay.SkillsAndMagic
         [Range(0, 90)] public float AnglePrecision;
         [field: SerializeField] public bool IsDestroyedOnHit { get; protected set; }
         [field: SerializeField] public float LifeTime { get; protected set; }
-        public override void Trigger(ISkillTrigger skillTrigger)
+        public override void Trigger(ISkillTrigger skillTrigger, float randomFloat = 0.0f)
         {
             base.Trigger(skillTrigger);
             
             Projectile projectile = PoolManager.Singleton.Get(projectilePrefab) as Projectile;
-            projectile.Initialize(this, skillTrigger);
+            projectile.Initialize(this, skillTrigger, randomFloat);
         }
     }
 }

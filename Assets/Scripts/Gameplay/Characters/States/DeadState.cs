@@ -21,15 +21,19 @@ namespace Blessing.Gameplay.Characters.States
             animator.SetTrigger("Die");
 
             character.OnDeath();
+
+            duration = 2.0f;
         }
 
         public override void OnUpdate()
         {
             base.OnUpdate();
 
-            if (time >= duration)
+            // If character is still in idle trigger Die again
+            // TODO: criar lógica para ser possível bater em alguém durante a animação de morte
+            if (time >= duration && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
             {
-                // comboStateMachine.SetNextStateToMain();
+                animator.SetTrigger("Die");
             }
         }
     }

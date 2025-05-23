@@ -208,7 +208,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <OwnerGameObject>k__BackingField: {fileID: 6028631068472643565}
   <DmgMultiplier>k__BackingField: 0
-  TakeHitEffect: {fileID: 0}
+  defaultHitType: 0
+  hurtEffects: []
 --- !u!1 &2243204490460183400
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,8 +575,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87645bd1c70e3ad4cb4c92a0f056e783, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <ShowDebug>k__BackingField: 0
   <Inventory>k__BackingField: {fileID: 0}
   Customer: {fileID: 0}
+  CurrentTrades: []
+  CurrentTradesTotalValue: 0
   reservedItem: {fileID: 0}
 --- !u!114 &2066221182297512520
 MonoBehaviour:
@@ -591,13 +595,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShowDebug>k__BackingField: 0
   AttackPressedTimerWindow: 0.2
-  characterHitAudios: []
   actionList: {fileID: 11400000, guid: ad46cfd2410fa2f439ed456fa51341ae, type: 2}
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
   CharacterTraits: []
-  CharacterSkills: []
+  CharacterComboSkills: []
+  castActions: []
+  abilitiesSO: []
   <ActiveSkill>k__BackingField: {fileID: 0}
   <SkillOrigin>k__BackingField: {fileID: 0}
   SpawnLocation: {x: 0, y: 0, z: 0}
@@ -794,6 +799,14 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
+  AnimationsDuration:
+  - Name: Closing
+    Duration: 1
+  - Name: Opening
+    Duration: 1.375
+  - Name: OpenIdle
+    Duration: 0.5
+  AbilityIndex: 0
   <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
   <CurrentMove>k__BackingField:
     Name: 
@@ -802,7 +815,7 @@ MonoBehaviour:
     AnimationParamRef:
       value: {fileID: 0}
     Duration: 0
-    Action:
+    triggerAction:
       value: {fileID: 0}
     Direction:
       value: {fileID: 0}
@@ -814,6 +827,9 @@ MonoBehaviour:
     ShakeEffect: {fileID: 0}
   combos:
   - {fileID: 11400000, guid: 44ce49ae2cf51c94eabc66d0fcf161a4, type: 2}
+  CastActions: []
+  MatchedCombosIndex: 
+  AnimatorController: {fileID: 9100000, guid: 4971f56929e5f6e42a55be7f8e4bea8e, type: 2}
 --- !u!114 &2620648292840096135
 MonoBehaviour:
   m_ObjectHideFlags: 0

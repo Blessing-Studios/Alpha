@@ -16,8 +16,8 @@ namespace Blessing.Gameplay.Characters
         [ScriptableObjectDropdown(typeof(AnimationParamReference))] public ScriptableObjectReference AnimationParamRef;
         [SerializeField] public string AnimationParam { get { return (AnimationParamRef.value as AnimationParamReference).Name; } }
         [SerializeField] public float Duration;
-        [Tooltip("What button has to be pressed")][ScriptableObjectDropdown(typeof(InputActionType))] public ScriptableObjectReference Action;
-        [SerializeField] public InputActionType TriggerAction { get { return Action.value as InputActionType; } }
+        [Tooltip("What button has to be pressed")][SerializeField][ScriptableObjectDropdown(typeof(ComboActionType))] protected ScriptableObjectReference triggerAction;
+        [SerializeField] public InputActionType TriggerAction { get { return triggerAction.value as InputActionType; } }
         [Tooltip("What direction button need to be pressed")][ScriptableObjectDropdown(typeof(InputDirectionType))] public ScriptableObjectReference Direction;
         [SerializeField] public InputDirectionType TriggerDirection { get { return Direction.value as InputDirectionType; } }
         [SerializeField] public float ExitEarlier = 0.1f;

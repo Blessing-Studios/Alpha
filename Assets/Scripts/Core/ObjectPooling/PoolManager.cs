@@ -39,6 +39,23 @@ namespace Blessing.Core.ObjectPooling
             return pooler.Pool.Get();
         }
 
+        public T Get<T>(PooledObject pooledObject) where T : PooledObject
+        {
+            if (PoolerDic.ContainsKey(pooledObject.name))
+            {
+                return PoolerDic[pooledObject.name].Pool.Get() as T;
+            }
+
+            GenericObjectPooler pooler = Instantiate(poolerPrefab, this.transform);
+
+            pooler.Initialize(pooledObject);
+
+            PoolerDic[pooledObject.name] = pooler;
+            Poolers.Add(pooler);
+
+            return pooler.Pool.Get() as T;
+        }
+
         public void Release(PooledObject pooledObject)
         {
             // TODO: Tratar erro caso não encontre o Pooler no Dic

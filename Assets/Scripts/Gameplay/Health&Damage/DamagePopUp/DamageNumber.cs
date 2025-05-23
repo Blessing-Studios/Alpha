@@ -18,7 +18,6 @@ namespace Blessing.HealthAndDamage
         private float timer = 0f;
         public DamageNumber Initialize(Vector3 position, int damage)
         {
-            Debug.Log(gameObject.name + ": DamageNumber Initialize");
             transform.position = position;
             textMesh.SetText(damage.ToString());
             textMesh.color = textColor;

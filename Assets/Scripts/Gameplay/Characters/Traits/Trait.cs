@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using Blessing.Gameplay.SkillsAndMagic;
+using Blessing.HealthAndDamage;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.VFX;
+using Blessing.VFX;
 
 namespace Blessing.Gameplay.Characters.Traits
 {
@@ -27,6 +29,8 @@ namespace Blessing.Gameplay.Characters.Traits
         [TextArea] public string Description;
         public Effect[] Effects;
         public VisualEffect VisualEffect;
+        public ParticleSystem ParticleEffect;
+        public PooledEffect VFX;
         public bool SpawnVFXOnGround = false;
         public bool VFXFollowChar = false;
         public bool CanStack;
