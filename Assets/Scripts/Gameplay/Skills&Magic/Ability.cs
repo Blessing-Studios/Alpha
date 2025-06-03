@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.Characters;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Blessing.Gameplay.SkillsAndMagic
 {
@@ -11,10 +12,12 @@ namespace Blessing.Gameplay.SkillsAndMagic
     {
         public Skill[] Skills;
         [SerializeField][ScriptableObjectDropdown(typeof(AnimationParamReference))] private ScriptableObjectReference animationParam;
-        [SerializeField] public string AnimationParam { get { return (animationParam.value as AnimationParamReference).Name; } }
+        public string AnimationParam { get { return (animationParam.value as AnimationParamReference).Name; } }
         [SerializeField][ScriptableObjectDropdown(typeof(AnimationParamReference))] private ScriptableObjectReference endAnimationParam;
-        [SerializeField] public string EndAnimationParam { get { return (endAnimationParam.value as AnimationParamReference).Name; } }
+        public string EndAnimationParam { get { return (endAnimationParam.value as AnimationParamReference).Name; } }
         public bool CanCharge = false;
         public float CoolDown = 1.0f;
+        public Sprite IconSprite;
+        public CameraShakeEffect ShakeEffect;
     }
 }

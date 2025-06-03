@@ -4,6 +4,7 @@ using System.Data.Common;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.UI;
@@ -74,7 +75,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             RectTransform = GetComponent<RectTransform>();
             image = GetComponent<Image>();
 
-            if (stackText ==  null)
+            if (stackText == null)
             {
                 Debug.LogError(gameObject.name + ": stackText can't be null");
             }
@@ -95,7 +96,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             Set(item, new InventoryItemData(new FixedString64Bytes(stringGuid), item.Id, Vector2Int.zero, false, stack));
         }
 
-        public void Set(Item item, InventoryItemData  data)
+        public void Set(Item item, InventoryItemData data)
         {
             InitializeItem(item);
             SetData(data);
@@ -112,7 +113,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public InventoryItemData GetData()
         {
-            return Data; 
+            return Data;
         }
         public void SetData(InventoryItemData data)
         {
@@ -144,6 +145,14 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (qty <= 0) return;
             // teset
             Data.Stack += qty;
+            UpdateStackNumber();
+        }
+
+        public void RemoveFromStack(int qty)
+        {
+            if (qty <= 0) return;
+
+            Data.Stack -= qty;
             UpdateStackNumber();
         }
     }

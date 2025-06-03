@@ -15,7 +15,6 @@ namespace Blessing.Gameplay.Characters.States
         private InputActionType inputAction;
         private InputDirectionType inputDirection;
         public CharacterAbility CurrentAbility;
-        private float endDuration;
         private bool canCharge;
         private bool isCharging;
 
@@ -37,18 +36,22 @@ namespace Blessing.Gameplay.Characters.States
             movementController.DisableMovement();
 
             // Trigger animation
-            animator.SetTrigger(CurrentAbility.Ability.AnimationParam);
+            networkAnimator.SetTrigger(CurrentAbility.Ability.AnimationParam);
 
             // Zera movementController.AttackMovement
             movementController.AttackMovement = Vector3.zero;
 
             // Pegar duração
             duration = characterStateMachine.AnimationsDuration.First(e => e.Name == CurrentAbility.Ability.AnimationParam).Duration;
-            endDuration = characterStateMachine.AnimationsDuration.First(e => e.Name == CurrentAbility.Ability.EndAnimationParam).Duration;
 
             attackPressedTimer = 0;
             isCharging = false;
             canCharge = CurrentAbility.Ability.CanCharge;
+
+            // Can't Charge if there is not End Animation
+            if (CurrentAbility.Ability.EndAnimationParam == null)
+                canCharge = false;
+
             inputAction = CurrentAbility.CastAction;
         }
 
@@ -83,7 +86,7 @@ namespace Blessing.Gameplay.Characters.States
                 {
                     if (!CheckIfHoldingAction())
                     {
-                        animator.SetTrigger(CurrentAbility.Ability.EndAnimationParam);
+                        networkAnimator.SetTrigger(CurrentAbility.Ability.EndAnimationParam);
                         duration = characterStateMachine.AnimationsDuration.First(e => e.Name == CurrentAbility.Ability.EndAnimationParam).Duration;
                         isCharging = false;
                         canCharge = false;

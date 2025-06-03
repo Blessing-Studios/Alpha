@@ -3,6 +3,7 @@ using Unity.Netcode;
 using Blessing;
 using System.Collections;
 using NUnit.Framework.Internal;
+using System;
 
 [RequireComponent(typeof(CharacterController))]
 public abstract class MovementController : NetworkBehaviour
@@ -25,12 +26,15 @@ public abstract class MovementController : NetworkBehaviour
     // protected InputActionMap characterControlsMap;
     protected CharacterController characterController;
     [SerializeField] protected bool isPushable = true;
+    [field: SerializeField] protected NetworkVariable<bool> isFacingRight = new NetworkVariable<bool>(true);
+    public bool IsFacingRight { get { return isFacingRight.Value; } set { isFacingRight.Value = value; } }
     protected bool isMovementPressed;
     protected bool isJumpPressed;
     protected int isWalkingHash;
     protected int isRunningHash;
     protected int speedHash;
-    protected float characterSpeed;
+    protected float oldPositionX;
+    protected const float minDeltaX = 0.01f;
     // Variables to store player input values
     [SerializeField] protected Vector2 currentMovementInput;
 
@@ -68,6 +72,21 @@ public abstract class MovementController : NetworkBehaviour
 
     }
 
+    public override void OnNetworkSpawn()
+    {
+        isFacingRight.OnValueChanged += OnNetworkIsFacingRightChanged;
+    }
+
+    private void OnNetworkIsFacingRightChanged(bool previousValue, bool newValue)
+    {
+        if (HasAuthority) return;
+
+        if (newValue)
+            transform.rotation = Quaternion.LookRotation(-Vector3.forward);
+        else
+            transform.rotation = Quaternion.LookRotation(Vector3.forward);
+    }
+
     // Update is called once per frame
     protected virtual void Update()
     {
@@ -79,6 +98,16 @@ public abstract class MovementController : NetworkBehaviour
 
         // Para Testar
         CurrentMovement = currentMovement;
+    }
+
+    protected virtual void Start()
+    {
+        oldPositionX = transform.position.x;
+
+        if (IsFacingRight)
+            transform.rotation = Quaternion.LookRotation(-Vector3.forward);
+        else
+            transform.rotation = Quaternion.LookRotation(Vector3.forward);
     }
 
     public virtual void DisableMovement()
@@ -119,7 +148,6 @@ public abstract class MovementController : NetworkBehaviour
             currentMovement.z * Time.deltaTime * CharacterSpeed
         ));
 
-        characterSpeed = characterController.velocity.magnitude;
         animator.SetFloat(speedHash , characterController.velocity.magnitude);
     }
 
@@ -155,20 +183,25 @@ public abstract class MovementController : NetworkBehaviour
             yield return null;
         }
 
-        Debug.Log("### Saiu Push Back: " + time);
-
         StopAllCoroutines();
     }
     protected virtual void HandleFacing()
     {
-        if (currentMovement.x < 0.0f) 
+        float currentPositionX = transform.position.x;
+        float xDelta = currentPositionX - oldPositionX;
+
+        if (xDelta < - minDeltaX)
         {
             transform.rotation = Quaternion.LookRotation(-Vector3.forward);
+            if (HasAuthority) isFacingRight.Value = true;
         }
-        if (currentMovement.x > 0.0f)
+        else if (xDelta > minDeltaX)
         {
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            if (HasAuthority) isFacingRight.Value = false;
         }
+
+        oldPositionX = currentPositionX;
     }
     public virtual void HandlePushBack(Vector3 direction, float impact, float impulseTime)
     {

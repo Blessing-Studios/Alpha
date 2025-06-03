@@ -116,6 +116,10 @@ namespace Blessing.Gameplay.TradeAndInventory
                     {
                         itemInGrid.AddToStack(inventoryItem.Data.Stack);
 
+                        // Raise Events
+                        if (OnAddItem != null)
+                            OnAddItem.Raise(this, inventoryItem);
+
                         GameManager.Singleton.ReleaseInventoryItem(inventoryItem);
 
                         return true;

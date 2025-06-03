@@ -25,7 +25,7 @@ namespace Blessing.Gameplay.Characters
     public class CharacterStateMachine : StateMachine.StateMachine
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
-        public CharacterState CharacterState { get { return CurrentState as CharacterState;} }
+        public CharacterState CharacterState { get { return CurrentState as CharacterState; } }
         public IdleState IdleState;
         public ComboState ComboState;
         public CastState CastState;
@@ -46,11 +46,11 @@ namespace Blessing.Gameplay.Characters
         public CharacterController CharacterController { get; protected set; }
         public MovementController MovementController { get; protected set; }
         public List<AnimationDuration> AnimationsDuration = new();
-        public int ComboIndex { get { return ComboMoveIndex.x;} }
-        public int MoveIndex { get { return ComboMoveIndex.y;} }
+        public int ComboIndex { get { return ComboMoveIndex.x; } }
+        public int MoveIndex { get { return ComboMoveIndex.y; } }
         public int AbilityIndex;
         [field: SerializeField] public Vector2Int ComboMoveIndex { get; set; }
-        [field: SerializeField] public Move CurrentMove { get; set;}
+        [field: SerializeField] public Move CurrentMove { get; set; }
         [SerializeField] protected Combo[] combos;
         public Combo[] Combos { get { return combos; } }
         [SerializeField] protected CastActionType[] castActions;
@@ -160,7 +160,7 @@ namespace Blessing.Gameplay.Characters
 
         public bool StartCast(CastActionType action)
         {
-            for (int i= 0; i < castActions.Length; i++)
+            for (int i = 0; i < castActions.Length; i++)
             {
                 if (castActions[i] == action)
                 {
@@ -187,19 +187,6 @@ namespace Blessing.Gameplay.Characters
             Character.SetAbilityIndex(AbilityIndex);
         }
 
-        // public void OnAnimationAttack()
-        // {
-        //     AudioClip[] attackAudios = combos[ComboIndex].Moves[MoveIndex].AudioClips;
-
-        //     if (combos[ComboIndex].Moves[MoveIndex].SkillSlot != 0)
-        //     {
-        //         // Trigger Skill
-        //     }
-
-        //     if (attackAudios.Length > 0)
-        //         AudioManager.Singleton.PlaySoundFx(attackAudios, transform);
-        // }
-
         public void UpdateCurrentMove()
         {
             // ComboIndex = -1 means no CurrentMove
@@ -207,50 +194,57 @@ namespace Blessing.Gameplay.Characters
             {
                 CurrentMove = null;
                 return;
-            } 
+            }
 
             CurrentMove = combos[ComboMoveIndex.x].Moves[ComboMoveIndex.y];
         }
-        
+
+        public float GetCurrentMoveDuration()
+        {
+            if (CurrentMove == null)
+                return 0.0f;
+
+            return AnimationsDuration.First(e => e.Name == CurrentMove.AnimationParam).Duration;
+        }
+
 #if UNITY_EDITOR
-        public UnityEditor.Animations.AnimatorController AnimatorController;
         protected override void OnValidate()
         {
             base.OnValidate();
 
             AnimationsDuration.Clear();
-            foreach (UnityEditor.Animations.AnimatorControllerLayer layer in AnimatorController.layers)
+
+            var animator = GetComponent<Animator>();
+
+            List<AnimationParamReference> animationParams = GetAll<AnimationParamReference>();
+
+            foreach (AnimationParamReference param in animationParams)
             {
-                ValidateStateMachine(layer.stateMachine);
+                foreach (AnimationClip animationClip in animator.runtimeAnimatorController.animationClips)
+                {
+                    Debug.Log(gameObject.name + ": AnimationClip name - " + animationClip.name);
+                    if (animationClip.name.Contains(param.name))
+                    {
+                        AnimationsDuration.Add(new AnimationDuration(param.name, animationClip.length));
+                        break;
+                    }
+                }
             }
         }
-
-        private void ValidateStateMachine(UnityEditor.Animations.AnimatorStateMachine stateMachine)
+        static List<T> GetAll<T>() where T : ScriptableObject
         {
-            foreach (UnityEditor.Animations.ChildAnimatorState child in stateMachine.states)
+            string typeName = typeof(T).Name;
+            string[] guids = UnityEditor.AssetDatabase.FindAssets($"t:{typeName}", new[] { "Assets" });
+
+            List<T> items = new();
+
+            foreach (string guid in guids)
             {
-                if (child.state.motion == null)
-                {
-                    continue;
-                }
-
-                AnimationClip clip =  child.state.motion as AnimationClip;
-
-                if (child.state.motion.averageDuration != clip.length)
-                {
-                    Debug.LogError(this.name + " - Clip length not matching with Motion average Duration");
-                }
-
-                AnimationsDuration.Add(new AnimationDuration(child.state.name, clip.length));
+                string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+                items.Add((T) UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(T)));
             }
 
-            if (stateMachine.stateMachines.Length > 0)
-            {
-                foreach(UnityEditor.Animations.ChildAnimatorStateMachine childMachine in stateMachine.stateMachines)
-                {
-                    ValidateStateMachine(childMachine.stateMachine);
-                }
-            }
+            return items;
         }
 #endif
     }

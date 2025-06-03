@@ -23,7 +23,7 @@ namespace Blessing.UI.Quests
             DetailButton.onClick.AddListener(() => {
                     questsUI.SelectQuest(quest);
             });
-
+            transform.localScale = Vector3.one;
             transform.SetParent(questsUI.QuestsContainer.transform, false);
         }
 

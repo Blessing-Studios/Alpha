@@ -252,7 +252,7 @@ namespace Blessing.Gameplay.Characters
         {
             Trait trait = Character.GetTrait(traitId);
 
-            if (trait == null) return;
+            if (trait == null || trait.VFX == null) return;
 
             Vector3 targetLocation = transform.position;
             if (trait.SpawnVFXOnGround)
@@ -289,7 +289,6 @@ namespace Blessing.Gameplay.Characters
                 }
             }
 
-            Debug.Log("VFX foi Pooled");
             PooledEffect vfx = PoolManager.Singleton.Get<PooledEffect>(trait.VFX).Initialized(targetLocation + new Vector3(0, 0.05f, 0));
 
             if (trait.VFXFollowChar)

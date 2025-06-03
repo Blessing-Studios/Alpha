@@ -28,7 +28,11 @@ MonoBehaviour:
   Buffs: []
   <AfterSkill>k__BackingField: {fileID: 0}
   ManaCost:
-    manas: []
+    manas:
+    - Color: 0
+      Value: 5
+      Regen: 0
+      Decay: 0
   projectilePrefab: {fileID: 3530581760633196284, guid: 1230573ed2dc11847b9b90da0a513f96, type: 3}
   <Speed>k__BackingField: 45
   <PositionPrecision>k__BackingField: {x: 0, y: 0}

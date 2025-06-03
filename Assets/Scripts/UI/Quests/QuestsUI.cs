@@ -91,7 +91,7 @@ namespace Blessing.UI.Quests
 
                 objectiveText.text = objective.Description;
 
-                objectiveText.transform.SetParent(ObjectivesContainer.transform);
+                objectiveText.transform.SetParent(ObjectivesContainer.transform, false);
             }
 
             // Rewards

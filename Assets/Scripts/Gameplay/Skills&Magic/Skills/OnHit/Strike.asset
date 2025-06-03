@@ -15,17 +15,20 @@ MonoBehaviour:
   Name: Teste
   Label: 
   Description: 
-  Type: 0
-  Trigger: 1
+  AudioClips: []
+  HitType: 1
+  ActiveSkillOnHit: 1
   Modifiers: []
   Attack: 25
-  DamageClass: 0
+  DamageClass: 4
+  ImpactMultiplier: 1
   Buffs:
-  - {fileID: 11400000, guid: ab051646a38d9394f9ad745d1bfc54c7, type: 2}
+  - {fileID: 11400000, guid: 6424fb2eb3a29914299038fb130748b1, type: 2}
+  <AfterSkill>k__BackingField: {fileID: 0}
   ManaCost:
     manas:
     - Color: 0
-      Value: 10
+      Value: 5
       Regen: 0
       Decay: 0
     - Color: 3

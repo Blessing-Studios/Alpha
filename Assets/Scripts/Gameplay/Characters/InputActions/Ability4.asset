@@ -9,16 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6d53dd577852f44d9404284e8401ab5, type: 3}
-  m_Name: Burning
+  m_Script: {fileID: 11500000, guid: e31a94c2047e29a45865dbb5e86f23f1, type: 3}
+  m_Name: Ability4
   m_EditorClassIdentifier: 
-  Name: Burning
-  Label: 
-  Description: Teste
-  StatChanges: []
-  HealthChanges:
-  - Regen: 0
-    Decay: -5
-  ManaChanges: []
-  AttackChanges: []
-  DefenseChanges: []
+  Name: Ability4

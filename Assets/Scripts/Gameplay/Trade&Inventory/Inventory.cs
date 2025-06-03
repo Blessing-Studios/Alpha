@@ -21,11 +21,11 @@ namespace Blessing.Gameplay.TradeAndInventory
         public int Height = 10;
 
         public NetworkVariable<Vector2Int> GridSize = new NetworkVariable<Vector2Int>
-            (
-                new Vector2Int(0, 0),
-                NetworkVariableReadPermission.Everyone,
-                NetworkVariableWritePermission.Owner
-            );
+        (
+            new Vector2Int(0, 0),
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
 
         private bool isItemsInitialized = false;
         private bool isInitialized = false;

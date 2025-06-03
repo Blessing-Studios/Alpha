@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 955461c3ce5b84a4791cb877bf5ee4f9, type: 3}
   m_Name: DeathStrike
   m_EditorClassIdentifier: 
-  Skills: []
+  Skills:
+  - {fileID: 11400000, guid: 006335dd8f164684da5113d17c341f31, type: 2}
   animationParam:
-    value: {fileID: 0}
+    value: {fileID: 11400000, guid: 9fd13413869e2264eb1bf06f3129df6e, type: 2}
   endAnimationParam:
     value: {fileID: 0}
   CanCharge: 0
   CoolDown: 1
+  IconSprite: {fileID: 21300000, guid: 912f2333824ee3946814a450e92ab11a, type: 3}
+  ShakeEffect: {fileID: 0}

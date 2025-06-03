@@ -108,7 +108,7 @@ namespace Blessing.Ai
             CharacterStateMachine.CharacterState.OnTrigger(triggerAction, triggerDirection);
 
             if (CharacterStateMachine.CurrentMove != null)
-                aiAgent.GoapStateMachine.ActionDuration = CharacterStateMachine.CurrentMove.Duration;
+                aiAgent.GoapStateMachine.ActionDuration = CharacterStateMachine.GetCurrentMoveDuration();
         }
         public override void OnDeath()
         {

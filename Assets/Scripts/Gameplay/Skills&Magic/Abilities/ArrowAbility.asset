@@ -20,3 +20,5 @@ MonoBehaviour:
     value: {fileID: 11400000, guid: 48539a2ca5a533243a6a68b090a5bb01, type: 2}
   CanCharge: 1
   CoolDown: 1
+  IconSprite: {fileID: 21300000, guid: 530bcabb1501d8148a19a77465ecac03, type: 3}
+  ShakeEffect: {fileID: 0}

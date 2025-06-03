@@ -172,7 +172,7 @@ namespace Blessing.Gameplay.Characters
 
             return false;
         }
-        public bool AddEquipment(CharacterEquipment equipment, InventoryItem inventoryItem)
+        public virtual bool AddEquipment(CharacterEquipment equipment, InventoryItem inventoryItem)
         {
             Gear gear = inventoryItem.Item as Gear;
             if (gear == null)
@@ -217,7 +217,7 @@ namespace Blessing.Gameplay.Characters
             return false;
         }
 
-        public bool RemoveEquipment(CharacterEquipment equipment, InventoryItem inventoryItem)
+        public virtual bool RemoveEquipment(CharacterEquipment equipment, InventoryItem inventoryItem)
         {
             Gear gear = inventoryItem.Item as Gear;
             if (equipment.GearSlotType == gear.EquipmentType)

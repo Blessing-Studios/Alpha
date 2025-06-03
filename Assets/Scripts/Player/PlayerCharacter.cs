@@ -31,7 +31,7 @@ namespace Blessing.Player
         // private int deferredDespawnTicks = 4;
 
         [field: SerializeField] public PlayerCharacterNetwork Network { get; private set; }
-        public void SetPlayerCharacterNetwork( PlayerCharacterNetwork network)
+        public void SetPlayerCharacterNetwork(PlayerCharacterNetwork network)
         {
             Network = network;
         }
@@ -42,12 +42,13 @@ namespace Blessing.Player
         private CinemachineImpulseSource impulseSource;
         public Adventurer Adventurer;
         [SerializeField] private bool canGiveInputs = false;
-        public bool CanGiveInputs { get { return  canGiveInputs; } }
-        public void SetCanGiveInputs (bool canGiveInputs)
+        private PlayerHUD playerHUD;
+        public bool CanGiveInputs { get { return canGiveInputs; } }
+        public void SetCanGiveInputs(bool canGiveInputs)
         {
             this.canGiveInputs = canGiveInputs;
         }
-        
+
         public string GetPlayerOwnerName()
         {
             if (Network != null)
@@ -89,6 +90,9 @@ namespace Blessing.Player
             Adventurer = GetComponent<Adventurer>();
 
             GameManager.Singleton.PlayerCharacterList.Add(this);
+
+            playerHUD = UIController.Singleton.PlayerHUD;
+            if (playerHUD == null) Debug.LogError(gameObject.name + ": PlayerHUD can't be null");
         }
 
         protected override void Start()
@@ -115,19 +119,32 @@ namespace Blessing.Player
             gameObject.name = "Char-" + GetPlayerOwnerName();
             GameManager.Singleton.AddPlayerCharacter(GetPlayerOwnerName(), this);
             canGiveInputs = GameDataManager.Singleton.ValidateOwner(GetPlayerOwnerName());
-            
-            if (canGiveInputs) 
+
+            if (canGiveInputs)
                 playerInput.enabled = true;
             else
                 playerInput.enabled = false;
 
-            foreach(PlayerController player in GameManager.Singleton.Players)
+            foreach (PlayerController player in GameManager.Singleton.Players)
             {
                 if (player.GetPlayerName() == GetPlayerOwnerName() && player.PlayerCharacter == null)
                 {
                     player.SetPlayerCharacter(this);
                 }
             }
+
+            playerHUD.InitializeAbilitiesUI(Abilities);
+
+            isPlayerCharacterInitialized = true;
+        }
+
+        protected override void LoadAbilities()
+        {
+            base.LoadAbilities();
+
+            if (!HasAuthority || !canGiveInputs) return;
+
+            playerHUD.InitializeAbilitiesUI(Abilities);
         }
         public override bool CheckIfActionTriggered(InputActionType actionType)
         {
@@ -162,7 +179,7 @@ namespace Blessing.Player
             bool baseValue = base.Hit(target, hitPosition);
 
             if (HasAuthority && baseValue)
-            {       
+            {
                 target.GetOwnership();
             }
 
@@ -198,7 +215,7 @@ namespace Blessing.Player
 
         public void OnSpecial(InputAction.CallbackContext context)
         {
-            
+
             // if (!HasAuthority || !canGiveInputs) return;
 
             // // Checar se tem alguma Spell em quick spell slot
@@ -249,6 +266,77 @@ namespace Blessing.Player
                 HandleActionInput(context);
         }
 
+        public void OnAbility4(InputAction.CallbackContext context)
+        {
+            if (Abilities.Count > 3)
+                HandleActionInput(context);
+        }
+
+        public void OnSelectQuickUseSlot1(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                playerHUD.SelectQuickSlot(playerHUD.QuickUseSlots[0]);
+            }
+        }
+        public void OnSelectQuickUseSlot2(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                playerHUD.SelectQuickSlot(playerHUD.QuickUseSlots[1]);
+            }
+        }
+        public void OnSelectQuickUseSlot3(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                playerHUD.SelectQuickSlot(playerHUD.QuickUseSlots[2]);
+            }
+        }
+        public void OnOpenQuickUseSlot1(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                playerHUD.QuickUseSlots[0].OpenSlot();
+            }
+
+            if (context.canceled)
+            {
+                 playerHUD.QuickUseSlots[0].CloseSlot();
+            }
+        }
+        public void OnOpenQuickUseSlot2(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                playerHUD.QuickUseSlots[1].OpenSlot();
+            }
+
+            if (context.canceled)
+            {
+                 playerHUD.QuickUseSlots[1].CloseSlot();
+            }
+        }
+        public void OnOpenQuickUseSlot3(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                playerHUD.QuickUseSlots[2].OpenSlot();
+            }
+
+            if (context.canceled)
+            {
+                 playerHUD.QuickUseSlots[2].CloseSlot();
+            }
+        }
+        public void UseSelectedQuickSlot(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                playerHUD.SelectedQuickSlot.UseSelectedItem();
+            }
+        }
+
         private void HandleActionInput(InputAction.CallbackContext context)
         {
             if (!HasAuthority || !canGiveInputs) return;
@@ -268,11 +356,11 @@ namespace Blessing.Player
                 CharacterStateMachine.CharacterState.OnTrigger(TriggerAction, TriggerDirection);
             }
         }
-        
+
         public void OnMove(InputAction.CallbackContext context)
         {
             if (!HasAuthority || !canGiveInputs) return;
-            
+
             Vector2 currentMovementInput = Vector2.zero;
             if (context.performed || context.canceled)
             {
@@ -308,8 +396,19 @@ namespace Blessing.Player
             base.OnAnimationAttack();
 
             if (HasAuthority && CharacterStateMachine.CurrentMove.ShakeEffect != null)
-                    GameManager.Singleton.CameraShake(impulseSource, CharacterStateMachine.CurrentMove.ShakeEffect);
+                GameManager.Singleton.CameraShake(impulseSource, CharacterStateMachine.CurrentMove.ShakeEffect);
+        }
 
+        public override void OnAnimationCast()
+        {
+            base.OnAnimationCast();
+
+            if (!HasAuthority) return;
+
+            CharacterAbility characterAbility = Abilities[CharacterStateMachine.AbilityIndex];
+
+            if (characterAbility.ShakeEffect != null)
+                GameManager.Singleton.CameraShake(impulseSource, characterAbility.ShakeEffect);
         }
     }
 }

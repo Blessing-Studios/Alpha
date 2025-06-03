@@ -19,8 +19,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
         {
             base.Trigger(skillTrigger);
             
-            Projectile projectile = PoolManager.Singleton.Get(projectilePrefab) as Projectile;
-            projectile.Initialize(this, skillTrigger, randomFloat);
+            PoolManager.Singleton.Get<Projectile>(projectilePrefab).Initialize(this, skillTrigger, randomFloat);
         }
     }
 }

@@ -478,13 +478,13 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkTransformExpanded: 0
   AutoOwnerAuthorityTickOffset: 1
-  PositionInterpolationType: 0
-  RotationInterpolationType: 0
+  PositionInterpolationType: 2
+  RotationInterpolationType: 2
   ScaleInterpolationType: 0
-  PositionLerpSmoothing: 1
+  PositionLerpSmoothing: 0
   PositionMaxInterpolationTime: 0.1
-  RotationLerpSmoothing: 1
-  RotationMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 0
+  RotationMaxInterpolationTime: 0.01
   ScaleLerpSmoothing: 1
   ScaleMaxInterpolationTime: 0.1
   AuthorityMode: 1
@@ -500,7 +500,7 @@ MonoBehaviour:
   SyncScaleY: 0
   SyncScaleZ: 0
   PositionThreshold: 0.001
-  RotAngleThreshold: 179
+  RotAngleThreshold: 30
   ScaleThreshold: 0.01
   UseQuaternionSynchronization: 0
   UseQuaternionCompression: 0
@@ -574,7 +574,7 @@ Animator:
   m_GameObject: {fileID: 6028631068472643565}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6f418fd15cf98aa4092c3481efad96f9, type: 2}
+  m_Controller: {fileID: 22100000, guid: 2022c1efe47224649836ac5293f8f9ca, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -733,6 +733,8 @@ MonoBehaviour:
   direction: {x: 0, y: 0}
   canMove: 0
   isPushable: 1
+  isFacingRight:
+    m_InternalValue: 1
   currentMovementInput: {x: 0, y: 0}
   currentMovement: {x: 0, y: 0, z: 0}
   CurrentMovement: {x: 0, y: 0, z: 0}
@@ -848,18 +850,24 @@ MonoBehaviour:
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
   AnimationsDuration:
-  - Name: WalkingForward
-    Duration: 1.0833334
-  - Name: Idle
-    Duration: 0.9166666
-  - Name: TakeHit
-    Duration: 0.6666666
+  - Name: Cast1
+    Duration: 1.25
   - Name: Dying
     Duration: 1.25
-  - Name: Dead
-    Duration: 1
+  - Name: EndCast1
+    Duration: 0.5833333
+  - Name: HeavyAttack1
+    Duration: 0.8333333
+  - Name: HeavyAttack2
+    Duration: 0.4166667
+  - Name: HoldCast1
+    Duration: 0.5833333
   - Name: LightAttack1
     Duration: 1.5
+  - Name: LightAttack2
+    Duration: 0.5
+  - Name: TakeHit
+    Duration: 0.6666666
   AbilityIndex: 0
   <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
   <CurrentMove>k__BackingField:
@@ -868,7 +876,6 @@ MonoBehaviour:
     AudioClips: []
     AnimationParamRef:
       value: {fileID: 0}
-    Duration: 0
     triggerAction:
       value: {fileID: 0}
     Direction:
@@ -883,7 +890,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 44ce49ae2cf51c94eabc66d0fcf161a4, type: 2}
   castActions: []
   MatchedCombosIndex: 
-  AnimatorController: {fileID: 9100000, guid: 6f418fd15cf98aa4092c3481efad96f9, type: 2}
 --- !u!114 &2620648292840096135
 MonoBehaviour:
   m_ObjectHideFlags: 0

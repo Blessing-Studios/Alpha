@@ -87,6 +87,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Ability4",
+                    "type": "Button",
+                    "id": "100e66d7-f510-440e-a06c-c3871deff773",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
@@ -135,6 +144,69 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "641cd816-40e6-41b4-8c3d-04687c349290",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectQuickSlot1",
+                    "type": "Button",
+                    "id": "eacec54a-4531-49d2-b676-53076f4e2be4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectQuickSlot2",
+                    "type": "Button",
+                    "id": "d5724d20-fb06-4112-acd5-9db3d64734ed",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectQuickSlot3",
+                    "type": "Button",
+                    "id": "ef5c6c15-d23f-4996-aac7-f8b7756588f9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenQuickSlot1",
+                    "type": "Button",
+                    "id": "c6f86fdc-2f09-44b9-8563-bc4c52d1cb46",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenQuickSlot2",
+                    "type": "Button",
+                    "id": "4f81d3bc-8965-41a7-b7ad-4754c6b521a5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenQuickSlot3",
+                    "type": "Button",
+                    "id": "68ab43df-4508-48d8-bf23-64eb0455b540",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseSelectedQuickSlot",
+                    "type": "Button",
+                    "id": "48f6fd63-eace-4d61-8862-7423962f6706",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -596,11 +668,99 @@
                 {
                     "name": "",
                     "id": "83e37395-bcd3-4e65-b5c8-823431e25852",
-                    "path": "<Keyboard>/shift",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Ability3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4d0c1fe1-9422-4e25-88d2-06587b35e9ab",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ability4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b2b3e14d-a62f-40b6-b393-7bd3d3a44983",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectQuickSlot1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f77b3005-d6f8-4c06-8de8-fd86741f3d19",
+                    "path": "<Keyboard>/1",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenQuickSlot1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ed05810-e516-4867-a33f-a63f1374b653",
+                    "path": "<Keyboard>/2",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenQuickSlot2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0127fcac-8c79-4adb-9462-2c930576a160",
+                    "path": "<Keyboard>/3",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenQuickSlot3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b5f4330b-8e88-4d99-9ab4-927ce9abcded",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectQuickSlot2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8a8ff419-ab61-4d6c-8db2-7536e8b8e793",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectQuickSlot3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f2118cf6-8837-431b-abb5-52249702c79b",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseSelectedQuickSlot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -696,6 +856,60 @@
                     "type": "PassThrough",
                     "id": "9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be",
                     "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectSlot1",
+                    "type": "Button",
+                    "id": "538ceefd-3023-4bee-aa37-ce58541ca898",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectUse2",
+                    "type": "Button",
+                    "id": "cb4d0d2c-68af-4f9c-b129-f41b67bff282",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectUse3",
+                    "type": "Button",
+                    "id": "55977aea-aa5c-430b-af05-cd251f50b98d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenSlot1",
+                    "type": "Button",
+                    "id": "fb2c7289-619f-49e3-9e93-6dfaff7022b2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenSlot2",
+                    "type": "Button",
+                    "id": "17dc772e-b733-4f4c-bb52-aed60db3dae9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenSlot3",
+                    "type": "Button",
+                    "id": "f1a1c056-8093-4ff5-85be-bf26d7b86472",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -968,6 +1182,50 @@
                 },
                 {
                     "name": "",
+                    "id": "5d8ac926-7a66-4b49-908f-34d0759560f2",
+                    "path": "<Keyboard>/2",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenSlot2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aae19cb8-16be-4398-bb21-818f640f2c19",
+                    "path": "<Keyboard>/1",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenSlot1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a6bc8fdd-d972-4208-9729-5c3042264ada",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectUse2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "910ae25e-2192-4cad-b4be-5e1d7cf33e3b",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectSlot1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "9e92bb26-7e3b-4ec4-b06b-3c8f8e498ddc",
                     "path": "*/{Submit}",
                     "interactions": "",
@@ -1095,6 +1353,28 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "47023151-45b6-415c-b614-2f51768b661c",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectUse3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eb49765a-4e25-45e2-bcb6-7575bc19348a",
+                    "path": "<Keyboard>/2",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenSlot3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

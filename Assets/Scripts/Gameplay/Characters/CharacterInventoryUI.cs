@@ -102,8 +102,6 @@ namespace Blessing.Gameplay.Characters
         }
         public void SyncGrids()
         {
-            Debug.Log(gameObject.name + "Entrou Inventory SyncGrids");
-
             if (!gameObject.activeSelf) return;
 
             if (Character == null) return;

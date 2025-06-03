@@ -19,11 +19,87 @@ PrefabInstance:
     - target: {fileID: 1646976488681774380, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 1a43304674dc3e644aab3290d4980536, type: 2}
+      objectReference: {fileID: 22100000, guid: 78d43db50b00eea4f950f563fa7a95d6, type: 2}
     - target: {fileID: 1695591404163353372, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -824088253, guid: 3de2f4cb0f719e04283a2f8f31a55634, type: 3}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[0].Name
+      value: Cast1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[1].Name
+      value: Dying
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[2].Name
+      value: EndCast1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[3].Name
+      value: HeavyAttack1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[4].Name
+      value: HeavyAttack2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[5].Name
+      value: HoldCast1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[6].Name
+      value: LightAttack1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[7].Name
+      value: LightAttack2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[8].Name
+      value: TakeHit
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[0].Duration
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[1].Duration
+      value: 1.5833334
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[2].Duration
+      value: 0.5833333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[3].Duration
+      value: 0.8333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[4].Duration
+      value: 0.4166667
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[5].Duration
+      value: 0.5833333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[6].Duration
+      value: 0.8333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[7].Duration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[8].Duration
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5143992474855496680, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.044

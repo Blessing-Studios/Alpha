@@ -39,7 +39,7 @@ PrefabInstance:
     - target: {fileID: 1646976488681774380, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: e382802ba0bbced46bde611e251444c7, type: 2}
+      objectReference: {fileID: 22100000, guid: 80aedf678e5cf1a4598275ef5564b4df, type: 2}
     - target: {fileID: 1695591404163353372, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -66,19 +66,39 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: da04269557b3f164cabb87caaa91894c, type: 2}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.size
-      value: 10
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[0].Name
+      value: Cast1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[1].Name
+      value: Dying
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[2].Name
+      value: EndCast1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[3].Name
+      value: HeavyAttack1
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[4].Name
-      value: Dead
+      value: HeavyAttack2
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[5].Name
+      value: HoldCast1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[6].Name
       value: LightAttack1
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[7].Name
-      value: Cast1
+      value: TakeHit
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[8].Name
@@ -90,35 +110,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[0].Duration
-      value: 0.6666666
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[1].Duration
-      value: 0.6666666
-      objectReference: {fileID: 0}
-    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: AnimationsDuration.Array.data[2].Duration
-      value: 0.42857143
-      objectReference: {fileID: 0}
-    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: AnimationsDuration.Array.data[3].Duration
       value: 1.3000001
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: AnimationsDuration.Array.data[4].Duration
-      value: 1
+      propertyPath: AnimationsDuration.Array.data[2].Duration
+      value: 0.5833333
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: AnimationsDuration.Array.data[5].Duration
-      value: 0.9166667
-      objectReference: {fileID: 0}
-    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: AnimationsDuration.Array.data[6].Duration
+      propertyPath: AnimationsDuration.Array.data[3].Duration
       value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
-      propertyPath: AnimationsDuration.Array.data[7].Duration
+      propertyPath: AnimationsDuration.Array.data[4].Duration
+      value: 0.4166667
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[5].Duration
       value: 0.5833333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[6].Duration
+      value: 0.9166667
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: AnimationsDuration.Array.data[7].Duration
+      value: 0.42857143
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[8].Duration

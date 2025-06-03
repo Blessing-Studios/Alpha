@@ -18,7 +18,7 @@ namespace Blessing.Gameplay.Characters.States
             base.OnEnter();
             if (!characterStateMachine.Character.HasAuthority) return;
 
-            animator.SetTrigger("Die");
+            networkAnimator.SetTrigger("Dying");
 
             character.OnDeath();
 
@@ -33,7 +33,7 @@ namespace Blessing.Gameplay.Characters.States
             // TODO: criar lógica para ser possível bater em alguém durante a animação de morte
             if (time >= duration && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
             {
-                animator.SetTrigger("Die");
+                networkAnimator.SetTrigger("Dying");
             }
         }
     }

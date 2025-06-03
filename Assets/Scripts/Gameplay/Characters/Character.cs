@@ -181,7 +181,7 @@ namespace Blessing.Gameplay.Characters
             isInitialized = true;
         }
 
-        private void LoadAbilities()
+        protected virtual void LoadAbilities()
         {
             Abilities.Clear();
 
@@ -431,7 +431,8 @@ namespace Blessing.Gameplay.Characters
                 data = characterTrait.Data;
             }
 
-            CharacterNetwork.HandleTraitVisualEffectRpc(trait.Id);
+            if (trait.VFX != null)
+                CharacterNetwork.HandleTraitVisualEffectRpc(trait.Id);
 
             CharacterNetwork.TraitDataNetworkList.Add(data);
             CharacterNetwork.TraitDataLocalList.Add(data);
@@ -605,7 +606,6 @@ namespace Blessing.Gameplay.Characters
 
         public void TriggerAbility()
         {
-            Debug.Log("OnAnimationCast");
             foreach(Skill skill in Abilities[CharacterStateMachine.AbilityIndex].Ability.Skills)
             {
                 HandleSkill(skill);

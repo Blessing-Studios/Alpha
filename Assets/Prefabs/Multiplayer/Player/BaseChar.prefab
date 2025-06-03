@@ -350,7 +350,7 @@ GameObject:
   - component: {fileID: 1336789277861539600}
   - component: {fileID: 4065250881899869995}
   - component: {fileID: 2620648292840096135}
-  - component: {fileID: 8228401257819008161}
+  - component: {fileID: 7782373307684811648}
   - component: {fileID: 655986913388950610}
   - component: {fileID: 2259359815306742575}
   - component: {fileID: -6873965126545705189}
@@ -423,6 +423,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 2
+  RotationInterpolationType: 2
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 0
+  RotationMaxInterpolationTime: 0.01
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
   AuthorityMode: 1
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
@@ -430,13 +440,13 @@ MonoBehaviour:
   SyncPositionY: 1
   SyncPositionZ: 1
   SyncRotAngleX: 0
-  SyncRotAngleY: 1
+  SyncRotAngleY: 0
   SyncRotAngleZ: 0
   SyncScaleX: 0
   SyncScaleY: 0
   SyncScaleZ: 0
   PositionThreshold: 0.001
-  RotAngleThreshold: 179
+  RotAngleThreshold: 30
   ScaleThreshold: 0.01
   UseQuaternionSynchronization: 0
   UseQuaternionCompression: 0
@@ -444,7 +454,7 @@ MonoBehaviour:
   InLocalSpace: 0
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
-  SlerpPosition: 1
+  SlerpPosition: 0
 --- !u!212 &1695591404163353372
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -510,7 +520,7 @@ Animator:
   m_GameObject: {fileID: 6028631068472643565}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9765e0e276cdf94408012bb23737d860, type: 2}
+  m_Controller: {fileID: 22100000, guid: 6d9207e84ed5b1a469d7a750887958b9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -770,6 +780,146 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 7efc3357-e218-45ed-a610-f862379d20ff
     m_ActionName: 'Player/Ability3[/Keyboard/shift]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 100e66d7-f510-440e-a06c-c3871deff773
+    m_ActionName: 'Player/Ability4[/Keyboard/leftShift]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnSelectQuickUseSlot1
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: eacec54a-4531-49d2-b676-53076f4e2be4
+    m_ActionName: 'Player/SelectSlot1[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnSelectQuickUseSlot2
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: d5724d20-fb06-4112-acd5-9db3d64734ed
+    m_ActionName: 'Player/SelectUse2[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnSelectQuickUseSlot3
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ef5c6c15-d23f-4996-aac7-f8b7756588f9
+    m_ActionName: 'Player/SelectUse3[/Keyboard/3]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnOpenQuickUseSlot1
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: c6f86fdc-2f09-44b9-8563-bc4c52d1cb46
+    m_ActionName: 'Player/OpenSlot1[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnOpenQuickUseSlot2
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4f81d3bc-8965-41a7-b7ad-4754c6b521a5
+    m_ActionName: 'Player/OpenSlot2[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnOpenQuickUseSlot3
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 68ab43df-4508-48d8-bf23-64eb0455b540
+    m_ActionName: 'Player/OpenSlot3[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 538ceefd-3023-4bee-aa37-ce58541ca898
+    m_ActionName: 'UI/SelectSlot1[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cb4d0d2c-68af-4f9c-b129-f41b67bff282
+    m_ActionName: 'UI/SelectUse2[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 55977aea-aa5c-430b-af05-cd251f50b98d
+    m_ActionName: 'UI/SelectUse3[/Keyboard/3]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: fb2c7289-619f-49e3-9e93-6dfaff7022b2
+    m_ActionName: 'UI/OpenSlot1[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 17dc772e-b733-4f4c-bb52-aed60db3dae9
+    m_ActionName: 'UI/OpenSlot2[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f1a1c056-8093-4ff5-85be-bf26d7b86472
+    m_ActionName: 'UI/OpenSlot3[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: UseSelectedQuickSlot
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 48f6fd63-eace-4d61-8862-7423962f6706
+    m_ActionName: 'Player/UseSelectedItem[/Keyboard/g]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -964,6 +1114,8 @@ MonoBehaviour:
   direction: {x: 0, y: 0}
   canMove: 0
   isPushable: 1
+  isFacingRight:
+    m_InternalValue: 1
   currentMovementInput: {x: 0, y: 0}
   currentMovement: {x: 0, y: 0, z: 0}
   CurrentMovement: {x: 0, y: 0, z: 0}
@@ -1039,6 +1191,8 @@ MonoBehaviour:
   EquipmentLocalList: []
   OnAddEquipment: {fileID: 11400000, guid: 1df16cf5272784549a873d78ceefbe55, type: 2}
   OnRemoveEquipment: {fileID: 11400000, guid: 9450f615d6da2ce4593de1c0c0f405b3, type: 2}
+  OnPlayerAddEquipment: {fileID: 11400000, guid: b516df11270d28b459f7cb04c8a4ba99, type: 2}
+  OnPlayerRemoveEquipment: {fileID: 11400000, guid: b5834244efde1e04da3dde4bc512d3e6, type: 2}
 --- !u!114 &2620648292840096135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1068,7 +1222,7 @@ MonoBehaviour:
   Traits: []
   OnUpdateAllStats: {fileID: 11400000, guid: 492a29ef2224c8746b8d80563e24d76e, type: 2}
   OnUpdateStat: {fileID: 11400000, guid: af93a0ddc9b60fa42b245306d6aa318b, type: 2}
---- !u!114 &8228401257819008161
+--- !u!114 &7782373307684811648
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1077,7 +1231,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6028631068472643565}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69678fbecf5f5bd4b8ec8e14a7e60481, type: 3}
+  m_Script: {fileID: 11500000, guid: 5429369fd5f5c924a92a9a8cf8229890, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
@@ -1085,9 +1239,23 @@ MonoBehaviour:
     manas: []
   reserveMax:
     manas: []
-  statsMultiplier: 5
   manaChange: 2
   manaChangeTime: 0.5
+  white:
+    m_InternalValue: 0
+  red:
+    m_InternalValue: 0
+  green:
+    m_InternalValue: 0
+  blue:
+    m_InternalValue: 0
+  black:
+    m_InternalValue: 0
+  OnWhiteManaChanged: {fileID: 11400000, guid: 1f5128e600a97784cb2caaf0e442176f, type: 2}
+  OnRedManaChanged: {fileID: 11400000, guid: a1347e3101be89b4bba998e377cbcb1c, type: 2}
+  OnGreenManaChanged: {fileID: 11400000, guid: 2b76b6861d9bd60419f296ca459edcbc, type: 2}
+  OnBlueManaChanged: {fileID: 11400000, guid: 6857cba60454c5b4fa41e53e7f73b949, type: 2}
+  OnBlackManaChanged: {fileID: 11400000, guid: 5a7e8e189b884f1428682ef49e1b1de7, type: 2}
 --- !u!114 &655986913388950610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1137,20 +1305,22 @@ MonoBehaviour:
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
   AnimationsDuration:
-  - Name: WalkingForward
-    Duration: 0.5
-  - Name: Idle
-    Duration: 1
-  - Name: TakeHit
-    Duration: 1
-  - Name: Dying
-    Duration: 0.083333336
-  - Name: LightAttack1
-    Duration: 0.4166667
-  - Name: LightAttack2
-    Duration: 0.4166667
+  - Name: Cast2
+    Duration: 1.25
+  - Name: EndCast1
+    Duration: 0.5833333
   - Name: HeavyAttack1
     Duration: 0.6666666
+  - Name: HeavyAttack2
+    Duration: 0.4166667
+  - Name: HoldCast1
+    Duration: 0.5833333
+  - Name: LightAttack1
+    Duration: 0.5833333
+  - Name: LightAttack2
+    Duration: 0.4166667
+  - Name: TakeHit
+    Duration: 1
   AbilityIndex: 0
   <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
   <CurrentMove>k__BackingField:
@@ -1159,7 +1329,6 @@ MonoBehaviour:
     AudioClips: []
     AnimationParamRef:
       value: {fileID: 0}
-    Duration: 0
     triggerAction:
       value: {fileID: 0}
     Direction:
@@ -1175,8 +1344,9 @@ MonoBehaviour:
   castActions:
   - {fileID: 11400000, guid: df2441f0af02f29449d6d83d60798b2b, type: 2}
   - {fileID: 11400000, guid: 29f876b455c6042428354dc16e5d79b1, type: 2}
+  - {fileID: 11400000, guid: e5200012b0ae80444a7410400a1f1932, type: 2}
+  - {fileID: 11400000, guid: 55e00e46672652d4ba61a931921848f0, type: 2}
   MatchedCombosIndex: 
-  AnimatorController: {fileID: 9100000, guid: 9765e0e276cdf94408012bb23737d860, type: 2}
 --- !u!114 &-6873965126545705189
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,6 +12,12 @@ namespace Blessing.HealthAndDamage
         [SerializeField] protected Slider[] healthBars;
         [SerializeField] protected GameObject woundPrefab;
         [SerializeField] private float healthPercent = 100;
+        public Color HealthColor;
+        private RectTransform rectTransform;
+        void Awake()
+        {
+            rectTransform = GetComponent<RectTransform>();
+        }
 
         private void HandleOnHealthChanged(object sender, System.EventArgs eventArgs)
         {
@@ -41,8 +47,11 @@ namespace Blessing.HealthAndDamage
                 wound.transform.SetParent(transform, false);
 
                 float width = wound.transform.Find("Frame").GetComponent<RectTransform>().rect.width;
+                float height = rectTransform.rect.height;
 
-                wound.GetComponent<RectTransform>().localPosition = new Vector3(width * (i - 1), 0, 0);
+                wound.GetComponent<RectTransform>().localPosition = new Vector3(width * i, - height, 0);
+
+                wound.transform.Find("Bar/Fill").GetComponent<Image>().color = HealthColor;
             }
 
             healthBars = GetComponentsInChildren<Slider>();

@@ -18,7 +18,6 @@ namespace Blessing.Player
         [field: SerializeField] public bool ShowDebug { get; private set; }
         private CharacterData characterData;
         public Vector3 SpawnLocation;
-        public PlayerHUD PlayerHUD;
         [field: SerializeField] public PlayerCharacter PlayerCharacter { get; private set; }
         protected NetworkVariable<int> m_TickToSpawnLoot = new NetworkVariable<int>();
         public int SpawnTime = 20;
@@ -109,8 +108,6 @@ namespace Blessing.Player
             GameManager.Singleton.AddPlayer(this);
 
             characterData = GameDataManager.Singleton.CharacterSelected;
-
-            PlayerHUD = GetComponent<PlayerHUD>();
         }
         void Start()
         {
@@ -250,12 +247,12 @@ namespace Blessing.Player
                     inventoryItem.gameObject.SetActive(false);
                 }
             }
-            
+
             if (characterData.UtilityItems.Count > 0 && PlayerCharacter.Gear.UtilityInventories.Count == characterData.UtilityItems.Count)
             {
-                for(int i = 0; i < characterData.UtilityItems.Count; i++)
+                for (int i = 0; i < characterData.UtilityItems.Count; i++)
                 {
-                    foreach(InventoryItemData item in characterData.UtilityItems[i].Items)
+                    foreach (InventoryItemData item in characterData.UtilityItems[i].Items)
                     {
                         InventoryItem inventoryItem = GameManager.Singleton.FindInventoryItem(item);
                         PlayerCharacter.Gear.UtilityInventories[i].AddItem(inventoryItem);
@@ -264,16 +261,18 @@ namespace Blessing.Player
                     }
                 }
             }
-            
+
             if (characterData.UtilityItems.Count > 0 && PlayerCharacter.Gear.UtilityInventories.Count != characterData.UtilityItems.Count)
             {
                 Debug.LogError(gameObject.name + ": Utility Inventories number are not matching in the save file");
             }
+
+            UIController.Singleton.PlayerHUD.InitializeQuickUseSlots(PlayerCharacter);
         }
 
         private void SetPlayer()
         {
-            PlayerHUD.Initialize(PlayerCharacter);
+            UIController.Singleton.PlayerHUD.Initialize(PlayerCharacter, this);
 
             UIController.Singleton.SetPlayerCharacter(PlayerCharacter);
 

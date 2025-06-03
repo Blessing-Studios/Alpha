@@ -53,13 +53,12 @@ namespace Blessing.Gameplay.Characters.States
             movementController.DisableMovement();
 
             // Trigger animation
-            animator.SetTrigger(CurrentMove.AnimationParam);
-
+            networkAnimator.SetTrigger(CurrentMove.AnimationParam);
+            
             // Zera movementController.AttackMovement
             movementController.AttackMovement = Vector3.zero;
 
-            duration = characterStateMachine.AnimationsDuration.First(e => e.Name == CurrentMove.AnimationParam).Duration;
-            // duration = CurrentMove.Duration;
+            duration = characterStateMachine.GetCurrentMoveDuration();
 
             shouldCombo = false;
             attackPressedTimer = 0;
@@ -128,7 +127,6 @@ namespace Blessing.Gameplay.Characters.States
 
             return checkAction && checkDirection;
         }
-        
         public override bool OnTrigger(InputActionType triggerAction, InputDirectionType triggerDirection)
         {
             inputAction = triggerAction;

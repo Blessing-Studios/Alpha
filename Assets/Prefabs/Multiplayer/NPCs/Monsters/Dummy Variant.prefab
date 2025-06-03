@@ -152,7 +152,7 @@ PrefabInstance:
     - target: {fileID: 1646976488681774380, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: bdf453b0550ed7f44a03a41c8f55b039, type: 2}
+      objectReference: {fileID: 22100000, guid: d9effb4e662f22647aad278cafbd1d27, type: 2}
     - target: {fileID: 1695591404163353372, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -215,15 +215,15 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 92e8903cdf615f3479afe22bf9ab1bb7, type: 2}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.size
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[0].Name
-      value: WalkingForward
+      value: TakeHit
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[1].Name
-      value: Idle
+      value: TakeHit
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[2].Name
@@ -243,11 +243,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[0].Duration
-      value: 0.016666668
+      value: 0.625
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[1].Duration
-      value: 0.016666668
+      value: 0.625
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[2].Duration

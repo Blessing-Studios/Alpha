@@ -1,6 +1,8 @@
 using System;
 using Blessing.Gameplay.SkillsAndMagic;
 using Blessing.Gameplay.Characters.InputActions;
+using UnityEngine.UI;
+using UnityEngine;
 
 namespace Blessing.Gameplay.Characters
 {
@@ -10,7 +12,9 @@ namespace Blessing.Gameplay.Characters
         public Ability Ability;
         public float CoolDownTimer = 0;
         public CastActionType CastAction { get; set; }
-        public Skill[] Skills { get { return Ability.Skills; } } 
+        public Skill[] Skills { get { return Ability.Skills; } }
+        public Sprite IconSprite { get { return Ability.IconSprite; } }
+        public CameraShakeEffect ShakeEffect { get { return Ability.ShakeEffect; } } 
         public CharacterAbility(Ability ability, CastActionType castAction)
         {
             Ability = ability;
