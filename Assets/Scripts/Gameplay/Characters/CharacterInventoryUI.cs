@@ -93,16 +93,20 @@ namespace Blessing.Gameplay.Characters
         {
             gameObject.SetActive(true);
 
+            // Disable inputs
+
             SyncGrids();
         }
 
         public void CloseInventoryUI()
         {
+            // Enable inputs
+
             gameObject.SetActive(false);
         }
         public void SyncGrids()
         {
-            if (!gameObject.activeSelf) return;
+            // if (!gameObject.activeSelf) return;
 
             if (Character == null) return;
 

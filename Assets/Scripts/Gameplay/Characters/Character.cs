@@ -308,6 +308,9 @@ namespace Blessing.Gameplay.Characters
 
             TargetList.Add(target);
 
+            // Gain Mana on hit
+            Mana.HandleHit();
+
             return true;
         }
 
@@ -372,6 +375,9 @@ namespace Blessing.Gameplay.Characters
 
             MovementController.HandlePushBack(pushDirection, impact, impulseTime);
 
+            // Gain Mana on hit
+            Mana.HandleHit();
+
             if (ShowDebug) Debug.Log(gameObject.name + ": GotHit Time - " + Time.time);
 
             if (hitInfo.CanTriggerTakeHit())
@@ -400,18 +406,18 @@ namespace Blessing.Gameplay.Characters
         public abstract bool CheckIfActionTriggered(InputActionType actionType);
         public abstract bool CheckIfDirectionTriggered(InputDirectionType directionType);
         public abstract bool CheckIfComboMoveTriggered(Move move);
-        public void AddTrait(Trait trait)
+        public bool AddTrait(Trait trait)
         {
             if (ShowDebug) Debug.Log(gameObject.name + ": AddTrait trait name - " + trait.name);
             // Check if Trait can be added
-            if (!HasAuthority) return;
+            if (!HasAuthority) return false;
 
             // Check if this Trade Can Stack
             if (trait.CanStack == false)
             {
-                foreach(CharacterTrait cTrait in CharacterTraits)
+                foreach (CharacterTrait cTrait in CharacterTraits)
                 {
-                    if (cTrait.Trait == trait) return;
+                    if (cTrait.Trait == trait) return false;
                 }
             }
 
@@ -437,7 +443,8 @@ namespace Blessing.Gameplay.Characters
             CharacterNetwork.TraitDataNetworkList.Add(data);
             CharacterNetwork.TraitDataLocalList.Add(data);
 
-            UpdateParameters();   
+            UpdateParameters();
+            return true;
         }
 
         public void AddTrait(TraitData traitData)
@@ -517,10 +524,10 @@ namespace Blessing.Gameplay.Characters
             CharacterNetwork.TraitDataLocalList.Remove(traitData);
         }
 
-        public void ApplyBuff(Buff buff)
+        public bool ApplyBuff(Buff buff)
         {
             Debug.Log(gameObject.name + ": ApplyBuff - " + buff.name);
-            AddTrait(buff);          
+            return AddTrait(buff);          
         }
 
         private void HandleBuffs()

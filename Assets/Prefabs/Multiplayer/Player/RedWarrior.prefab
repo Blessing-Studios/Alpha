@@ -70,7 +70,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[0].Name
-      value: Cast1
+      value: Cast2
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[1].Name
@@ -147,6 +147,10 @@ PrefabInstance:
     - target: {fileID: 2259359815306742575, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: AnimationsDuration.Array.data[9].Duration
       value: 0.5833333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2620648292840096135, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
+      propertyPath: BaseConstitution
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2959266363100497720, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Enabled

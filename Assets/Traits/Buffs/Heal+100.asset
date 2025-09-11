@@ -23,6 +23,6 @@ MonoBehaviour:
   VFX: {fileID: 7823419999349022410, guid: 0f49a696e5957814a80396c7751503f9, type: 3}
   SpawnVFXOnGround: 1
   VFXFollowChar: 1
-  CanStack: 0
+  CanStack: 1
   Duration: 10
   SideBuff: {fileID: 0}

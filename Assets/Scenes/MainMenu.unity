@@ -5482,7 +5482,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 8885411597064453056, guid: f848ff9bbacf249468b8c30f35e2673d, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 85ff9880abcfdd64991a1636230ac603, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 85ff9880abcfdd64991a1636230ac603, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -8525,6 +8525,7 @@ MonoBehaviour:
   multiplayerButton: {fileID: 1069262987}
   multiplayerPanel: {fileID: 1028802672}
   optionsButton: {fileID: 1931903959}
+  quitButton: {fileID: 1059685897}
   firstSelectedGameObject: {fileID: 1858311561}
 --- !u!114 &1372805289
 MonoBehaviour:

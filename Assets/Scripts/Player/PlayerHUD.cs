@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Blessing.GameData;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.SkillsAndMagic;
+using Blessing.Gameplay.TradeAndInventory;
 using Blessing.HealthAndDamage;
 using Blessing.UI;
 using Blessing.UI.PlayerHUD;
@@ -107,6 +108,11 @@ namespace Blessing.Player
             PlayerCanvas.gameObject.SetActive(true);
             HealthBar.Initialize(playerCharacter.Health);
 
+            foreach (ManaColor manaColor in Enum.GetValues(typeof(ManaColor)))
+            {
+                UpdateMana(manaColor);
+            }
+
             OpenHUD();
         }
 
@@ -129,7 +135,13 @@ namespace Blessing.Player
             for (int i = 0; i < QuickUseSlots.Count && i < playerCharacter.Gear.UtilityInventories.Count; i++)
             {
                 if (playerCharacter.Gear.UtilityInventories[i] != null)
-                    QuickUseSlots[i].Initialize(playerCharacter, playerCharacter.Gear.UtilityInventories[i]);
+                {
+                    QuickUseSlots[i].Initialize(UIController.Singleton.PlayerCharacterInventoryUI.UtilityGrids[i], playerCharacter.Gear.UtilityInventories[i]);
+                }
+                else
+                {
+                    QuickUseSlots[i].Reset();
+                }
             }
         }
 

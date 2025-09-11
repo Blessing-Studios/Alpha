@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Blessing.Core;
 using Blessing.Core.ObjectPooling;
 using Blessing.GameData;
+using Blessing.Gameplay.TradeAndInventory;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
@@ -178,10 +179,23 @@ namespace Blessing.Services
         void OnReturnToMainMenuButtonPressed()
         {
             LeaveSession();
+
+            NetworkManager.Singleton.Shutdown();
+
+            GameManager.Singleton.ClearGameStates();
+
+            SceneManager.Singleton.Unload(SceneManager.Singleton.CurrentScene);
+            SceneManager.Singleton.LoadAsync(GameManager.Singleton.MainMenuScene);
+
+            // Close All game UI
+            UIController.Singleton.CloseAll();
+            UIController.Singleton.PlayerHUD.CloseHUD();
+            UIController.Singleton.CloseDeathMenuUI();
         }
 
         void OnQuitGameButtonPressed()
         {
+            Debug.Log("Quit Game");
             LeaveSession();
             Application.Quit();
         }

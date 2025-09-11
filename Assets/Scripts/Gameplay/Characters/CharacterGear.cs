@@ -465,7 +465,7 @@ namespace Blessing.Gameplay.Characters
             if (distance > maxDistance)
             {
                 looter = null;
-                UIController.Singleton.CloseAllGrids();
+                UIController.Singleton.CloseAll();
             }
         }
 #if UNITY_EDITOR

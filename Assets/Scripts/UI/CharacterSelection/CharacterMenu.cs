@@ -33,8 +33,7 @@ namespace Blessing.UI.CharacterSelection
         [SerializeField] private TextMeshProUGUI characterArchetypeText;
         [SerializeField] private TextMeshProUGUI ArchetypeDescriptionText;
         [SerializeField] private Button confirmCharacterCreateButton;
-        [ScriptableObjectDropdown(typeof(SceneReference))] public ScriptableObjectReference MainMenuScene;
-        private SceneReference mainMenuScene { get { return MainMenuScene.value as SceneReference; } }
+        private SceneReference mainMenuScene { get { return GameManager.Singleton.MainMenuScene; } }
         [SerializeField] private CharacterData characterSelected;
         public List<CharacterData> Characters = new();
         void Awake()

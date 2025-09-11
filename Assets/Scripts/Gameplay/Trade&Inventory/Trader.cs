@@ -88,7 +88,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             Customer = customer;
 
-            UIController.Singleton.OpenTraderGrids(this);
+            UIController.Singleton.OpenTraderUI(this);
 
             if (animator.GetBool(isOpenHash)) return;
 
@@ -100,7 +100,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             Customer = null;
 
-            UIController.Singleton.CloseTraderGrids();
+            UIController.Singleton.CloseTraderUI();
 
             if (!animator.GetBool(isOpenHash)) return;
 

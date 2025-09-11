@@ -17,7 +17,7 @@ MonoBehaviour:
   animationParam:
     value: {fileID: 11400000, guid: 9fd13413869e2264eb1bf06f3129df6e, type: 2}
   endAnimationParam:
-    value: {fileID: 0}
+    value: {fileID: 11400000, guid: 48539a2ca5a533243a6a68b090a5bb01, type: 2}
   CanCharge: 0
   CoolDown: 1
   IconSprite: {fileID: 21300000, guid: 912f2333824ee3946814a450e92ab11a, type: 3}

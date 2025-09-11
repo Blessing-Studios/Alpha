@@ -19,10 +19,12 @@ namespace Blessing.UI.PlayerHUD
             SetItem(inventoryItem);
             transform.SetParent(container, false);
             transform.localPosition = Vector3.zero;
+            transform.localScale = Vector3.one;
             transform.SetAsLastSibling();
             name = inventoryItem.name;
             Selected = selected;
             Select(selected);
+            Button.onClick.RemoveAllListeners();
 
             stackText.text = "";
             if (inventoryItem.Data.Stack > 1)
@@ -39,6 +41,7 @@ namespace Blessing.UI.PlayerHUD
         }
         public void Select(bool selected = true)
         {
+            Selected = selected;
             BackGround.SetActive(selected);
         }
         public void SetItem(InventoryItem inventoryItem)

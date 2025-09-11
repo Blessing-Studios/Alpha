@@ -121,7 +121,10 @@ namespace Blessing.Player
             canGiveInputs = GameDataManager.Singleton.ValidateOwner(GetPlayerOwnerName());
 
             if (canGiveInputs)
+            {
                 playerInput.enabled = true;
+                playerHUD.InitializeAbilitiesUI(Abilities);
+            }
             else
                 playerInput.enabled = false;
 
@@ -132,8 +135,6 @@ namespace Blessing.Player
                     player.SetPlayerCharacter(this);
                 }
             }
-
-            playerHUD.InitializeAbilitiesUI(Abilities);
 
             isPlayerCharacterInitialized = true;
         }
@@ -333,7 +334,8 @@ namespace Blessing.Player
         {
             if (context.performed)
             {
-                playerHUD.SelectedQuickSlot.UseSelectedItem();
+                if (playerHUD.SelectedQuickSlot != null)
+                    playerHUD.SelectedQuickSlot.UseSelectedItem();
             }
         }
 
@@ -386,10 +388,31 @@ namespace Blessing.Player
                 Interactor.HandleInteraction();
             }
         }
+        public void OnInventory(InputAction.CallbackContext context)
+        {
+            if (!HasAuthority) return;
+
+            if (context.performed)
+            {
+                UIController.Singleton.ToggleInventoryUI();
+            }
+        }
+        public void OnStart(InputAction.CallbackContext context)
+        {
+            if (!HasAuthority) return;
+            // Removed !canGiveInputs on the IF statement, so we can close the Pause Menu with OnStart
+
+            if (context.performed)
+            {
+                UIController.Singleton.TogglePauseMenuUI();
+            }
+        }
 
         public override void OnDeath()
         {
             base.OnDeath();
+
+            UIController.Singleton.OpenDeathMenuUI();
         }
         public override void OnAnimationAttack()
         {

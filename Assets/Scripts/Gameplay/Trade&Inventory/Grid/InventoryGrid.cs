@@ -168,11 +168,13 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private bool CheckAvailableSpace(Vector2Int position, int width, int height)
         {
+            if (Inventory == null) UIController.Singleton.SyncInventoryGrids();
+
             return Inventory.CheckAvailableSpace(position, width, height);
         }
 
         public InventoryItem PickUpItem(Vector2Int position)
-        {
+        {   
             Inventory.GetOwnership();
 
             InventoryItem inventoryItem = Inventory.ItemSlot[position.x, position.y];

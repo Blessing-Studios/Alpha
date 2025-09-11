@@ -12,7 +12,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         protected override InventoryItem CreateObject()
         {
             InventoryItem inventoryItem = Instantiate(InventoryItemPrefab).GetComponent<InventoryItem>();
-            inventoryItem.Pool = Pool;
+            // inventoryItem.Pool = Pool;
 
             return inventoryItem;
         }

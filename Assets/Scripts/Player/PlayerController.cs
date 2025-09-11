@@ -12,7 +12,6 @@ using UnityEngine;
 
 namespace Blessing.Player
 {
-    [RequireComponent(typeof(PlayerHUD))]
     public class PlayerController : NetworkBehaviour, IDataPersistence
     {
         [field: SerializeField] public bool ShowDebug { get; private set; }
@@ -267,6 +266,7 @@ namespace Blessing.Player
                 Debug.LogError(gameObject.name + ": Utility Inventories number are not matching in the save file");
             }
 
+            UIController.Singleton.SyncInventoryGrids();
             UIController.Singleton.PlayerHUD.InitializeQuickUseSlots(PlayerCharacter);
         }
 

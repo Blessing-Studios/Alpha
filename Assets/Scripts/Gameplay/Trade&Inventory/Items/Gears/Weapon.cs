@@ -23,7 +23,14 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public override string GetInfo()
         {
-            return $"Attack {Attack} Class {DamageClass}";
+            string infoText = $"Attack {Attack} Class {DamageClass}";
+
+            foreach (WeaponModifier modifier in WeaponModifiers)
+            {
+                infoText += $"\n{modifier.Value} X {modifier.Stat}";;
+            }
+
+            return infoText;
         }
 #if UNITY_EDITOR
         protected override void OnValidate()

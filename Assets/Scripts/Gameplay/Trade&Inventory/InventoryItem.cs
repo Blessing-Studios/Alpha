@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Data.Common;
+using Blessing.Core.ObjectPooling;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
@@ -38,11 +39,10 @@ namespace Blessing.Gameplay.TradeAndInventory
                 Stack == other.Stack;
         }
     }
-    public class InventoryItem : MonoBehaviour
+    public class InventoryItem : PooledObject
     {
         public Item Item;
         public InventoryItemData Data;
-        public IObjectPool<InventoryItem> Pool;
         public Inventory Inventory;
         public Vector2Int GridPosition { get { return Data.Position; } }
         public bool Rotated { get { return Data.Rotated; } }
@@ -154,6 +154,21 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             Data.Stack -= qty;
             UpdateStackNumber();
+        }
+
+        public override void GetFromPool()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public override void ReleaseToPool()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public override void DestroyPooledObject()
+        {
+            Destroy(gameObject);
         }
     }
 }

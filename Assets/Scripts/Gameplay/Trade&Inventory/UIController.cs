@@ -1,8 +1,10 @@
+using Blessing.Core.ObjectPooling;
 using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Characters.Traits;
 using Blessing.Gameplay.Guild;
 using Blessing.Gameplay.Guild.Quests;
 using Blessing.Player;
+using Blessing.UI;
 using Blessing.UI.Quests;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -20,6 +22,9 @@ namespace Blessing.Gameplay.TradeAndInventory
         public TraderInventoryUI TraderInventoryUI;
         public QuestsUI QuestsUI;
         public PlayerHUD PlayerHUD;
+        public PauseMenuUI PauseMenuUI;
+        public DeathMenuUI DeathMenuUI;
+        public PlayerCharacter PlayerCharacter;
         public Character LootCharacter;
         public IGrid SelectedGrid;
         [SerializeField] public ItemList SpawnableItems { get { return GameManager.Singleton.AllItems; } }
@@ -29,6 +34,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         [SerializeField] private bool isGridsOpen = false;
         public bool IsGridsOpen { get { return isGridsOpen; } }
         private Dictionary<FixedString64Bytes, InventoryItem> inventoryItemDic = new();
+        private bool isPauseMenuOpen = false;
 
         void Awake()
         {
@@ -52,8 +58,10 @@ namespace Blessing.Gameplay.TradeAndInventory
                 Debug.LogError(gameObject.name + " SpawnableItems is missing");
             }
 
-            CloseAllGrids();
+            CloseAll();
             PlayerHUD.CloseHUD();
+            DeathMenuUI.CloseDeathMenuUI();
+
         }
 
         void Update()
@@ -74,6 +82,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             PlayerCharacterInventoryUI.SetCharacter(playerCharacter);
 
+            PlayerCharacter = playerCharacter as PlayerCharacter;
+
         }
         public void ClearInventoryItemDic()
         {
@@ -87,22 +97,22 @@ namespace Blessing.Gameplay.TradeAndInventory
             return false;
         }
 
-        public void CloseAllGrids()
+        public void CloseAll()
         {
             PlayerCharacterInventoryUI.CloseInventoryUI();
             LootCharacterInventoryUI.CloseInventoryUI();
             TraderInventoryUI.CloseInventoryUI();
             ItemInfoBox.CloseInfoBox();
-
             QuestsUI.CloseQuestsUI();
-
-            // PlayerHUD.CloseHUD();
+            PauseMenuUI.ClosePauseMenuUI();
 
             SelectedGrid = null;
 
             GameManager.Singleton.RemoveBlurFromBackground();
+            if (PlayerCharacter != null) PlayerCharacter.SetCanGiveInputs(true);
 
             isGridsOpen = false;
+            isPauseMenuOpen = false;
         }
 
         public void ToggleInventoryUI()
@@ -112,7 +122,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (!isGridsOpen)
                 OpenInventoryGrids();
             else
-                CloseAllGrids();
+                CloseAll();
         }
 
         public void SyncInventoryGrids()
@@ -124,9 +134,12 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void OpenInventoryGrids()
         {
+            if (!PlayerCharacter.CanGiveInputs) return;
             isGridsOpen = true;
+
             PlayerCharacterInventoryUI.OpenInventoryUI();
             GameManager.Singleton.AddBlurToBackground();
+            PlayerCharacter.SetCanGiveInputs(false);
         }
         public void OpenLootGrids()
         {
@@ -136,6 +149,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             LootCharacterInventoryUI.OpenInventoryUI();
 
             GameManager.Singleton.AddBlurToBackground();
+            PlayerCharacter.SetCanGiveInputs(false);
         }
 
         public void CloseLootGrids()
@@ -147,41 +161,105 @@ namespace Blessing.Gameplay.TradeAndInventory
             ItemInfoBox.CloseInfoBox();
 
             GameManager.Singleton.RemoveBlurFromBackground();
+            PlayerCharacter.SetCanGiveInputs(true);
         }
-        public void OpenTraderGrids(Trader trader)
+        public void OpenTraderUI(Trader trader)
         {
             isGridsOpen = true;
 
             TraderInventoryUI.OpenInventoryUI(trader);
 
             GameManager.Singleton.AddBlurToBackground();
+            PlayerCharacter.SetCanGiveInputs(false);
         }
 
-        public void CloseTraderGrids()
+        public void CloseTraderUI()
         {
             isGridsOpen = false;
 
             TraderInventoryUI.CloseInventoryUI();
 
             GameManager.Singleton.RemoveBlurFromBackground();
+            PlayerCharacter.SetCanGiveInputs(true);
         }
 
-        public void OpenQuestsGrid(List<Quest> quests, Adventurer adventurer)
+        public void OpenQuestsUI(List<Quest> quests, Adventurer adventurer)
         {
             isGridsOpen = true;
 
             QuestsUI.OpenQuestsUI(quests, adventurer);
 
             GameManager.Singleton.AddBlurToBackground();
+            PlayerCharacter.SetCanGiveInputs(false);
         }
 
-        public void CloseQuestsGrid()
+        public void CloseQuestsUI()
         {
             isGridsOpen = false;
 
             QuestsUI.CloseQuestsUI();
 
             GameManager.Singleton.RemoveBlurFromBackground();
+            PlayerCharacter.SetCanGiveInputs(true);
+        }
+
+
+        public void TogglePauseMenuUI()
+        {
+            Debug.Log(gameObject.name + ": entrou TogglePauseMenuUI");
+
+            if (isGridsOpen)
+            {
+                CloseAll();
+                return;
+            }
+
+            if (!isPauseMenuOpen)
+                OpenPauseMenuUI();
+            else
+                ClosePauseMenuUI();
+        }
+
+        public void OpenPauseMenuUI()
+        {
+            PauseMenuUI.OpenPauseMenuUI();
+
+            GameManager.Singleton.AddBlurToBackground();
+            PlayerCharacter.SetCanGiveInputs(false);
+
+            isPauseMenuOpen = true;
+        }
+
+        public void ClosePauseMenuUI()
+        {
+            PauseMenuUI.ClosePauseMenuUI();
+
+            GameManager.Singleton.RemoveBlurFromBackground();
+            PlayerCharacter.SetCanGiveInputs(true);
+
+            isPauseMenuOpen = false;
+        }
+
+        async public void OpenDeathMenuUI()
+        {
+            CloseAll();
+            PlayerHUD.CloseHUD();
+
+            // TODO: criar transição para tela de morte
+            await Awaitable.WaitForSecondsAsync(4);
+
+            DeathMenuUI.OpenDeathMenuUI();
+
+            GameManager.Singleton.AddBlurToBackground();
+            PlayerCharacter.SetCanGiveInputs(false);
+        }
+
+        public void CloseDeathMenuUI()
+        {
+            DeathMenuUI.CloseDeathMenuUI();
+
+            GameManager.Singleton.RemoveBlurFromBackground();
+            PlayerCharacter.SetCanGiveInputs(true);
         }
 
         public void RotateItem()
@@ -315,12 +393,19 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private InventoryItem GetInventoryItem()
         {
-            return GameManager.Singleton.GetInventoryItem();
+            // return GameManager.Singleton.GetInventoryItem();
+
+            return PoolManager.Singleton.Get<InventoryItem>(GameManager.Singleton.InventoryItemPrefab);
         }
 
         private void ReleaseInventoryItem(InventoryItem inventoryItem)
         {
-            GameManager.Singleton.ReleaseInventoryItem(inventoryItem);
+            if (inventoryItem != null)
+            {
+                // GameManager.Singleton.ReleaseInventoryItem(inventoryItem);
+                inventoryItemDic.Remove(inventoryItem.Data.Id);
+                inventoryItem.Release();
+            }
         }
 
         private void LeftMouseButtonPress() // Organizar
@@ -418,30 +503,40 @@ namespace Blessing.Gameplay.TradeAndInventory
             ReleaseInventoryItem(inventoryItem);
 
             selectedItem = null;
-
         }
 
-        public void HandleUseItem(InventoryItem inventoryItem, int charges = 1)
+        public void HandleUseItem(InventoryItem inventoryItem, InventoryGrid inventoryGrid, int charges = 1)
         {
             if (inventoryItem == null) return;
 
             // Check if item can be consumed
-            Consumable consumable = inventoryItem.Item as Consumable;
+                Consumable consumable = inventoryItem.Item as Consumable;
             if (consumable != null)
             {
-                if (inventoryItem.Data.Stack > 1)
+                if (inventoryItem.Data.Stack >= charges)
                 {
                     foreach (Buff buff in consumable.Buffs)
                     {
                         PlayerCharacterInventoryUI.Character.ApplyBuff(buff);
                     }
+
+                    inventoryItem.RemoveFromStack(charges);
                 }
-
-                inventoryItem.RemoveFromStack(charges);
-
                 // ReleaseInventoryItem(inventoryItem);
+            }
+
+            if (inventoryItem.Data.Stack <= 0)
+            {
+                // Try to get item on grid
+                InventoryItem gridItem = inventoryGrid.PickUpItem(inventoryItem.GridPosition);
+                if (gridItem != inventoryItem)
+                {
+                    Debug.LogError(gameObject.name + ": HandleUseItem - Couldn't find item in grid");
+                    return;
+                }
+            	ReleaseInventoryItem(gridItem);
             }
         }
     }
 }
-
+ 

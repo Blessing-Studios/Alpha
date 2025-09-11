@@ -23,6 +23,7 @@ namespace Blessing.UI
         [SerializeField] private Button multiplayerButton;
         [SerializeField] GameObject multiplayerPanel;
         [SerializeField] private Button optionsButton;
+        [SerializeField] private Button quitButton;
         [SerializeField] private GameObject firstSelectedGameObject;
         
         void Awake() 
@@ -57,6 +58,10 @@ namespace Blessing.UI
                 if (ShowDebug) Debug.Log("SettingsButton");
                 Debug.Log("multiplayerButton: not done");
                 
+            });
+
+            quitButton.onClick.AddListener(() => {
+                GameplayEventHandler.QuitGamePressed();
             });
 
             if (GameDataManager.Singleton.CharacterSelected.Id != "")

@@ -21,12 +21,17 @@ using Blessing.Gameplay.Characters;
 using Blessing.Gameplay.Interation;
 using Blessing.UI.Quests;
 using UnityEngine.Rendering.Universal;
+using Blessing.Core.ScriptableObjectDropdown;
 
 namespace Blessing
 {
     public class GameManager : MonoBehaviour
     {
         public static GameManager Singleton { get; private set; }
+
+        [ScriptableObjectDropdown(typeof(SceneReference), grouping = ScriptableObjectGrouping.ByFolder)]
+        [SerializeField] private ScriptableObjectReference mainMenuScene;
+        public SceneReference MainMenuScene => mainMenuScene.value as SceneReference;
         public Camera MainCamera;
         public CinemachineCamera VirtualCamera;
         public Archetype[] Archetypes;
@@ -54,6 +59,7 @@ namespace Blessing
         public int AiCharacterSpawned = 0;
         public ContextDropDownMenu ContextDropDownMenu;
         public ItemInfoBox ItemInfoBox;
+        public InventoryItem InventoryItemPrefab;
         public TraderItem TraderItemPrefab;
         public QuestUIElement QuestUIElementPrefab;
         public QuestItem QuestItemPrefab;
@@ -113,10 +119,10 @@ namespace Blessing
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Tab) && PlayerController != null)
-            {
-                UIController.ToggleInventoryUI();
-            }
+            // if (Input.GetKeyDown(KeyCode.Tab) && PlayerController != null)
+            // {
+            //     UIController.ToggleInventoryUI();
+            // }
 
             if (Input.GetKeyDown(KeyCode.P))
             {
@@ -323,6 +329,11 @@ namespace Blessing
             // Clean Pooled InventoryItems
             InventoryItemPool.Clear();
             UIController.ClearInventoryItemDic();
+
+            // Reset Camera Position
+            VirtualCamera.LookAt = null;
+            VirtualCamera.Target.TrackingTarget = null;
+            VirtualCamera.transform.position = Vector3.zero;
 
             // Clean Other Pools
             PoolManager.Singleton.ClearAllPools();

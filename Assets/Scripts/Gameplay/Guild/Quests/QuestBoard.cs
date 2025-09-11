@@ -16,7 +16,7 @@ namespace Blessing.Gameplay.Guild.Quests
 
             if (adventurer == null) return;
 
-            UIController.Singleton.OpenQuestsGrid(ListAllQuests(), adventurer);
+            UIController.Singleton.OpenQuestsUI(ListAllQuests(), adventurer);
         }
 
         // TODO: Add validations to get Task

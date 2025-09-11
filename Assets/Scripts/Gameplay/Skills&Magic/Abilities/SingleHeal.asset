@@ -15,10 +15,10 @@ MonoBehaviour:
   Skills:
   - {fileID: 11400000, guid: ec70adee0967a3344aa1b2930933aff7, type: 2}
   animationParam:
-    value: {fileID: 11400000, guid: 25c19bf926ed77d42a10ce79ba4ceb4c, type: 2}
+    value: {fileID: 11400000, guid: 9fd13413869e2264eb1bf06f3129df6e, type: 2}
   endAnimationParam:
     value: {fileID: 11400000, guid: 48539a2ca5a533243a6a68b090a5bb01, type: 2}
-  CanCharge: 1
+  CanCharge: 0
   CoolDown: 1
   IconSprite: {fileID: 21300000, guid: c3aab7237df394c4890e647a4ae580ea, type: 3}
   ShakeEffect: {fileID: 0}

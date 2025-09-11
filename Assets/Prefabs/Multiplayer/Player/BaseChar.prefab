@@ -920,6 +920,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 48f6fd63-eace-4d61-8862-7423962f6706
     m_ActionName: 'Player/UseSelectedItem[/Keyboard/g]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnStart
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 517c5e7a-b206-4694-af31-0d8930c16ac7
+    m_ActionName: 'Player/Start[/Keyboard/escape]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8376207516185148171}
+        m_TargetAssemblyTypeName: Blessing.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: OnInventory
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: de5f6869-f132-4851-bc4e-a41ce48160dc
+    m_ActionName: 'Player/Inventory[/Keyboard/tab]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1241,6 +1273,7 @@ MonoBehaviour:
     manas: []
   manaChange: 2
   manaChangeTime: 0.5
+  redManaGainOnHit: 0
   white:
     m_InternalValue: 0
   red:

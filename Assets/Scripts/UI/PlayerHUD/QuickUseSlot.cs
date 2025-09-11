@@ -16,6 +16,7 @@ namespace Blessing.UI.PlayerHUD
         public QuickUseItem SelectedQuickUseItem;
         public bool IsOpen = false;
         [SerializeField] private PlayerCharacter playerCharacter;
+        [SerializeField] private InventoryGrid utilityGrid;
         [SerializeField] private Inventory utilityInventory;
         public RectTransform SliderRectTransform;
         [SerializeField] private float speed;
@@ -24,7 +25,6 @@ namespace Blessing.UI.PlayerHUD
         [SerializeField] private Transform itemsContainer;
         [SerializeField] private QuickUseItem quickUseItemPrefab;
         [SerializeField] private GameObject emptyBackGround;
-        private List<InventoryItem> items = new();
         private List<QuickUseItem> quickUseItems= new();
         private const float itemWidth = 100;
 
@@ -49,8 +49,6 @@ namespace Blessing.UI.PlayerHUD
         public override void OnPointerEnter(PointerEventData eventData)
         {
             base.OnPointerEnter(eventData);
-
-            OpenSlot();
         }
         public override void OnPointerExit(PointerEventData eventData)
         {
@@ -58,12 +56,31 @@ namespace Blessing.UI.PlayerHUD
 
             CloseSlot();
         }
-        public void Initialize(PlayerCharacter playerCharacter, Inventory utilityInventory)
+        public void Initialize(InventoryGrid utilityGrid, Inventory utilityInventory)
         {
-            this.playerCharacter = playerCharacter;
+            this.utilityGrid = utilityGrid;
             this.utilityInventory = utilityInventory;
 
-            items = utilityInventory.ItemList;
+            UpdateQuickUseSlot();
+        }
+        public void Reset()
+        {
+            utilityGrid = null;
+            utilityInventory = null;
+
+            foreach (QuickUseItem quItem in quickUseItems)
+            {
+                quItem.Release();
+            }
+            quickUseItems.Clear();
+
+            SelectedItem = null;
+
+            if (SelectedQuickUseItem != null)
+            {
+                SelectedQuickUseItem.Release();
+                SelectedQuickUseItem = null;
+            }
 
             UpdateQuickUseSlot();
         }
@@ -84,10 +101,20 @@ namespace Blessing.UI.PlayerHUD
         private void SelectQuickUseItem(InventoryItem selectedItem)
         {
             SelectedItem = selectedItem;
-            SelectedQuickUseItem.Button.onClick.RemoveAllListeners();
+
+            if (SelectedQuickUseItem == null)
+                SelectedQuickUseItem = PoolManager.Singleton.Get<QuickUseItem>(quickUseItemPrefab);
+
+            SelectedQuickUseItem.Initialize(selectedItem, transform, false);
+
 
             SelectedQuickUseItem.Initialize(selectedItem, transform, true).Button.onClick.AddListener(() =>
             {
+                if (IsOpen)
+                    CloseSlot();
+                else
+                    OpenSlot();
+
                 UIController.Singleton.PlayerHUD.SelectQuickSlot(this);
             });
 
@@ -97,7 +124,7 @@ namespace Blessing.UI.PlayerHUD
         {
             if (SelectedItem != null)
             {
-                UIController.Singleton.HandleUseItem(SelectedItem);
+                UIController.Singleton.HandleUseItem(SelectedItem, utilityGrid);
                 UpdateQuickUseSlot();
             }
         }
@@ -119,12 +146,11 @@ namespace Blessing.UI.PlayerHUD
                 return;
             }
 
-            items = utilityInventory.ItemList;
+            List<InventoryItem> items = utilityInventory.ItemList;
 
             if (SelectedItem == null && items.Count > 0)
             {
-                SelectedItem = items[0];
-                SelectedQuickUseItem = PoolManager.Singleton.Get<QuickUseItem>(quickUseItemPrefab).Initialize(items[0], transform, false);
+                SelectQuickUseItem(items[0]);
             }
 
             foreach (QuickUseItem quItem in quickUseItems)
@@ -178,10 +204,9 @@ namespace Blessing.UI.PlayerHUD
             }
 
             if (!selectedItemFound && items.Count > 0)
-                {
-                    SelectedItem = items[0];
-                    SelectedQuickUseItem = PoolManager.Singleton.Get<QuickUseItem>(quickUseItemPrefab).Initialize(items[0], transform, false);
-                }
+            {
+                SelectQuickUseItem(items[0]);
+            }
 
             if (SelectedItem == null)
             {
