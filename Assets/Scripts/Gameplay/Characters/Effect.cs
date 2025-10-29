@@ -22,7 +22,8 @@ namespace Blessing.Gameplay.Characters
         public Stat Stat;
         public int Value;
     }
-    [Serializable] public struct HealthChange
+    [Serializable]
+    public struct HealthChange
     {
         public int Regen;
         public int Decay;

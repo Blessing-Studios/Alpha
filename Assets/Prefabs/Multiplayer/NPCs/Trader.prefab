@@ -77,10 +77,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1511698797570248328}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -424,6 +424,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
   AuthorityMode: 1
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
@@ -511,7 +521,7 @@ Animator:
   m_GameObject: {fileID: 6028631068472643565}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4971f56929e5f6e42a55be7f8e4bea8e, type: 2}
+  m_Controller: {fileID: 22100000, guid: e068d496aaaacbd4a9a9c605c0c42be0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -578,6 +588,11 @@ MonoBehaviour:
   <ShowDebug>k__BackingField: 0
   <Inventory>k__BackingField: {fileID: 0}
   Customer: {fileID: 0}
+  Coins:
+  - {fileID: 11400000, guid: c59f72546a4fa5140849caf5529a0def, type: 2}
+  - {fileID: 11400000, guid: 5fe530e09c6cf614199f6f19e08bc4aa, type: 2}
+  - {fileID: 11400000, guid: c7e295e264e358546a929bea451d4189, type: 2}
+  orderedCoinsList: []
   CurrentTrades: []
   CurrentTradesTotalValue: 0
   reservedItem: {fileID: 0}
@@ -599,16 +614,18 @@ MonoBehaviour:
   directionList: {fileID: 11400000, guid: 27764a830a7afc84caef8df620de3476, type: 2}
   <DamageAndPen>k__BackingField: {x: 0, y: 0}
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
+  ViewRange: 15
   CharacterTraits: []
   CharacterComboSkills: []
-  castActions: []
   abilitiesSO: []
+  Abilities: []
   <ActiveSkill>k__BackingField: {fileID: 0}
   <SkillOrigin>k__BackingField: {fileID: 0}
   SpawnLocation: {x: 0, y: 0, z: 0}
   HasStarted: 0
+  TestRandomFloat: 0
   AiMovementController: {fileID: 0}
-  ViewRange: 15
+  CurrentCombo: {fileID: 0}
 --- !u!114 &2299523755292424415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -686,10 +703,11 @@ MonoBehaviour:
   direction: {x: 0, y: 0}
   canMove: 0
   isPushable: 1
+  isFacingRight:
+    m_InternalValue: 1
   currentMovementInput: {x: 0, y: 0}
   currentMovement: {x: 0, y: 0, z: 0}
   CurrentMovement: {x: 0, y: 0, z: 0}
-  CanMove: 1
 --- !u!114 &2009963721499363617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -800,11 +818,23 @@ MonoBehaviour:
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
   AnimationsDuration:
-  - Name: Closing
-    Duration: 1
-  - Name: Opening
-    Duration: 1.375
-  - Name: OpenIdle
+  - Name: Cast2
+    Duration: 1.25
+  - Name: Dying
+    Duration: 1.5833334
+  - Name: EndCast1
+    Duration: 0.5833333
+  - Name: HeavyAttack1
+    Duration: 0.8333333
+  - Name: HeavyAttack2
+    Duration: 0.4166667
+  - Name: HoldCast1
+    Duration: 0.5833333
+  - Name: LightAttack1
+    Duration: 0.8333333
+  - Name: LightAttack2
+    Duration: 0.5
+  - Name: TakeHit
     Duration: 0.5
   AbilityIndex: 0
   <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
@@ -814,7 +844,6 @@ MonoBehaviour:
     AudioClips: []
     AnimationParamRef:
       value: {fileID: 0}
-    Duration: 0
     triggerAction:
       value: {fileID: 0}
     Direction:
@@ -827,9 +856,8 @@ MonoBehaviour:
     ShakeEffect: {fileID: 0}
   combos:
   - {fileID: 11400000, guid: 44ce49ae2cf51c94eabc66d0fcf161a4, type: 2}
-  CastActions: []
+  castActions: []
   MatchedCombosIndex: 
-  AnimatorController: {fileID: 9100000, guid: 4971f56929e5f6e42a55be7f8e4bea8e, type: 2}
 --- !u!114 &2620648292840096135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -908,9 +936,19 @@ MonoBehaviour:
     manas: []
   reserveMax:
     manas: []
-  statsMultiplier: 5
   manaChange: 2
   manaChangeTime: 0.5
+  redManaGainOnHit: 0
+  white:
+    m_InternalValue: 0
+  red:
+    m_InternalValue: 0
+  green:
+    m_InternalValue: 0
+  blue:
+    m_InternalValue: 0
+  black:
+    m_InternalValue: 0
 --- !u!114 &-6873965126545705189
 MonoBehaviour:
   m_ObjectHideFlags: 0

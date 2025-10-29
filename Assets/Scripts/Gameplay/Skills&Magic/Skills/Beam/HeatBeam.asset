@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31883fbabf3aeab428b42dec693e2e2a, type: 3}
+  m_Name: HeatBeam
+  m_EditorClassIdentifier: 
+  Name: 
+  Label: 
+  Description: 
+  AudioClips: []
+  HitType: 5
+  ActiveSkillOnHit: 0
+  Modifiers: []
+  Attack: 10
+  DamageClass: 2
+  ImpactMultiplier: 1
+  Buffs:
+  - {fileID: 11400000, guid: 4818bba7395347949a7a09dc3da8c664, type: 2}
+  <AfterSkill>k__BackingField: {fileID: 0}
+  ManaCost:
+    manas:
+    - Color: 1
+      Value: 1
+      Regen: 0
+      Decay: 0
+  MaxDistance: 40
+  hitsPerSecond: 3
+  MaxTargets: 2
+  CanSelfHit: 0
+  BeamHit: {fileID: 2267286466001845409, guid: 5532a905436fa78409a0de3b2292bedd, type: 3}

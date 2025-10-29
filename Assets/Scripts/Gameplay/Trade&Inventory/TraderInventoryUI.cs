@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 namespace Blessing.Gameplay.TradeAndInventory
 {
+    [RequireComponent(typeof(Canvas))]
     public class TraderInventoryUI : MonoBehaviour
     {
         public Trader Trader;
@@ -19,6 +20,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public List<TraderItem> SellingItems;
         public GameObject ItemsContainer;
         public Button ConfirmButton;
+        public Button AutoFillButton;
         public Button CancelButton;
         [SerializeField] private TextMeshProUGUI buySubtotalText;
         [SerializeField] private TextMeshProUGUI sellSubtotalText;
@@ -28,14 +30,25 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         void Awake()
         {
-            ConfirmButton.onClick.AddListener(() => {
+            ConfirmButton.onClick.AddListener(() =>
+            {
                 Trader.ConfirmTrades();
                 UpdateTraderItems();
+                SyncGrids();
             });
 
-            CancelButton.onClick.AddListener(() => {
+            // AutoFillButton.onClick.AddListener(() =>
+            // {
+            //     Trader.AutoFill();
+            //     UpdateTraderItems();
+            //     SyncGrids();
+            // });
+
+            CancelButton.onClick.AddListener(() =>
+            {
                 Trader.CancelTrades();
                 UpdateTraderItems();
+                SyncGrids();
             });
         }
         void Start()
@@ -69,11 +82,11 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void SyncGrids()
         {
-            CustomerInventoryUI.SyncGrids();
-
             if (!gameObject.activeSelf) return;
 
             if (Trader == null) return;
+
+            CustomerInventoryUI.SyncGrids();
 
             SetTraderInventoryGrid(Trader);
 

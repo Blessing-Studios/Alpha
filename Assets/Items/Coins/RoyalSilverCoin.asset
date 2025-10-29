@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8e8f02b1b66f054781d30e51f1d4f87, type: 3}
+  m_Name: RoyalSilverCoin
+  m_EditorClassIdentifier: 
+  Label: Royal Silver Coin
+  Description: 
+  Value: 10
+  Width: 1
+  Height: 1
+  MaxStack: 10
+  Weight: 0
+  Sprite: {fileID: 1129129244, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
+  Id: 3
+  itemType:
+    value: {fileID: 11400000, guid: afa35bbcce12d634fb74b4f6151ed8ba, type: 2}

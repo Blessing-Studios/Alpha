@@ -20,6 +20,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (guids.Length == 0)
             {
                 Debug.Log("ItemType Consumable not found");
+                return;
             }
 
             string pathAsset = AssetDatabase.GUIDToAssetPath(guids[0]);

@@ -6,6 +6,8 @@ namespace Blessing.Ai
     {
         public void HandleAiMovement(Vector2 currentMovementInput)
         {
+            if (!HasAuthority) return;
+            
             currentMovement.x = currentMovementInput.x;
             currentMovement.z = currentMovementInput.y;
             isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;

@@ -9,7 +9,7 @@ namespace Blessing.HealthAndDamage
     public class SegmentedHealthBar : MonoBehaviour
     {
         protected CharacterHealth characterHealth;
-        [SerializeField] protected Slider[] healthBars;
+        [SerializeField] protected List<Slider> healthBars;
         [SerializeField] protected GameObject woundPrefab;
         [SerializeField] private float healthPercent = 100;
         public Color HealthColor;
@@ -28,11 +28,21 @@ namespace Blessing.HealthAndDamage
         // Player Character Va
         public void Initialize(CharacterHealth characterHealthComponent)
         {
+            Debug.Log(gameObject.name + ": Initialize HealthBars");
+
             if (characterHealthComponent == null)
             {
                 Debug.LogError("Health Bar component needs a characterHealth.");
                 return;
             }
+
+            for (int i = healthBars.Count - 1; i >= 0; i--)
+            {
+                // Will Destory the correct gameObject related to the healthBar
+                Destroy(healthBars[i].transform.parent.gameObject);
+            }
+
+            healthBars.Clear();
 
             this.characterHealth = characterHealthComponent;
 
@@ -49,12 +59,14 @@ namespace Blessing.HealthAndDamage
                 float width = wound.transform.Find("Frame").GetComponent<RectTransform>().rect.width;
                 float height = rectTransform.rect.height;
 
-                wound.GetComponent<RectTransform>().localPosition = new Vector3(width * i, - height, 0);
+                wound.GetComponent<RectTransform>().localPosition = new Vector3(width * i, -height, 0);
 
                 wound.transform.Find("Bar/Fill").GetComponent<Image>().color = HealthColor;
+
+                healthBars.Add(wound.transform.Find("Bar").GetComponent<Slider>());
             }
 
-            healthBars = GetComponentsInChildren<Slider>();
+            // healthBars = GetComponentsInChildren<Slider>();
 
             healthPercent = characterHealth.GetHealthPercent();
         }
@@ -65,11 +77,7 @@ namespace Blessing.HealthAndDamage
             int wounds = characterHealth.GetWounds();
             int health = characterHealth.GetHealth();
 
-            Debug.Log("woundHealth: " + woundHealth);
-            Debug.Log("wounds: " + wounds);
-            Debug.Log("health: " + health);
-
-            for (int i = 0; i < healthBars.Length; i++)
+            for (int i = 0; i < healthBars.Count; i++)
             {
                 if (i < wounds - 1)
                 {
@@ -79,8 +87,6 @@ namespace Blessing.HealthAndDamage
                 {
                     float rawValue = (wounds - 1) * woundHealth;
                     float newValue = (health - rawValue) / woundHealth;
-                    Debug.Log("rawValue: " + rawValue);
-                    Debug.Log("newValue: " + newValue);
                     healthBars[i].value = newValue;
                 }
                 else

@@ -33,13 +33,18 @@ namespace Blessing.Gameplay.Characters.States
 
             CurrentAbility = characterStateMachine.Character.Abilities[characterStateMachine.AbilityIndex];
 
-            movementController.DisableMovement();
+            if (!CurrentAbility.CanMove)
+            {
+                movementController.DisableMovement();
+
+                // Zera movementController.AttackMovement
+                movementController.AttackMovement = Vector3.zero;
+            }
+
+            movementController.SetSpeedModifier(CurrentAbility.SpeedMultiplayer, CurrentAbility.CanFace);
 
             // Trigger animation
             networkAnimator.SetTrigger(CurrentAbility.Ability.AnimationParam);
-
-            // Zera movementController.AttackMovement
-            movementController.AttackMovement = Vector3.zero;
 
             // Pegar duração
             duration = characterStateMachine.AnimationsDuration.First(e => e.Name == CurrentAbility.Ability.AnimationParam).Duration;

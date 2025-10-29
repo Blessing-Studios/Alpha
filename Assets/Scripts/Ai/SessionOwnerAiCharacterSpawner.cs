@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Blessing.Ai
 {
-    class SessionOwnerAiCharacterSpawner : SessionOwnerNetworkObjectSpawner
+    public class SessionOwnerAiCharacterSpawner : SessionOwnerNetworkObjectSpawner
     {
         [SerializeField] private Item[] items;
         [SerializeField] private Gear[] gears;
@@ -60,8 +60,7 @@ namespace Blessing.Ai
         {
             foreach (Gear gear in gears)
             {
-                InventoryItem inventoryItem = GameManager.Singleton.GetInventoryItem();
-                inventoryItem.Set(gear);
+                InventoryItem inventoryItem = UIController.Singleton.CreateItem(gear);
 
                 spawnedAiCharacter.Gear.AddEquipment(inventoryItem);
                 inventoryItem.transform.SetParent(spawnedAiCharacter.transform, false);
@@ -73,8 +72,7 @@ namespace Blessing.Ai
 
             foreach (Item item in items)
             {
-                InventoryItem inventoryItem = GameManager.Singleton.GetInventoryItem();
-                inventoryItem.Set(item);
+                InventoryItem inventoryItem = UIController.Singleton.CreateItem(item);
 
                 lootInventory.AddItem(inventoryItem);
                 inventoryItem.transform.SetParent(spawnedAiCharacter.transform, false);

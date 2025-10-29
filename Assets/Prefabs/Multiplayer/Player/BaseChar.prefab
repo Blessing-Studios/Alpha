@@ -1306,7 +1306,8 @@ MonoBehaviour:
   health:
     m_InternalValue: 100
   constitution: 0
-  maxHealth: 0
+  maxHealth:
+    m_InternalValue: 100
   baseRegen: 1
   baseDecay: 0
   regen: 0
@@ -1317,7 +1318,8 @@ MonoBehaviour:
     m_InternalValue: 1
   <MaxWounds>k__BackingField: 0
   woundHealth: 25
-  wounds: 0
+  wounds:
+    m_InternalValue: 100
   OnReceiveDamage: {fileID: 11400000, guid: 6fc6e6b241d183940ad504bd2b7324d6, type: 2}
   OnHealthChanged: {fileID: 11400000, guid: 3bbd1987fc8c19145b088bcac9f1f0c8, type: 2}
   OnIsAliveChanged: {fileID: 11400000, guid: b420b84d68bc2f24bb1855a9d4d915c3, type: 2}
@@ -1340,20 +1342,22 @@ MonoBehaviour:
   AnimationsDuration:
   - Name: Cast2
     Duration: 1.25
+  - Name: Dying
+    Duration: 1.5833334
   - Name: EndCast1
     Duration: 0.5833333
   - Name: HeavyAttack1
-    Duration: 0.6666666
+    Duration: 0.8333333
   - Name: HeavyAttack2
-    Duration: 0.4166667
+    Duration: 0.8333333
   - Name: HoldCast1
     Duration: 0.5833333
   - Name: LightAttack1
-    Duration: 0.5833333
+    Duration: 0.8333333
   - Name: LightAttack2
-    Duration: 0.4166667
+    Duration: 0.8333333
   - Name: TakeHit
-    Duration: 1
+    Duration: 0.5
   AbilityIndex: 0
   <ComboMoveIndex>k__BackingField: {x: 0, y: 0}
   <CurrentMove>k__BackingField:
@@ -1371,6 +1375,8 @@ MonoBehaviour:
     ImpactMultiplier: 1
     CanMultiHit: 0
     CanUseSkill: 0
+    CanMove: 0
+    SpeedMultiplayer: 0.5
     ShakeEffect: {fileID: 0}
   combos:
   - {fileID: 11400000, guid: f8d096a5c0289fa4ba19f62f4eb3ed78, type: 2}
@@ -1482,7 +1488,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3334433750886424618}
   m_Layer: 3
-  m_Name: ProjectileOrigin
+  m_Name: SkillOrigin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

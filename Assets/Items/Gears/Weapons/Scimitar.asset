@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: Scimitar
   m_EditorClassIdentifier: 
   Label: Scimitar
+  Description: 
   Value: 20
   Width: 2
   Height: 3
+  MaxStack: 1
   Weight: 3
   Sprite: {fileID: -587221888, guid: 201a1eba9451101469a5b4c8c863263e, type: 3}
-  Id: 21
+  Id: 28
   itemType:
     value: {fileID: 11400000, guid: ad63d46b12978c4449216d86c607cd83, type: 2}
   equipmentType:

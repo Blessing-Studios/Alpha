@@ -12,6 +12,8 @@ namespace Blessing.Core.ObjectPooling
 
         public virtual void Release()
         {
+            if (Pool == null) Debug.LogError(gameObject.name + ": Pool is Null");
+
             Pool.Release(this);
         }
     }

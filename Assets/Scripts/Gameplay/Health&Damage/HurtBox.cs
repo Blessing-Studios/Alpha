@@ -55,8 +55,6 @@ namespace Blessing.HealthAndDamage
                         AudioManager.Singleton.PlaySoundFx(hurtEffect.AudioClips, transform);
                     }
                         
-
-
                     return;
                 }
             }

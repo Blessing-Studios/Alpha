@@ -19,7 +19,9 @@ namespace Blessing.Gameplay.TradeAndInventory
             Trade = trade;
 
             Icon.sprite = trade.InventoryItem.Item.Sprite;
-            NameText.text = $"{trade.Operation} - {trade.InventoryItem.Item.Label}";
+            NameText.text = $"{trade.Operation} - ";
+            if (trade.Stack > 1) NameText.text += $"{trade.Stack} x ";
+            NameText.text += $"{trade.InventoryItem.Item.Label}";
             PriceText.text = $"{trade.Value} Gold";
         }
 

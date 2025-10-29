@@ -35,9 +35,9 @@ namespace Blessing.Player
             }
         }
 
-        public override void EnableMovement()
+        public override void EnableMovement(bool resetSpeed = true)
         {
-            base.EnableMovement();
+            base.EnableMovement(resetSpeed);
             HandlePlayerMovement(currentMovementInput);
         }
 

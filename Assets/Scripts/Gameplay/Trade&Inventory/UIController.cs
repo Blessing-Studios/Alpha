@@ -27,6 +27,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public PlayerCharacter PlayerCharacter;
         public Character LootCharacter;
         public IGrid SelectedGrid;
+        public DiscardItemZone DiscardItemZone;
         [SerializeField] public ItemList SpawnableItems { get { return GameManager.Singleton.AllItems; } }
         public NetworkObject LooseItemPrefab { get { return GameManager.Singleton.LooseItemPrefab; } }
         public ItemInfoBox ItemInfoBox { get { return GameManager.Singleton.ItemInfoBox; } }
@@ -107,6 +108,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             PauseMenuUI.ClosePauseMenuUI();
 
             SelectedGrid = null;
+            DiscardItemZone = null;
 
             GameManager.Singleton.RemoveBlurFromBackground();
             if (PlayerCharacter != null) PlayerCharacter.SetCanGiveInputs(true);
@@ -127,9 +129,9 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void SyncInventoryGrids()
         {
-            PlayerCharacterInventoryUI.SyncGrids();
-            LootCharacterInventoryUI.SyncGrids();
             TraderInventoryUI.SyncGrids();
+            LootCharacterInventoryUI.SyncGrids();
+            PlayerCharacterInventoryUI.SyncGrids();
         }
 
         public void OpenInventoryGrids()
@@ -326,7 +328,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                 SelectedGrid.SetHighlight(selectedItem, GetTileGridPosition());
             }
         }
-
+        // TODO: checar se precisa mesmo da função FindInventoryItem
         public InventoryItem FindInventoryItem(InventoryItemData data, bool createNew = true)
         {
             if (inventoryItemDic.ContainsKey(data.Id))
@@ -391,7 +393,7 @@ namespace Blessing.Gameplay.TradeAndInventory
             selectedItem = inventoryItem;
         }
 
-        private InventoryItem GetInventoryItem()
+        public InventoryItem GetInventoryItem()
         {
             // return GameManager.Singleton.GetInventoryItem();
 
@@ -410,7 +412,7 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         private void LeftMouseButtonPress() // Organizar
         {
-            if (SelectedGrid == null && selectedItem != null)
+            if (DiscardItemZone != null && SelectedGrid == null && selectedItem != null)
             {
                 MoveItemToGround();
                 return;
@@ -465,12 +467,15 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void MoveItemToGround()
         {
-            InventoryItem inventoryItem = selectedItem;
+            MoveItemToGround(selectedItem);
+        }
 
+        public void MoveItemToGround(InventoryItem inventoryItem)
+        {
             // GameObject owner = PlayerInventoryGrid.Owner;
             GameObject owner = PlayerCharacterInventoryUI.Character.gameObject;
 
-            Vector3 randomVector = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), UnityEngine.Random.Range(0.2f, 0.5f), UnityEngine.Random.Range(-0.5f, 0.5f));
+            Vector3 randomVector = new(UnityEngine.Random.Range(-0.5f, 0.5f), UnityEngine.Random.Range(0.2f, 0.5f), UnityEngine.Random.Range(-0.5f, 0.5f));
 
             var looseItem = Instantiate(LooseItemPrefab, position: owner.transform.position + randomVector, rotation: owner.transform.rotation);
 
@@ -483,26 +488,34 @@ namespace Blessing.Gameplay.TradeAndInventory
             selectedItem = null;
         }
 
-        public void ConsumeSelectedItem()
+        public void ConsumeSelectedItem(int charges = 1)
         {
             if (selectedItem == null) return;
 
             // Check if item can be consumed
             Consumable consumable = selectedItem.Item as Consumable;
-            if (consumable == null) return;
-
-            // Apply item buff to Player Character
-            foreach (Buff buff in consumable.Buffs)
+            if (consumable != null)
             {
-                PlayerCharacterInventoryUI.Character.ApplyBuff(buff);
+                if (selectedItem.Stack >= charges)
+                {
+                    foreach (Buff buff in consumable.Buffs)
+                    {
+                        PlayerCharacterInventoryUI.Character.ApplyBuff(buff);
+                    }
+
+                    selectedItem.RemoveFromStack(charges);
+                }
+                // ReleaseInventoryItem(inventoryItem);
             }
 
             // Send inventory Item back to pool
             InventoryItem inventoryItem = selectedItem;
 
-            ReleaseInventoryItem(inventoryItem);
-
-            selectedItem = null;
+            if (inventoryItem.Stack <= 0)
+            {
+                ReleaseInventoryItem(inventoryItem);
+                selectedItem = null;
+            }
         }
 
         public void HandleUseItem(InventoryItem inventoryItem, InventoryGrid inventoryGrid, int charges = 1)
@@ -510,10 +523,10 @@ namespace Blessing.Gameplay.TradeAndInventory
             if (inventoryItem == null) return;
 
             // Check if item can be consumed
-                Consumable consumable = inventoryItem.Item as Consumable;
+            Consumable consumable = inventoryItem.Item as Consumable;
             if (consumable != null)
             {
-                if (inventoryItem.Data.Stack >= charges)
+                if (inventoryItem.Stack >= charges)
                 {
                     foreach (Buff buff in consumable.Buffs)
                     {
@@ -525,7 +538,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                 // ReleaseInventoryItem(inventoryItem);
             }
 
-            if (inventoryItem.Data.Stack <= 0)
+            if (inventoryItem.Stack <= 0)
             {
                 // Try to get item on grid
                 InventoryItem gridItem = inventoryGrid.PickUpItem(inventoryItem.GridPosition);

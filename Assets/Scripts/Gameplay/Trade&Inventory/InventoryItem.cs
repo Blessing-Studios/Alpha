@@ -47,6 +47,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public Vector2Int GridPosition { get { return Data.Position; } }
         public bool Rotated { get { return Data.Rotated; } }
         public int Value { get { return Item.Value; } }
+        public int Stack { get { return Data.Stack; } }
         public RectTransform RectTransform { get; private set; }
         private Image image;
         [SerializeField] private TextMeshProUGUI stackText;
@@ -140,6 +141,11 @@ namespace Blessing.Gameplay.TradeAndInventory
                 stackText.text = "";
         }
 
+        public void SetStack(int qty)
+        {
+            Data.Stack = qty;
+            UpdateStackNumber();
+        }
         public void AddToStack(int qty)
         {
             if (qty <= 0) return;

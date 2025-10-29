@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: PotionBag
   m_EditorClassIdentifier: 
   Label: Potion Bag
+  Description: 
   Value: 10
   Width: 2
   Height: 2
+  MaxStack: 1
   Weight: 1
   Sprite: {fileID: 1752751465, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
-  Id: 25
+  Id: 33
   itemType:
     value: {fileID: 11400000, guid: ad63d46b12978c4449216d86c607cd83, type: 2}
   equipmentType:
@@ -26,5 +28,6 @@ MonoBehaviour:
   Traits: []
   containerType:
     value: {fileID: 11400000, guid: d55689b341e76d74e96e6832b0d372f2, type: 2}
+  ItemsMaxStack: 10
   GridSizeWidth: 3
   GridSizeHeight: 3

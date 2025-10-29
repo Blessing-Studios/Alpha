@@ -47,8 +47,10 @@ namespace Blessing.Gameplay
         {
             foreach(Item item in items)
             {
-                InventoryItem inventoryItem = GameManager.Singleton.GetInventoryItem();
-                inventoryItem.Set(item);
+                // InventoryItem inventoryItem = GameManager.Singleton.GetInventoryItem();
+                // inventoryItem.Set(item);
+
+                InventoryItem inventoryItem = UIController.Singleton.CreateItem(item);
 
                 lootInventory.AddItem(inventoryItem);
                 inventoryItem.transform.SetParent(lootInventory.transform, false);

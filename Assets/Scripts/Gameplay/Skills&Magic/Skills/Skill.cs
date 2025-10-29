@@ -24,6 +24,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
         public Dictionary<Stat, int> ValueByStat { get; }
         public Transform SkillOrigin { get; }
         public Vector3 SkillDirection { get; }
+        public bool IsSkillHolding { get; }
     }
     [CreateAssetMenu(fileName = "Skill", menuName = "Scriptable Objects/Skills/Skill")]
     public class Skill : ScriptableObject

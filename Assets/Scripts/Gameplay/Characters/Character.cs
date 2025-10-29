@@ -54,8 +54,9 @@ namespace Blessing.Gameplay.Characters
 
         // Unificar CharacterTraits e CharacterBuffs quando acabar de testar
         public List<CharacterTrait> CharacterTraits = new();
-        
+
         [Header("Abilities and Skills")]
+        public ManaColor PrimaryManaAffinity;
         public List<CharacterComboSkill> CharacterComboSkills;
         protected CastActionType[] castActions { get { return CharacterStateMachine.CastActions; } }
         [field: SerializeField] protected List<Ability> abilitiesSO = new();
@@ -64,7 +65,9 @@ namespace Blessing.Gameplay.Characters
         public HashSet<PassiveSkill> PassiveSkills = new();
         [field: SerializeField] public Transform SkillOrigin { get; protected set; }
         protected Vector3 skillDirection = Vector3.right;
-        public Vector3 SkillDirection { get { return skillDirection; }}
+        public Vector3 SkillDirection { get { return skillDirection; } }
+        protected bool isSkillHolding = false;
+        public bool IsSkillHolding { get { return isSkillHolding; } }
         
         public List<IHittable> TargetList { get; private set; }
 
@@ -88,6 +91,9 @@ namespace Blessing.Gameplay.Characters
         private int stateIndex; // Offline StateIndex
         public void SetStateIndex(int stateIndex) // Gambiarra para funcionar tanto online quanto offline
         {
+            // Reset variables after state change to not break combat
+            ResetCombatVariables();
+
             if (CharacterNetwork != null)
                 CharacterNetwork.SetStateIndex(stateIndex);
             else
@@ -179,6 +185,11 @@ namespace Blessing.Gameplay.Characters
             LoadAbilities();
 
             isInitialized = true;
+        }
+
+        public virtual void ResetCombatVariables()
+        {
+            isSkillHolding = false;
         }
 
         protected virtual void LoadAbilities()
@@ -285,6 +296,7 @@ namespace Blessing.Gameplay.Characters
             }
 
             
+            // TODO: Erro currentMove is Null
             float impact = Stats.Strength * currentMove.ImpactMultiplier;
             int damage = (int) (DamageAndPen.x * currentMove.DamageMultiplier);
 
@@ -381,7 +393,10 @@ namespace Blessing.Gameplay.Characters
             if (ShowDebug) Debug.Log(gameObject.name + ": GotHit Time - " + Time.time);
 
             if (hitInfo.CanTriggerTakeHit())
+            {
                 CharacterStateMachine.SetNextState(CharacterStateMachine.TakeHitState);
+            }
+                
         }
 
         private void HandleHitEffect(IHitter hitter, HurtBox hurtBox)
@@ -417,7 +432,11 @@ namespace Blessing.Gameplay.Characters
             {
                 foreach (CharacterTrait cTrait in CharacterTraits)
                 {
-                    if (cTrait.Trait == trait) return false;
+                    if (cTrait.Trait == trait)
+                    {
+                        RemoveTrait(cTrait.Data);
+                        break;
+                    }
                 }
             }
 
@@ -442,6 +461,9 @@ namespace Blessing.Gameplay.Characters
 
             CharacterNetwork.TraitDataNetworkList.Add(data);
             CharacterNetwork.TraitDataLocalList.Add(data);
+
+            // Handle Instant Effect
+            HandlePermenentEffect(trait.PermanentEffects);
 
             UpdateParameters();
             return true;
@@ -476,6 +498,13 @@ namespace Blessing.Gameplay.Characters
 
             CharacterNetwork.TraitDataNetworkList.Add(traitData);
             CharacterNetwork.TraitDataLocalList.Add(traitData);
+        }
+
+        protected void HandlePermenentEffect(PermanentEffect[] permamentEffects)
+        {
+            Health.ApplyPermanentEffects(permamentEffects);
+            Mana.ApplyPermanentEffects(permamentEffects);
+            Stats.ApplyPermanentEffects(permamentEffects);
         }
 
         public void RemoveTrait(Trait trait)
@@ -535,13 +564,13 @@ namespace Blessing.Gameplay.Characters
             if (CharacterTraits.OfType<CharacterBuff>().ToList().Count == 0) return;
 
             // Traits will have duration 0 as by default, so only Buffs will be subtract
-            CharacterTraits.ForEach(buff => { if (buff.Data.Duration > 0) buff.Data.Duration--; });
+            CharacterTraits.ForEach(buff => { if (buff.Data.Duration >= 0) buff.Data.Duration--; });
 
             // Updating TraitDataNetworkList so it can subtract Duration
             TraitData[] datas = CharacterNetwork.TraitDataLocalList.ToArray();
             for (int i = 0; i < datas.Length; i++)
             {
-                if (datas[i].Duration > 0)
+                if (datas[i].Duration >= 0)
                 {
                     CharacterNetwork.TraitDataNetworkList.Remove(datas[i]);
                     CharacterNetwork.TraitDataLocalList.Remove(datas[i]);
@@ -553,7 +582,7 @@ namespace Blessing.Gameplay.Characters
                 }
             }
 
-            List<CharacterBuff> buffsToRemove = CharacterTraits.OfType<CharacterBuff>().Where(buff => buff.Data.Duration <= 0).ToList();
+            List<CharacterBuff> buffsToRemove = CharacterTraits.OfType<CharacterBuff>().Where(buff => buff.Data.Duration < 0).ToList();
 
             List<TraitData> datasToRemove = new();
             foreach (CharacterBuff characterBuff in buffsToRemove)
@@ -611,12 +640,21 @@ namespace Blessing.Gameplay.Characters
             }
         }
 
-        public void TriggerAbility()
+        public void TriggerAbility(bool isHolding = false)
         {
-            foreach(Skill skill in Abilities[CharacterStateMachine.AbilityIndex].Ability.Skills)
+            if (isHolding && !Abilities[CharacterStateMachine.AbilityIndex].Ability.CanTriggerOnHold) return;
+            
+            foreach(Buff buff in Abilities[CharacterStateMachine.AbilityIndex].Buffs)
+            {
+                ApplyBuff(buff);
+            }
+
+            foreach (Skill skill in Abilities[CharacterStateMachine.AbilityIndex].Ability.Skills)
             {
                 HandleSkill(skill);
             }
+            
+            isSkillHolding = isHolding;
         }
 
         public bool CanCastAbility(int abilityIndex)
@@ -745,18 +783,28 @@ namespace Blessing.Gameplay.Characters
         public virtual void OnAnimationAttack()
         {
             // TODO: create logic to select Skill with combo
-            // if (!HasAuthority) return; 
+            // if (!HasAuthority) return;
+
+            if (CharacterStateMachine.CurrentMove == null)
+            {
+                CharacterStateMachine.UpdateCurrentMove();
+            }
+
+            if (CharacterStateMachine.CurrentMove == null)
+            {
+                Debug.LogError(gameObject.name + ": Current Move is null");
+            }
             
             if (CharacterStateMachine.CurrentMove.CanUseSkill == true)
-            {
-                foreach (CharacterComboSkill characterSkill in CharacterComboSkills)
                 {
-                    if (characterSkill.IsActive && characterSkill.ComboMoveIndex == CharacterStateMachine.ComboMoveIndex)
+                    foreach (CharacterComboSkill characterSkill in CharacterComboSkills)
                     {
-                        HandleSkill(characterSkill.Skill);
+                        if (characterSkill.IsActive && characterSkill.ComboMoveIndex == CharacterStateMachine.ComboMoveIndex)
+                        {
+                            HandleSkill(characterSkill.Skill);
+                        }
                     }
-                }   
-            }
+                }
 
             if (CharacterStateMachine.CurrentMove.CanMultiHit == true)
             {
@@ -772,8 +820,12 @@ namespace Blessing.Gameplay.Characters
 
         public virtual void OnAnimationCast()
         {
-            Debug.Log("OnAnimationCast");
             TriggerAbility();
+        }
+
+        public virtual void OnAnimationHoldCast()
+        {
+            TriggerAbility(true);
         }
     }
 }

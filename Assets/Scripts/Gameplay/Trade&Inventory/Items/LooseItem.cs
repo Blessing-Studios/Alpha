@@ -17,6 +17,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         public InventoryItem InventoryItem;
         protected NetworkVariable<InventoryItemData> data = new(new InventoryItemData(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         public Item Item;
+        public int Stack = 1;
         public string Guid;
         public TextMeshPro GuidText;
         private readonly int deferredDespawnTicks = 4;
@@ -57,7 +58,8 @@ namespace Blessing.Gameplay.TradeAndInventory
                     {
                         InventoryItem = UIController.Singleton.CreateItem(Item);
                     }
-
+                    InventoryItem.SetStack(Stack);
+                    InventoryItem.UpdateStackNumber();
                     data.Value = InventoryItem.Data;
                 }
 
@@ -87,6 +89,8 @@ namespace Blessing.Gameplay.TradeAndInventory
                 GuidText.gameObject.SetActive(false);
 
             InventoryItem.gameObject.SetActive(false);
+
+            Stack = InventoryItem.Stack;
         }
         public void Interact(Interactor interactor)
         {
@@ -117,8 +121,7 @@ namespace Blessing.Gameplay.TradeAndInventory
                     return;
                 }
 
-                if (character.Inventory == null) return;
-                if (character.Inventory.AddItem(InventoryItem))
+                if (character.AddItem(InventoryItem))
                 {
                     Debug.Log(gameObject.name + "Got Item: " + character.gameObject.name);
                     // Destroy this object
@@ -133,15 +136,11 @@ namespace Blessing.Gameplay.TradeAndInventory
                     {
                         gameObject.SetActive(false);
                     }
-
-                    if (character.Inventory.InventoryGrid)
-                    {
-                        character.Inventory.InventoryGrid.UpdateFromInventory();
-                    }
                 }
                 else
                 {
-                    Debug.Log(gameObject.name + "Iem NOT got: " + character.gameObject.name);
+                    Debug.Log(gameObject.name + "ITem NOT got: " + character.gameObject.name);
+                    // Lançar Item para cima ou piscar gameObject
                 }
             }
         }

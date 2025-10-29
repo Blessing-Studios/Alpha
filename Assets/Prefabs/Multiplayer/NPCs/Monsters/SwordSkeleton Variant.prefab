@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &359346249530686670
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1128820130049227818, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_Radius
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1511698797570248328, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1646976488681774380, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: 8e02ec65f5d607c4d90d00c2e40c68be, type: 2}
+    - target: {fileID: 1695591404163353372, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 844973430, guid: bd4bf4636bac9194ea8c702765a91809, type: 3}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: 'combos.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: d6af1eee262af87409436ca17ec1b954, type: 2}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[7].Name
+      value: TakeHit
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[1].Duration
+      value: 0.8333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[6].Duration
+      value: 0.8333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: AnimationsDuration.Array.data[7].Duration
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 5143992474855496680, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5143992474855496680, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.399
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369011401359272698, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2877092368
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369011401359272698, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369011401359272698, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 3178431240
+      objectReference: {fileID: 0}
+    - target: {fileID: 6028631068472643565, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_Name
+      value: SwordSkeleton Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.769
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.0659342
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370903744886762439, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431316129197781818, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_Size.y
+      value: 1.23
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431316129197781818, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_Center.x
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431316129197781818, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_Center.y
+      value: 0.11
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}

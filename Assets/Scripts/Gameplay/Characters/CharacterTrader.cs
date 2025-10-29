@@ -25,8 +25,28 @@ namespace Blessing.Gameplay.Characters
         public override void Interact(Interactor interactor)
         {
             SetInventory();
-            
+
             base.Interact(interactor);
+        }
+
+        protected override void OpenTrader(Character customer)
+        {
+            base.OpenTrader(customer);
+
+            // if (animator.GetBool(isOpenHash)) return;
+
+            // animator.SetTrigger("Open");
+            // animator.SetBool(isOpenHash, true);
+        }
+
+        protected override void CloseTrader()
+        {
+            base.CloseTrader();
+
+            // if (!animator.GetBool(isOpenHash)) return;
+
+            // animator.SetTrigger("Close");
+            // animator.SetBool(isOpenHash, false);
         }
     }
 }

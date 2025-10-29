@@ -100,7 +100,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3603039040109794521, guid: fb0bb91d996e7b14c99c3c7f77c7cdf6, type: 3}
       propertyPath: m_Name
-      value: vfxgraph_Healing
+      value: vfxgraph_Aura
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

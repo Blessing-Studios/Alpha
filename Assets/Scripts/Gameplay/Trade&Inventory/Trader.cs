@@ -13,6 +13,7 @@ namespace Blessing.Gameplay.TradeAndInventory
     {
         public InventoryItem InventoryItem;
         public int Value;
+        public int Stack;
         public TradeOperation Operation; 
         public Vector2Int OriginalPosition;
     }
@@ -21,6 +22,8 @@ namespace Blessing.Gameplay.TradeAndInventory
         [field: SerializeField] public bool ShowDebug { get; private set; }
         [field: SerializeField] public Inventory Inventory { get; protected set; }
         public Character Customer;
+        [Tooltip("Coins the trader can use")] public Coin[] Coins;
+        [SerializeField] protected List<Coin> orderedCoinsList = new();
         public List<Trade> CurrentTrades;
         public int CurrentTradesTotalValue;
         private FixedString64Bytes reservedItemGuid;
@@ -28,13 +31,13 @@ namespace Blessing.Gameplay.TradeAndInventory
         private bool isItemMoving = false;
         protected Animator animator;
         protected int isOpenHash;
+        protected Dictionary<Coin, int> valueByCoins = new();
         public TraderInventoryUI TraderInventoryUI { get { return UIController.Singleton.TraderInventoryUI; } }
         public bool CanInteract { get { return true; } }
 
         // Para debugar
         [SerializeField] private InventoryItem reservedItem;
         private Vector2Int selectedItemPosition;
-
         protected virtual void Awake()
         {
             animator = GetComponent<Animator>();
@@ -44,7 +47,12 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         protected virtual void Start()
         {
-            // 
+            if (Coins.Length == 0)
+                Debug.LogError(gameObject.name + ": Trader needs to have coins to trade");
+
+            // Order coins by most valuable
+            orderedCoinsList = Coins.OrderByDescending(x => x.Value).ToList();
+
         }
 
         protected virtual void Update()
@@ -84,28 +92,18 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
-        private void OpenTrader(Character customer)
+        protected virtual void OpenTrader(Character customer)
         {
             Customer = customer;
 
             UIController.Singleton.OpenTraderUI(this);
-
-            if (animator.GetBool(isOpenHash)) return;
-
-            animator.SetTrigger("Open");
-            animator.SetBool(isOpenHash, true);
         }
 
-        private void CloseTrader()
+        protected virtual void CloseTrader()
         {
             Customer = null;
 
             UIController.Singleton.CloseTraderUI();
-
-            if (!animator.GetBool(isOpenHash)) return;
-
-            animator.SetTrigger("Close");
-            animator.SetBool(isOpenHash, false);
         }
 
         public void OnAddItem(Component component, object data)
@@ -160,17 +158,13 @@ namespace Blessing.Gameplay.TradeAndInventory
                     CurrentTrades.Remove(foundTrade);
                     return;
                 }
-
-                if (foundTrade.Operation != operation)
-                {
-                    return;
-                }
             }
 
             // If foundTrade doesn't have item, create new Trade for the item
             CurrentTrades.Add(new Trade() {
                 InventoryItem = item,
-                Value = item.Value,
+                Value = item.Value * item.Stack,
+                Stack = item.Stack,
                 Operation = operation,
                 OriginalPosition = selectedItemPosition
             });
@@ -183,6 +177,8 @@ namespace Blessing.Gameplay.TradeAndInventory
 
         public void OnRemoveItem(Component component, object data)
         {
+            Debug.Log("OnRemoveItem");
+
             if (Customer == null) return;
             if (isItemMoving == true) return;
             if (data is not InventoryItem) return;
@@ -192,8 +188,6 @@ namespace Blessing.Gameplay.TradeAndInventory
             selectedItemPosition = item.GridPosition;
 
             if (UIController.Singleton.TraderInventoryUI.TraderInventoryGrid != component) return;
-
-            
 
             ReserveItem(item);
 
@@ -242,47 +236,92 @@ namespace Blessing.Gameplay.TradeAndInventory
             }
         }
 
-        public bool ConfirmTrades()
+        public bool TradeCoins()
         {
-            // Pegar Customer Gold
-            int customerGold = Customer.Gear.Gold;
-
-            // Validar compras
-            // Chegar se Customer pode pagar por tudo
-            int totalToPay = 0;
-
-            foreach(Trade trade in CurrentTrades)
+            // Calculate the diference that still needs to be paid
+            int subTotal = 0;
+            foreach (Trade trade in CurrentTrades)
             {
-                totalToPay = trade.Operation switch
-                {
-                    TradeOperation.Sell => totalToPay -= trade.Value,
-                    _ => totalToPay += trade.Value
-                };
+                if (trade.Operation == TradeOperation.Buy)
+                    subTotal -= trade.Value;
+
+                
+                if (trade.Operation == TradeOperation.Sell)
+                    subTotal += trade.Value;
             }
 
-            if (totalToPay > customerGold) return false;
+            // If customer is buying more than selling
+            if (subTotal < 0)
+            {
+                // Look for coins in the Customer to pay
+                List<InventoryItem> customerCoins = Customer.Gear.CoinsToPay(-subTotal, Coins);
 
+                int customerValuePayed = 0;
+                foreach (InventoryItem coinItem in customerCoins)
+                {
+                    customerValuePayed += coinItem.Item.Value * coinItem.Data.Stack;
+                }
+
+                // If customer doesn't have enough coins, send menssage
+                if (customerValuePayed + subTotal < 0)
+                {
+                    return false;
+                }
+
+                for (int i = customerCoins.Count - 1; i >= 0; i--)
+                {
+                    // Debug.Log("CoiItem Info: Name - " + customerCoins[i].Item.Label + " Id - " + customerCoins[i].Data.Id);
+                    Customer.Gear.RemoveItem(customerCoins[i]);
+                    customerCoins[i].Release();
+                }
+
+                // Add coins to subtotal, so it can calculate in the trade
+                    subTotal += customerValuePayed;
+            }
+
+            // If customer is selling more than buying, 
+            if (subTotal > 0)
+            {
+                // add coins from trader in the Trade
+
+                int subTotalRest = subTotal;
+                foreach (Coin coin in orderedCoinsList)
+                {
+
+                    int coinsQty = subTotalRest / coin.Value;
+
+                    if (coinsQty == 0) continue;
+
+                    // Spawn coinsQty of the coin in the loop
+                    InventoryItem coinItem = UIController.Singleton.GetInventoryItem();
+                    coinItem.Set(coin, coinsQty);
+                    // AddItemToShoppingList(coinItem, TradeOperation.Buy);
+
+                    Customer.Gear.AddItem(coinItem);
+
+                    subTotalRest %= coin.Value;
+                }
+            }
+
+            return true;
+        }
+
+        public bool ConfirmTrades()
+        {
+            if (!TradeCoins())
+            {
+                // If faild to pay, send mensagem that coins are missing
+                Debug.Log("ConfirmTrades failed - Can't Pay");
+                return false;
+            }
 
             for (int i = CurrentTrades.Count - 1; i >= 0; i--)
             {
-                bool validate = CurrentTrades[i].Operation switch
-                {
-                    TradeOperation.Sell => Customer.Gear.GainGold(CurrentTrades[i].Value),
-                    _ => Customer.Gear.SpendGold(CurrentTrades[i].Value)
-                };
-
-                if (validate)
-                {
-                    // Remove symbol that item is in shopping list
-                    CurrentTrades.RemoveAt(i);
-                }
-                else
-                {
-                    Debug.LogError(gameObject.name + ": Error Shopping product name: " + CurrentTrades[i].InventoryItem.name + " id: " + CurrentTrades[i].InventoryItem.Item.Id);
-                    return false;
-                }
+                // Remove symbol that item is in shopping list
+                CurrentTrades.RemoveAt(i);
             }
 
+            Debug.Log("ConfirmTrades Success");
             return true;
         }
 

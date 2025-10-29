@@ -150,7 +150,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2620648292840096135, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: BaseConstitution
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2959266363100497720, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: m_Enabled

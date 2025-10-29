@@ -494,7 +494,7 @@ MonoBehaviour:
   SyncPositionY: 1
   SyncPositionZ: 1
   SyncRotAngleX: 0
-  SyncRotAngleY: 1
+  SyncRotAngleY: 0
   SyncRotAngleZ: 0
   SyncScaleX: 0
   SyncScaleY: 0
@@ -646,6 +646,7 @@ MonoBehaviour:
   <DefenseAndPenRes>k__BackingField: {x: 0, y: 0}
   ViewRange: 40
   CharacterTraits: []
+  PrimaryManaAffinity: 0
   CharacterComboSkills: []
   abilitiesSO: []
   Abilities: []
@@ -735,6 +736,7 @@ MonoBehaviour:
   isPushable: 1
   isFacingRight:
     m_InternalValue: 1
+  isMovementPressed: 0
   currentMovementInput: {x: 0, y: 0}
   currentMovement: {x: 0, y: 0, z: 0}
   CurrentMovement: {x: 0, y: 0, z: 0}
@@ -850,7 +852,7 @@ MonoBehaviour:
   CurrentAction: {fileID: 0}
   CurrentDirectionAction: {fileID: 0}
   AnimationsDuration:
-  - Name: Cast1
+  - Name: Cast2
     Duration: 1.25
   - Name: Dying
     Duration: 1.25
@@ -859,13 +861,13 @@ MonoBehaviour:
   - Name: HeavyAttack1
     Duration: 0.8333333
   - Name: HeavyAttack2
-    Duration: 0.4166667
+    Duration: 0.8333333
   - Name: HoldCast1
     Duration: 0.5833333
   - Name: LightAttack1
     Duration: 1.5
   - Name: LightAttack2
-    Duration: 0.5
+    Duration: 0.8333333
   - Name: TakeHit
     Duration: 0.6666666
   AbilityIndex: 0
@@ -885,6 +887,8 @@ MonoBehaviour:
     ImpactMultiplier: 1
     CanMultiHit: 0
     CanUseSkill: 0
+    CanMove: 0
+    SpeedMultiplayer: 0.5
     ShakeEffect: {fileID: 0}
   combos:
   - {fileID: 11400000, guid: 44ce49ae2cf51c94eabc66d0fcf161a4, type: 2}
@@ -936,7 +940,8 @@ MonoBehaviour:
   health:
     m_InternalValue: 100
   constitution: 0
-  maxHealth: 0
+  maxHealth:
+    m_InternalValue: 100
   baseRegen: 1
   baseDecay: 0
   regen: 0
@@ -947,7 +952,8 @@ MonoBehaviour:
     m_InternalValue: 1
   <MaxWounds>k__BackingField: 0
   woundHealth: 25
-  wounds: 0
+  wounds:
+    m_InternalValue: 100
   OnReceiveDamage: {fileID: 11400000, guid: 6fc6e6b241d183940ad504bd2b7324d6, type: 2}
   OnHealthChanged: {fileID: 11400000, guid: 3bbd1987fc8c19145b088bcac9f1f0c8, type: 2}
   OnIsAliveChanged: {fileID: 11400000, guid: b420b84d68bc2f24bb1855a9d4d915c3, type: 2}
@@ -1023,9 +1029,9 @@ MonoBehaviour:
     manas: []
   reserveMax:
     manas: []
-  statsMultiplier: 5
   manaChange: 2
   manaChangeTime: 0.5
+  redManaGainOnHit: 0
   white:
     m_InternalValue: 0
   red:

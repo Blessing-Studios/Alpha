@@ -17,16 +17,18 @@ namespace Blessing.Player
 {
     public class PlayerHUD : MonoBehaviour
     {
+        [Header("Mana UI")]
+        public const int BarSizeParameter = 5;
         public SegmentedHealthBar HealthBar;
-        public BarUI WhiteManaBar;
+        public ManaBarUI WhiteManaBar;
         public ManaUI WhiteManaUI;
-        public BarUI RedManaBar;
+        public ManaBarUI RedManaBar;
         public ManaUI RedManaUI;
-        public BarUI GreenManaBar;
+        public ManaBarUI GreenManaBar;
         public ManaUI GreenManaUI;
-        public BarUI BlueManaBar;
+        public ManaBarUI BlueManaBar;
         public ManaUI BlueManaUI;
-        public BarUI BlackManaBar;
+        public ManaBarUI BlackManaBar;
         public ManaUI BlackManaUI;
         public TextMeshProUGUI HpText;
         public TextMeshProUGUI GoldText;
@@ -108,6 +110,11 @@ namespace Blessing.Player
             PlayerCanvas.gameObject.SetActive(true);
             HealthBar.Initialize(playerCharacter.Health);
 
+            if (manaBarByColor.ContainsKey(playerCharacter.PrimaryManaAffinity))
+            {
+                manaBarByColor[playerCharacter.PrimaryManaAffinity].gameObject.SetActive(true);
+            }
+
             foreach (ManaColor manaColor in Enum.GetValues(typeof(ManaColor)))
             {
                 UpdateMana(manaColor);
@@ -159,6 +166,7 @@ namespace Blessing.Player
 
         void FixedUpdate()
         {
+            // Temporário TODO: remover quando acabar de testar
             HandleGoldText();
             HandleHpText();
             HandleDebugInfo();
@@ -237,8 +245,8 @@ namespace Blessing.Player
                 RectTransform backGroundRT = manaBar.BackGround.GetComponent<RectTransform>();
                 RectTransform sliderRT = manaBar.Slider.GetComponent<RectTransform>();
 
-                backGroundRT.sizeDelta = new Vector2(4 * maxValue, backGroundRT.sizeDelta.y);
-                sliderRT.sizeDelta = new Vector2(4 * maxValue + 1, sliderRT.sizeDelta.y);
+                backGroundRT.sizeDelta = new Vector2(BarSizeParameter * maxValue, backGroundRT.sizeDelta.y);
+                sliderRT.sizeDelta = new Vector2(BarSizeParameter * maxValue + 1, sliderRT.sizeDelta.y);
                 manaBar.Slider.maxValue = maxValue;
 
                 manaBar.Slider.value = playerMana.GetManaValue(manaColor);

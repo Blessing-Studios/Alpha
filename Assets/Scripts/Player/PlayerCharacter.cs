@@ -46,6 +46,12 @@ namespace Blessing.Player
         public bool CanGiveInputs { get { return canGiveInputs; } }
         public void SetCanGiveInputs(bool canGiveInputs)
         {
+            // Reset Moviment input
+            if (!canGiveInputs)
+            {
+                MovementController.RestCurrentMovement();
+            }
+
             this.canGiveInputs = canGiveInputs;
         }
 
@@ -177,6 +183,11 @@ namespace Blessing.Player
 
         public override bool Hit(IHittable target, Vector3 hitPosition)
         {
+            if (gameObject.CompareTag("Player"))
+            {
+                return false;
+            }
+
             bool baseValue = base.Hit(target, hitPosition);
 
             if (HasAuthority && baseValue)
@@ -404,7 +415,7 @@ namespace Blessing.Player
 
             if (context.performed)
             {
-                UIController.Singleton.TogglePauseMenuUI();
+                if (HasAuthority) UIController.Singleton.TogglePauseMenuUI();
             }
         }
 
@@ -412,7 +423,10 @@ namespace Blessing.Player
         {
             base.OnDeath();
 
-            UIController.Singleton.OpenDeathMenuUI();
+            if (HasAuthority && GameDataManager.Singleton.ValidateOwner(GetPlayerOwnerName()))
+            {
+                UIController.Singleton.OpenDeathMenuUI();
+            }
         }
         public override void OnAnimationAttack()
         {

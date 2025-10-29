@@ -12,10 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86453d32483f8e14faa62807995d2d8a, type: 3}
   m_Name: Dmg+10
   m_EditorClassIdentifier: 
-  Id: 6
+  Id: 11
   Name: Damage+10
   Label: 
   Description: Teste
   Effects:
   - {fileID: 11400000, guid: b3ed2c87b45140549a7a2f50729bb7db, type: 2}
+  PermanentEffects: []
+  VisualEffect: {fileID: 0}
+  ParticleEffect: {fileID: 0}
+  VFX: {fileID: 0}
+  SpawnVFXOnGround: 0
+  VFXFollowChar: 0
   CanStack: 0

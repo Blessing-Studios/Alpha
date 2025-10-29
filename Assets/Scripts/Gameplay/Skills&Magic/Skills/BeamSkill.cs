@@ -1,16 +1,24 @@
+using Blessing.Audio;
+using Blessing.Core.ObjectPooling;
 using UnityEngine;
 
-public class BeamSpell : MonoBehaviour
+namespace Blessing.Gameplay.SkillsAndMagic
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [CreateAssetMenu(fileName = "Beam", menuName = "Scriptable Objects/Skills/Beam")]
+    public class BeamSkill : Skill
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public float MaxDistance = 10f;
+        public float hitsPerSecond = 1f;
+        public int MaxTargets = 1;
+        public bool CanSelfHit = false;
+        public BeamHit BeamHit;
+        public override void Trigger(ISkillTrigger skillTrigger, float randomFloat = 0.0f)
+        {
+            if (!skillTrigger.IsSkillHolding)
+            {
+                base.Trigger(skillTrigger);
+                PoolManager.Singleton.Get<BeamHit>(BeamHit).Initialize(this, skillTrigger);
+            }
+        }
     }
 }

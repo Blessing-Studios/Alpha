@@ -50,12 +50,12 @@ namespace Blessing
         public UIController UIController { get { return UIController.Singleton; } }
         [field: SerializeField] public NetworkObject ContainerPrefab { get; private set; }
         [field: SerializeField] public NetworkObject LooseItemPrefab { get; private set; }
-        [Header("Pooling")]
-        public InventoryItemPooler InventoryItemPooler;
-        public IObjectPool<InventoryItem> InventoryItemPool;
         [Header("Multiplayer")]
         [HideInInspector] public bool PlayerConnected = false;
         [Header("Misc")]
+
+        // Para testar o modo horda, temporário
+        public SessionOwnerNetworkObjectSpawner MultiSpawner;
         public int AiCharacterSpawned = 0;
         public ContextDropDownMenu ContextDropDownMenu;
         public ItemInfoBox ItemInfoBox;
@@ -67,6 +67,9 @@ namespace Blessing
         public float GlobalShakeForce = 1f;
         public float GroundGravity = -0.2f;
         public float Gravity = -0.8f;
+        [Tooltip("This type of item will be counted as Coin for Trade")][ScriptableObjectDropdown(typeof(ItemType), grouping = ScriptableObjectGrouping.None)]
+        [SerializeField] private ScriptableObjectReference coinType;
+        public ItemType CoinType { get { return coinType.value as ItemType; } }
         private CinemachineImpulseListener impulseListener;
         private CinemachineVolumeSettings cameraVolumeSettings;
         private DepthOfField depthOfField;
@@ -95,26 +98,24 @@ namespace Blessing
         protected virtual void Start()
         {
             if (MainCamera == null)
-            {
                 Debug.LogError(base.gameObject.name + ": MainCamera is missing");
-            }
 
             if (VirtualCamera == null)
-            {
                 Debug.LogError(base.gameObject.name + ": VirtualCamera is missing");
-            }
 
             if (UIController == null)
-            {
                 Debug.LogError(base.gameObject.name + ": UIController is missing");
-            }
 
-            if (InventoryItemPooler == null)
-                Debug.LogError(gameObject.name + ": Missing InventoryItemPooler");
+            if (CoinType == null)
+                Debug.LogError(gameObject.name + ": Missing CoinType");
+
+            if (CoinType == null)
+                Debug.LogError(gameObject.name + ": Missing CoinType");
+
+            if (CoinType.name != "Coin")
+                Debug.LogError(gameObject.name + ": CoinType is not Coin - " + CoinType.name);
 
             ContextDropDownMenu.gameObject.SetActive(false);
-
-            InventoryItemPool = InventoryItemPooler.Pool;
         }
 
         void Update()
@@ -302,18 +303,6 @@ namespace Blessing
             return true;
         }
 
-        // ## ObjectPooling ##
-
-        public InventoryItem GetInventoryItem()
-        {
-            return InventoryItemPool.Get();
-        }
-
-        public void ReleaseInventoryItem(InventoryItem pooledObject)
-        {
-            InventoryItemPool.Release(pooledObject);
-        }
-
         public void ClearGameStates()
         {
             playersInitialized = false;
@@ -326,8 +315,6 @@ namespace Blessing
             PlayerSpawnLocations.Clear();
             ObjectSpawners.Clear();
 
-            // Clean Pooled InventoryItems
-            InventoryItemPool.Clear();
             UIController.ClearInventoryItemDic();
 
             // Reset Camera Position

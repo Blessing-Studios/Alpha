@@ -28,6 +28,7 @@ namespace Blessing.Gameplay.Characters.Traits
         public string Label;
         [TextArea] public string Description;
         public Effect[] Effects;
+        public PermanentEffect[] PermanentEffects;
         public VisualEffect VisualEffect;
         public ParticleSystem ParticleEffect;
         public PooledEffect VFX;
@@ -49,7 +50,6 @@ namespace Blessing.Gameplay.Characters.Traits
 
             return changeValue;
         }
-
         public int GetHealthRegenChange()
         {
             int changeValue = 0;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Blessing.Core.GameEventSystem;
 using Blessing.Core.ScriptableObjectDropdown;
 using Blessing.Gameplay.Characters.Traits;
@@ -15,28 +16,30 @@ namespace Blessing.Gameplay.Characters
     {
         [Header("Character")]
         protected Character character;
+        // How much money the character currentlry has
         [SerializeField] protected int gold;
         public int Gold { get { return gold; } }
         //Checar se Gold é positivo
+        public ItemType CoinType { get { return GameManager.Singleton.CoinType; } }
 
         public List<CharacterEquipment> Equipments;
         public NetworkList<InventoryItemData> EquipmentNetworkList;
 
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
         [SerializeField] private ScriptableObjectReference backpackSlot;
-        public EquipmentType BackpackSlot { get { return backpackSlot.value as EquipmentType; } set { backpackSlot.value = value; }}
+        public EquipmentType BackpackSlot { get { return backpackSlot.value as EquipmentType; } set { backpackSlot.value = value; } }
 
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
         [SerializeField] private ScriptableObjectReference utilitySlot;
-        public EquipmentType UtilitySlot { get { return utilitySlot.value as EquipmentType; } set { utilitySlot.value = value; }}
+        public EquipmentType UtilitySlot { get { return utilitySlot.value as EquipmentType; } set { utilitySlot.value = value; } }
 
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
         [SerializeField] private ScriptableObjectReference bodyArmorSlot;
-        public EquipmentType BodyArmorSlot { get { return bodyArmorSlot.value as EquipmentType; } set { bodyArmorSlot.value = value; }}
+        public EquipmentType BodyArmorSlot { get { return bodyArmorSlot.value as EquipmentType; } set { bodyArmorSlot.value = value; } }
 
         [ScriptableObjectDropdown(typeof(EquipmentType), grouping = ScriptableObjectGrouping.ByFolderFlat)]
         [SerializeField] private ScriptableObjectReference weaponSlot;
-        [SerializeField] public EquipmentType WeaponSlot { get { return weaponSlot.value as EquipmentType; } set { weaponSlot.value = value; }}
+        [SerializeField] public EquipmentType WeaponSlot { get { return weaponSlot.value as EquipmentType; } set { weaponSlot.value = value; } }
         public Inventory Inventory;
         public List<Inventory> UtilityInventories = new();
         public List<InventoryItemData> EquipmentLocalList = new();
@@ -102,7 +105,7 @@ namespace Blessing.Gameplay.Characters
         private void InitializeEquipments()
         {
             // Remove and Add all equipment to force Sync
-            
+
             foreach (CharacterEquipment equipment in Equipments)
             {
                 RemoveEquipmentTraits(equipment);
@@ -145,7 +148,73 @@ namespace Blessing.Gameplay.Characters
                 RemoveEquipment(changeEvent.Value);
             }
         }
+        public void UpdateGold()
+        {
+            int goldInInventory = 0;
+            foreach (Inventory utilityInventory in UtilityInventories)
+            {
+                if (utilityInventory == null) continue;
+                if (utilityInventory.ContainerType != null && utilityInventory.ContainerType != CoinType) continue;
 
+                foreach (InventoryItem inventoryItem in utilityInventory.ItemList)
+                {
+                    if (inventoryItem.Item.ItemType == CoinType)
+                    {
+                        goldInInventory += inventoryItem.Item.Value * inventoryItem.Data.Stack;
+                    }
+                }
+            }
+
+            if (Inventory != null)
+            {
+                foreach (InventoryItem inventoryItem in Inventory.ItemList)
+                {
+                    if (inventoryItem.Item.ItemType == CoinType)
+                    {
+                        goldInInventory += inventoryItem.Item.Value * inventoryItem.Data.Stack;
+                    }
+                }
+            }
+
+            gold = goldInInventory;
+        }
+
+        public List<InventoryItem> CoinsToPay(int value, Coin[] coinsAccepted)
+        {
+            int valueToPay = 0;
+            List<InventoryItem> coinsToPay = new();
+
+            foreach (Inventory utilityInventory in UtilityInventories)
+            {
+                if (utilityInventory == null) continue;
+                if (utilityInventory.ContainerType != null && utilityInventory.ContainerType != CoinType) continue;
+
+                foreach (InventoryItem inventoryItem in utilityInventory.ItemList)
+                {
+                    if (valueToPay >= value) break;
+                    if (coinsAccepted.Contains(inventoryItem.Item as Coin))
+                    {
+                        valueToPay += inventoryItem.Item.Value * inventoryItem.Data.Stack;
+                        coinsToPay.Add(inventoryItem);
+                    }
+                }
+            }
+
+            if (Inventory != null)
+            {
+                foreach (InventoryItem inventoryItem in Inventory.ItemList)
+                {
+                    if (valueToPay >= value) break;
+                    if (coinsAccepted.Contains(inventoryItem.Item as Coin))
+                    {
+                        valueToPay += inventoryItem.Item.Value * inventoryItem.Data.Stack;
+                        coinsToPay.Add(inventoryItem);
+                    }
+                }
+            }
+
+            return coinsToPay;
+        }
         public bool SpendGold(int amount)
         {
             if (amount < 0) return false;
@@ -172,6 +241,34 @@ namespace Blessing.Gameplay.Characters
 
             return false;
         }
+        public virtual bool AddItem(InventoryItem inventoryItem)
+        {
+            foreach (Inventory utilityInventory in UtilityInventories)
+            {
+                if (utilityInventory == null) continue;
+
+                if (utilityInventory.AddItem(inventoryItem)) return true;
+            }
+
+            if (Inventory != null && Inventory.AddItem(inventoryItem)) return true;
+
+            return false;
+        }
+
+        public virtual bool RemoveItem(InventoryItem inventoryItem)
+        {
+            foreach (Inventory utilityInventory in UtilityInventories)
+            {
+                if (utilityInventory == null) continue;
+
+                if (utilityInventory.RemoveItem(inventoryItem)) return true;
+            }
+
+            if (Inventory != null && Inventory.RemoveItem(inventoryItem)) return true;
+
+            return false;
+        }
+
         public virtual bool AddEquipment(CharacterEquipment equipment, InventoryItem inventoryItem)
         {
             Gear gear = inventoryItem.Item as Gear;
@@ -334,7 +431,7 @@ namespace Blessing.Gameplay.Characters
         }
         public virtual void AddBackpack(InventoryItem inventoryItem)
         {
-            
+
             if (inventoryItem != null && inventoryItem.Inventory == null)
             {
                 Debug.LogError(gameObject.name + ": inventoryItem.Inventory == null - " + inventoryItem.Item.name);
@@ -483,7 +580,7 @@ namespace Blessing.Gameplay.Characters
 
             if (UtilitySlot == null)
                 UtilitySlot = FindEquipmentType("Utility");
-            
+
             // Create index to differentiate duplicated slots
             Dictionary<string, int> qtyBySlotName = new();
 
@@ -497,7 +594,7 @@ namespace Blessing.Gameplay.Characters
                 slot.DuplicateIndex = qtyBySlotName[slot.GearSlotType.name];
             }
 
-            if(qtyBySlotName.ContainsKey(UtilitySlot.name))
+            if (qtyBySlotName.ContainsKey(UtilitySlot.name))
             {
                 UtilityInventories = new List<Inventory>(new Inventory[qtyBySlotName[UtilitySlot.name] + 1]);
             }
@@ -507,10 +604,10 @@ namespace Blessing.Gameplay.Characters
             string[] guids = AssetDatabase.FindAssets($"t:EquipmentType {equipmentTypeName}", new[] { "Assets/Items/Gears/Type" });
             if (guids.Length == 0)
                 Debug.LogError($"EquipmentType {equipmentTypeName} not found");
-            
+
 
             string pathAsset = AssetDatabase.GUIDToAssetPath(guids[0]);
-            return (EquipmentType) AssetDatabase.LoadAssetAtPath(pathAsset, typeof(EquipmentType));
+            return (EquipmentType)AssetDatabase.LoadAssetAtPath(pathAsset, typeof(EquipmentType));
         }
 #endif
     }

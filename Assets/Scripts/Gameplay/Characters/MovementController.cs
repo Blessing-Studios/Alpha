@@ -16,6 +16,8 @@ public abstract class MovementController : NetworkBehaviour
     public Vector2 direction; // Talvez deletar essa variável
     [SerializeField] protected bool canMove;
     public bool CanMove { get { return canMove; } }
+    [SerializeField] protected bool canFace;
+    public bool CanFace { get { return canFace; } }
     protected Animator animator;
 
     // Delcare reference variables
@@ -28,13 +30,16 @@ public abstract class MovementController : NetworkBehaviour
     [SerializeField] protected bool isPushable = true;
     [field: SerializeField] protected NetworkVariable<bool> isFacingRight = new NetworkVariable<bool>(true);
     public bool IsFacingRight { get { return isFacingRight.Value; } set { isFacingRight.Value = value; } }
-    protected bool isMovementPressed;
+    [SerializeField] protected bool isMovementPressed;
     protected bool isJumpPressed;
     protected int isWalkingHash;
     protected int isRunningHash;
     protected int speedHash;
     protected float oldPositionX;
-    protected const float minDeltaX = 0.01f;
+    protected float speedModifier = 1f;
+    public float ScriptablepeedModifier { get { return speedModifier; } }
+    protected const float minDeltaX = 0.001f;
+
     // Variables to store player input values
     [SerializeField] protected Vector2 currentMovementInput;
 
@@ -48,14 +53,14 @@ public abstract class MovementController : NetworkBehaviour
         return this.characterController;
     }
 
-    public Vector2 GetCurrentMovementInput() 
+    public Vector2 GetCurrentMovementInput()
     {
         return currentMovementInput;
     }
-    
+
     // Awake is called earlier than Start
-    protected virtual void Awake() 
-    {   
+    protected virtual void Awake()
+    {
         // clientNetworkTransform = GetComponent<ClientNetworkTransform>();
 
         characterController = GetComponent<CharacterController>();
@@ -66,6 +71,7 @@ public abstract class MovementController : NetworkBehaviour
         speedHash = Animator.StringToHash("Speed");
 
         canMove = true;
+        canFace = true;
 
         GroundedGravity = GameManager.Singleton.GroundGravity;
         Gravity = GameManager.Singleton.Gravity;
@@ -90,6 +96,8 @@ public abstract class MovementController : NetworkBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
+        if (!HasAuthority) return;
+
         HandleGravity();
         HandleMovement(canMove);
         // HandleColision();
@@ -115,16 +123,30 @@ public abstract class MovementController : NetworkBehaviour
         canMove = false;
     }
 
-    public virtual void EnableMovement()
+    public virtual void EnableMovement(bool resetSpeed = true)
     {
+        if (resetSpeed) ResetSpeedModifier();
+
         canMove = true;
+    }
+
+    public void SetSpeedModifier(float value, bool canFace = true)
+    {
+        speedModifier = value;
+        this.canFace = canFace;
+    }
+
+    public void ResetSpeedModifier()
+    {
+        speedModifier = 1f;
+        canFace = true;
     }
 
     protected virtual void HandleGravity()
     {
-        if (characterController.isGrounded) 
+        if (characterController.isGrounded)
             currentMovement.y = GroundedGravity;
-        else 
+        else
             currentMovement.y = Gravity;
     }
 
@@ -133,8 +155,7 @@ public abstract class MovementController : NetworkBehaviour
         if (!canMove)
         {
             animator.SetBool(isWalkingHash, false);
-            currentMovement.x = 0.0f;
-            currentMovement.z = 0.0f;
+            RestCurrentMovement();
         }
 
         // Direction é útil para debugar
@@ -143,17 +164,23 @@ public abstract class MovementController : NetworkBehaviour
 
         characterController.Move(new Vector3
         (
-            currentMovement.x * Time.deltaTime * CharacterSpeed,
+            currentMovement.x * Time.deltaTime * CharacterSpeed * speedModifier,
             currentMovement.y,
-            currentMovement.z * Time.deltaTime * CharacterSpeed
+            currentMovement.z * Time.deltaTime * CharacterSpeed * speedModifier
         ));
 
-        animator.SetFloat(speedHash , characterController.velocity.magnitude);
+        animator.SetFloat(speedHash, characterController.velocity.magnitude);
+    }
+
+    public void RestCurrentMovement()
+    {
+        currentMovement.x = 0.0f;
+        currentMovement.z = 0.0f;
     }
 
     protected void HandleCollision()
     {
-        
+
     }
 
     private Coroutine impulseMovementCoroutine;
@@ -178,7 +205,7 @@ public abstract class MovementController : NetworkBehaviour
             //     Debug.Log("Teste: impulseSpeed - " + impact);
             //     time2 = 0;
             // }
-            
+
 
             yield return null;
         }
@@ -190,15 +217,18 @@ public abstract class MovementController : NetworkBehaviour
         float currentPositionX = transform.position.x;
         float xDelta = currentPositionX - oldPositionX;
 
-        if (xDelta < - minDeltaX)
+        if (canFace)
         {
-            transform.rotation = Quaternion.LookRotation(-Vector3.forward);
-            if (HasAuthority) isFacingRight.Value = true;
-        }
-        else if (xDelta > minDeltaX)
-        {
-            transform.rotation = Quaternion.LookRotation(Vector3.forward);
-            if (HasAuthority) isFacingRight.Value = false;
+            if (xDelta < -minDeltaX)
+            {
+                transform.rotation = Quaternion.LookRotation(-Vector3.forward);
+                if (HasAuthority) isFacingRight.Value = true;
+            }
+            else if (xDelta > minDeltaX)
+            {
+                transform.rotation = Quaternion.LookRotation(Vector3.forward);
+                if (HasAuthority) isFacingRight.Value = false;
+            }
         }
 
         oldPositionX = currentPositionX;
@@ -214,7 +244,7 @@ public abstract class MovementController : NetworkBehaviour
         {
             return;
         }
-        
+
         Coroutine coroutine = StartCoroutine(ImpulseMovement(direction, impact, impulseTime));
     }
     public virtual void HandleAttackMovement()
@@ -228,6 +258,8 @@ public abstract class MovementController : NetworkBehaviour
         Debug.Log("DisableCollision()");
         GetCharacterController().excludeLayers = LayerMask.GetMask("Characters");
     }
+
+
 
     // this script pushes all rigidbodies that the character touches
     /**

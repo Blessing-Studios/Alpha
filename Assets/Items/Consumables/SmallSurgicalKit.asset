@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e2990c5b900ff44a5b224440660ee8, type: 3}
+  m_Name: SmallSurgicalKit
+  m_EditorClassIdentifier: 
+  Label: Small Surgical Kit
+  Description: Heal One Wound
+  Value: 10
+  Width: 1
+  Height: 1
+  MaxStack: 1
+  Weight: 1
+  Sprite: {fileID: 364674591, guid: e0799ace2199b1a4788c5202473427da, type: 3}
+  Id: 8
+  itemType:
+    value: {fileID: 11400000, guid: d55689b341e76d74e96e6832b0d372f2, type: 2}
+  Buffs:
+  - {fileID: 11400000, guid: 87e601222dca3c54b804e421328ce9a1, type: 2}

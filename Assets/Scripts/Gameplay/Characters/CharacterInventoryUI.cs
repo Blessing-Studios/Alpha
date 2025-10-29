@@ -106,7 +106,7 @@ namespace Blessing.Gameplay.Characters
         }
         public void SyncGrids()
         {
-            // if (!gameObject.activeSelf) return;
+            if (!gameObject.activeSelf) return;
 
             if (Character == null) return;
 
@@ -136,6 +136,8 @@ namespace Blessing.Gameplay.Characters
             {
                 UtilityGrids[i].OpenGrid();
             }
+
+            Character.Gear.UpdateGold();
 
             if (CharacterStatsInfo != null) CharacterStatsInfo.UpdateStatInfo();
         }

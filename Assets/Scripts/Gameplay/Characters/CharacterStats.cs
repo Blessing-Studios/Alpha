@@ -94,7 +94,10 @@ namespace Blessing.Gameplay.Characters
         {
             return (int) GetType().GetField(stat.ToString()).GetValue(this);
         }
-
+        public void ApplyPermanentEffects(PermanentEffect[] permanentEffects)
+        {
+            // Apply Effects
+        }
         public void UpdateAllStats(List<CharacterTrait> traits)
         {
             foreach (Stat stat in Enum.GetValues(typeof(Stat)))

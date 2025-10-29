@@ -15,8 +15,13 @@ MonoBehaviour:
   Name: All Traits
   Description: 
   Traits:
+  - {fileID: 11400000, guid: 8c3656fee88606b48bda237345f121a9, type: 2}
+  - {fileID: 11400000, guid: 7172be81f1184fe4fa74f90b4e09a941, type: 2}
   - {fileID: 11400000, guid: 4818bba7395347949a7a09dc3da8c664, type: 2}
+  - {fileID: 11400000, guid: 9e63d27ea4834874c8f2e624e10fff11, type: 2}
   - {fileID: 11400000, guid: ab051646a38d9394f9ad745d1bfc54c7, type: 2}
+  - {fileID: 11400000, guid: 87e601222dca3c54b804e421328ce9a1, type: 2}
+  - {fileID: 11400000, guid: 6424fb2eb3a29914299038fb130748b1, type: 2}
   - {fileID: 11400000, guid: 7422e16d2c5459148a88866b30ba08cf, type: 2}
   - {fileID: 11400000, guid: a008f4ac6f5870a4bbc9b12c8e5e87cb, type: 2}
   - {fileID: 11400000, guid: 60ca6885b39c6794da1d485775787477, type: 2}

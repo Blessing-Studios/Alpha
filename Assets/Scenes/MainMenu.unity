@@ -3067,7 +3067,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MultiplayerScene:
-    value: {fileID: 11400000, guid: e4afcdbd91bd92f49bce65bed4362104, type: 2}
+    value: {fileID: 11400000, guid: 7bc0fe147eed07b42bd0d8304a5311ce, type: 2}
 --- !u!4 &468666534
 Transform:
   m_ObjectHideFlags: 0

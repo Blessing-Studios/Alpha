@@ -41,10 +41,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2703509549900476795}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -95,8 +95,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectileSkill: {fileID: 0}
+  trails: []
+  hitEffect: {fileID: 0}
   speed: 0
   lifeTime: 0
   isDestroyedOnHit: 0
   Timer: 0
   direction: {x: 0, y: 0, z: 0}
+  skillDirection: {x: 1, y: 0, z: 0}

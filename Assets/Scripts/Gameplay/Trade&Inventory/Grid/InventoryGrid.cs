@@ -61,12 +61,12 @@ namespace Blessing.Gameplay.TradeAndInventory
         }
 
         public void UpdateFromInventory()
-        {   
-            if (Inventory == null) 
+        {
+            if (Inventory == null)
             {
                 return;
             }
-            
+
             CleanGrid();
 
             // Refazer Lógica
@@ -99,35 +99,49 @@ namespace Blessing.Gameplay.TradeAndInventory
 
             if (position == null) return false;
 
-            return PlaceItem(inventoryItem, (Vector2Int) position);
+            return PlaceItem(inventoryItem, (Vector2Int)position);
         }
         public bool PlaceItem(InventoryItem inventoryItem, Vector2Int position)
         {
+            Debug.Log("Place Item Entrou");
             Inventory.GetOwnership();
 
             // Handle Stack Item
-            if (inventoryItem.Data.Stack < Inventory.ItemsMaxStack)
+            int maxItemStack = Inventory.ItemsMaxStack;
+
+            if (inventoryItem.Item.MaxStack > maxItemStack)
+            {
+                maxItemStack = inventoryItem.Item.MaxStack;
+            }
+
+            if (inventoryItem.Data.Stack <= maxItemStack)
             {
                 InventoryItem itemInGrid = Inventory.ItemSlot[position.x, position.y];
                 if (itemInGrid != null)
                 {
                     if (itemInGrid.Item.Id == inventoryItem.Item.Id &&
-                        itemInGrid.Data.Stack + inventoryItem.Data.Stack <= Inventory.ItemsMaxStack)
+                        itemInGrid.Data.Stack + inventoryItem.Data.Stack <= maxItemStack)
                     {
-                        itemInGrid.AddToStack(inventoryItem.Data.Stack);
+                        Inventory.AddToStack(itemInGrid, inventoryItem.Data.Stack);
 
                         // Raise Events
                         if (OnAddItem != null)
                             OnAddItem.Raise(this, inventoryItem);
 
-                        GameManager.Singleton.ReleaseInventoryItem(inventoryItem);
+                        inventoryItem.Release();
 
                         return true;
                     }
                 }
             }
 
-            if (inventoryItem.Data.Stack > Inventory.ItemsMaxStack) return false;
+            // Refazer essa lógica
+            if (inventoryItem.Data.Stack > maxItemStack)
+            {
+                Debug.Log("inventoryItem.Data.Stack > maxItemStack Entrou");
+                return false;
+            }
+                
 
             if (!CheckAvailableSpace(position, inventoryItem.Width, inventoryItem.Height))
             {
@@ -174,7 +188,7 @@ namespace Blessing.Gameplay.TradeAndInventory
         }
 
         public InventoryItem PickUpItem(Vector2Int position)
-        {   
+        {
             Inventory.GetOwnership();
 
             InventoryItem inventoryItem = Inventory.ItemSlot[position.x, position.y];

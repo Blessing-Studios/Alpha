@@ -232,7 +232,10 @@ namespace Blessing.Gameplay.TradeAndInventory
         {
             Vector2Int? position = FindEmptyPosition(inventoryItem.Width, inventoryItem.Height);
 
-            if (position == null) return false;
+            if (position == null)
+            {
+                return false;
+            }
 
             return AddItem(inventoryItem, (Vector2Int)position);
         }
@@ -247,11 +250,38 @@ namespace Blessing.Gameplay.TradeAndInventory
             return true;
         }
 
+        public bool AddToStack(InventoryItem inventoryItem, int qty)
+        {
+            InventoryLocalList.Remove(inventoryItem.GetData());
+            InventoryNetworkList.Remove(inventoryItem.GetData());
+
+
+            inventoryItem.AddToStack(qty);
+
+            InventoryLocalList.Add(inventoryItem.GetData());
+            InventoryNetworkList.Add(inventoryItem.GetData());
+            return true;
+        }
+
         public bool AddInventoryItem(InventoryItem inventoryItem, Vector2Int position)
         {
             if (inventoryItem == null) return false;
 
             if (ContainerType != null && ContainerType != inventoryItem.Item.ItemType) return false;
+
+            int maxItemStack = ItemsMaxStack;
+            if (inventoryItem.Item.MaxStack > maxItemStack)
+            {
+                maxItemStack = inventoryItem.Item.MaxStack;
+            }
+
+            int diffStack = 0;
+            if (inventoryItem.Stack > maxItemStack)
+            {
+                diffStack = inventoryItem.Stack - maxItemStack;
+
+                inventoryItem.SetStack(maxItemStack);
+            }    
 
             // If item is already in inventory, return false
             if (ItemList.Contains(inventoryItem))
@@ -271,14 +301,25 @@ namespace Blessing.Gameplay.TradeAndInventory
                 {
                     // Criar um id ou hash no lugar de salvar o inventoryItem ref
                     ItemSlot[position.x + x, position.y + y] = inventoryItem;
-
-                    int posX = position.x + x;
-                    int posY = position.y + y;
                 }
             }
             inventoryItem.Data.Position = position;
 
             ItemList.Add(inventoryItem);
+
+            if (diffStack > 0)
+            {
+                // Create item for the difStack
+                InventoryItem diffItem = UIController.Singleton.GetInventoryItem();
+
+                diffItem.Set(inventoryItem.Item, diffStack);
+
+                if (!AddItem(diffItem))
+                {
+                    // Create Loose item
+                    UIController.Singleton.MoveItemToGround(diffItem);
+                }
+            }
 
             return true;
         }
@@ -291,6 +332,19 @@ namespace Blessing.Gameplay.TradeAndInventory
             // InventoryNetworkList has to be changed after InventoryLocalList
             InventoryLocalList.Remove(inventoryItem.GetData());
             InventoryNetworkList.Remove(inventoryItem.GetData());
+
+            return true;
+        }
+
+        public bool RemoveFromStack(InventoryItem inventoryItem, int qty)
+        {
+            InventoryLocalList.Remove(inventoryItem.GetData());
+            InventoryNetworkList.Remove(inventoryItem.GetData());
+
+            inventoryItem.RemoveFromStack(qty);
+
+            InventoryLocalList.Add(inventoryItem.GetData());
+            InventoryNetworkList.Add(inventoryItem.GetData());
 
             return true;
         }

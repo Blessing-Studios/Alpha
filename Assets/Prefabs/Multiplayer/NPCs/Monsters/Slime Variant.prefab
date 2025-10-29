@@ -25,6 +25,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1646976488681774380, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1646976488681774380, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 22100000, guid: b817a4f6a777a944588bf06ae41fc77f, type: 2}
@@ -45,6 +49,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: d64ed5d5d35eec84780d88ead3aeb81b, type: 2}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: combos.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimatorController
       value: 
       objectReference: {fileID: 9100000, guid: 53456819810cbf14994c5b6dc9bc9265, type: 2}
@@ -53,12 +61,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: ea19cc7fd4ff5a544be03af3cdff41a8, type: 2}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
+      propertyPath: 'combos.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ea19cc7fd4ff5a544be03af3cdff41a8, type: 2}
+    - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.size
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[0].Name
-      value: Cast1
+      value: Cast2
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[1].Name
@@ -118,7 +130,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[6].Duration
-      value: 0.8333333
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2259359815306742575, guid: c89afef4f8ae81445bbdde3bff24d97a, type: 3}
       propertyPath: AnimationsDuration.Array.data[7].Duration

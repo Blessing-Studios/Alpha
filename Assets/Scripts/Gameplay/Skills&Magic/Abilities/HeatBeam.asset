@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955461c3ce5b84a4791cb877bf5ee4f9, type: 3}
+  m_Name: HeatBeam
+  m_EditorClassIdentifier: 
+  Skills:
+  - {fileID: 11400000, guid: 2808db26092d67a47bdd1fce6c0a6c79, type: 2}
+  Buffs:
+  - {fileID: 11400000, guid: 7172be81f1184fe4fa74f90b4e09a941, type: 2}
+  animationParam:
+    value: {fileID: 11400000, guid: 25c19bf926ed77d42a10ce79ba4ceb4c, type: 2}
+  endAnimationParam:
+    value: {fileID: 11400000, guid: 48539a2ca5a533243a6a68b090a5bb01, type: 2}
+  CanCharge: 1
+  CanMove: 1
+  CanTriggerOnHold: 1
+  SpeedMultiplayer: 0.5
+  CoolDown: 1
+  IconSprite: {fileID: 21300000, guid: dd3885098198d104888439be4c590aba, type: 3}
+  ShakeEffect: {fileID: 0}

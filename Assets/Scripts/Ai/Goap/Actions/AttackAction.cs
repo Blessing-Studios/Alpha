@@ -25,16 +25,29 @@ namespace Blessing.Ai.Goap.Actions
 
         public override void OnFixedUpdate()
         {
+            if (!characterAgent.AiCharacter.HasAuthority) return;
+
             base.OnFixedUpdate();
 
-            if (fixedtime >= duration / 2)
+            // if (fixedtime >= duration)
+            // {
+            //     if (CheckPositionForAction())
+            //     {
+            //         Perform(gameObject);
+            //         fixedtime = 0.0f;
+            //     }
+
+            //     finished = true;
+            // }
+
+            if (CheckPositionForAction())
             {
-                if (CheckPositionForAction())
-                {
-                    Perform(gameObject);
-                    fixedtime = 0.0f;
-                }
-                
+                Perform(gameObject);
+                fixedtime = 0.0f;
+            }
+
+            if (Target == null)
+            {
                 finished = true;
             }
         }

@@ -26,6 +26,8 @@
             Auto Sync Transforms -> False
 
 ### Observações
+    Pensar se precisa fazer animações para interação no animation controller
+
     Criar nos Settings opção para trocar de teclado para controle
     
     Precisa adicionar validação para quanto pegar a arma

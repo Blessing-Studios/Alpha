@@ -407,7 +407,7 @@ PrefabInstance:
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: 'abilitiesSO.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: 5a05e88e42ff77a45a4e810ccecc9a81, type: 2}
+      objectReference: {fileID: 11400000, guid: 476085e36eef9fc4588c6f5b633f3d38, type: 2}
     - target: {fileID: 8376207516185148171, guid: 107de839fe247f2488fb0b8f872a8678, type: 3}
       propertyPath: 'abilitiesSO.Array.data[2]'
       value: 

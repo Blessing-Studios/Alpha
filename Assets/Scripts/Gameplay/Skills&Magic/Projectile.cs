@@ -24,7 +24,9 @@ namespace Blessing.Gameplay.SkillsAndMagic
         public Skill ActiveSkill { get; set; }
         public Transform SkillOrigin { get { return transform; } }
         [SerializeField] protected Vector3 skillDirection = Vector3.right;
-        public Vector3 SkillDirection { get { return skillDirection; }}
+        public Vector3 SkillDirection { get { return skillDirection; } }
+        protected bool isSkillHolding = false;
+        public bool IsSkillHolding { get { return isSkillHolding; } }
         public Dictionary<Stat, int> ValueByStat { get { return owner.ValueByStat;}}
 
         // Update is called once per frame
@@ -61,13 +63,13 @@ namespace Blessing.Gameplay.SkillsAndMagic
 
             direction = transform.rotation * owner.SkillDirection;
 
+            gameObject.SetActive(true);
+
             return this;
         }
 
         public bool Hit(IHittable target, Vector3 hitPosition)
         {
-            if (!HasAuthority) return false;
-
             // TODO: create logic to not hit itself
             if (TargetList.Contains(target))
             {
@@ -75,7 +77,9 @@ namespace Blessing.Gameplay.SkillsAndMagic
                 return false;
             }
 
-            target.GetOwnership();
+            // Give owner ship of the target to the owner of the character that fired the projectile
+            if (owner.HasAuthority)
+                target.GetOwnership();
 
             HitInfo = new HitInfo(projectileSkill.GetSkillDamage(owner.ValueByStat), projectileSkill.DamageClass, projectileSkill.GetSkillImpact(owner.ValueByStat), hitPosition, projectileSkill.Buffs);
             return true;
@@ -125,7 +129,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
         }
         public override void GetFromPool()
         {
-            gameObject.SetActive(true);
+            
         }
         public override void ReleaseToPool()
         {

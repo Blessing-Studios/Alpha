@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54359215f807ac341a50a8ce2143c246, type: 3}
+  m_Name: BlueMana+25
+  m_EditorClassIdentifier: 
+  Id: 1
+  Name: BlueMana+25
+  Label: Blue Mana + 25
+  Description: Give Blue Mana
+  Effects:
+  - {fileID: 11400000, guid: e085a0619f78e4e4ea3fd2ca66f4fb3a, type: 2}
+  PermanentEffects: []
+  VisualEffect: {fileID: 0}
+  ParticleEffect: {fileID: 0}
+  VFX: {fileID: 0}
+  SpawnVFXOnGround: 0
+  VFXFollowChar: 0
+  CanStack: 0
+  Duration: 5
+  SideBuff: {fileID: 0}

@@ -88,13 +88,16 @@ namespace Blessing.Gameplay.Characters
                     new(ManaColor.Black, 50, 0, manaChange / 2)
             });
         }
-
+        public void ApplyPermanentEffects(PermanentEffect[] permanentEffects)
+        {
+            // Apply Effects
+        }
         public void SetManaParameters(CharacterStats stats, List<CharacterTrait> traits)
         {
             // Set Max Values
 
             // White Mana Max, TODO:
-            reserveMax.SetValue(ManaColor.White, 100);
+            reserveMax.SetValue(ManaColor.White, stats.Dexterity * statsMultiplier);
 
             // Red Mana Max value comes from Strength
             reserveMax.SetValue(ManaColor.Red, stats.Strength * statsMultiplier);
@@ -126,8 +129,8 @@ namespace Blessing.Gameplay.Characters
             // Apply Traits
             foreach (ManaColor manaColor in Enum.GetValues(typeof(ManaColor)))
             {
-                int manaRegen = manaReserve.GetRegen(manaColor);
-                int manaDecay = manaReserve.GetDecay(manaColor);
+                int manaRegen = reserveMax.GetRegen(manaColor);
+                int manaDecay = reserveMax.GetDecay(manaColor);
                 foreach (CharacterTrait characterTrait in traits)
                 {
                     manaRegen += characterTrait.Trait.GetManaRegen(manaColor);
@@ -244,15 +247,15 @@ namespace Blessing.Gameplay.Characters
         {
             foreach (ManaColor manaColor in Enum.GetValues(typeof(ManaColor)))
             {
-                int manaDiff = manaReserve.GetValue(manaColor) - reserveMax.GetValue(manaColor);
+                int manaDiff = manaReserve.GetRegen(manaColor) - manaReserve.GetDecay(manaColor);
 
                 // Current Value is less than max, should regen mana
-                if (manaDiff < 0)
-                    ReceiveMana(manaColor, manaReserve.GetRegen(manaColor));
+                if (manaDiff > 0)
+                    ReceiveMana(manaColor, manaDiff);
 
                 // Current Value is more than max, mana will decay
-                if (manaDiff > 0)
-                    SpendMana(manaColor, manaReserve.GetDecay(manaColor));
+                if (manaDiff < 0)
+                    SpendMana(manaColor, -manaDiff);
 
                 // Update Mana Field Value
                 GetType().GetProperty(manaColor.ToString()).SetValue(this, manaReserve.GetValue(manaColor));
@@ -261,7 +264,7 @@ namespace Blessing.Gameplay.Characters
             }
 
             // Red Mana will decay with time until 0
-            SpendMana(ManaColor.Red, manaReserve.GetDecay(ManaColor.Red));
+            // SpendMana(ManaColor.Red, manaReserve.GetDecay(ManaColor.Red));
         }
 
         

@@ -42,21 +42,29 @@ namespace Blessing.Gameplay.Characters.States
             comboIndex = characterStateMachine.ComboMoveIndex.x;
             moveIndex = characterStateMachine.ComboMoveIndex.y;
 
+            characterStateMachine.UpdateCurrentMove();
+
+            CurrentMove = characterStateMachine.CurrentMove;
+
             // If combo Index is bigger than Length, SetNextStateToMain
-            if (comboIndex < 0) characterStateMachine.SetNextStateToMain();
+            if (CurrentMove == null)
+            {
+                characterStateMachine.SetNextStateToMain();
+                return;
+            }
 
-            CurrentMove = combos[comboIndex].Moves[moveIndex];
+            if (!CurrentMove.CanMove)
+            {
+                movementController.DisableMovement();
 
-            // Save move in characterStateMachine
-            characterStateMachine.CurrentMove = CurrentMove;
-
-            movementController.DisableMovement();
+                // Zera movementController.AttackMovement
+                movementController.AttackMovement = Vector3.zero;
+            }
+            
+            movementController.SetSpeedModifier(CurrentMove.SpeedMultiplayer);
 
             // Trigger animation
             networkAnimator.SetTrigger(CurrentMove.AnimationParam);
-            
-            // Zera movementController.AttackMovement
-            movementController.AttackMovement = Vector3.zero;
 
             duration = characterStateMachine.GetCurrentMoveDuration();
 
@@ -68,6 +76,12 @@ namespace Blessing.Gameplay.Characters.States
         {
             base.OnUpdate();
             if (!characterStateMachine.Character.HasAuthority) return;
+
+            // In case the character changed owner, combos can become null, trigger OnEnter Again to solve it
+            if (combos == null)
+            {
+                OnEnter();
+            }
 
             attackPressedTimer -= Time.deltaTime;
 
@@ -99,7 +113,29 @@ namespace Blessing.Gameplay.Characters.States
             }
 
             // If conditions are match, call next move
-            if (time >= duration - CurrentMove.ExitEarlier)
+            
+
+            float currentMoveExitEarlier = 0f;
+            if (CurrentMove != null)
+            {
+                currentMoveExitEarlier = CurrentMove.ExitEarlier;
+            }
+            else
+            {
+                Debug.LogError("CurrentMove is Null: " + (CurrentMove == null));
+                Debug.Log("character: " + characterStateMachine.Character.gameObject.name);
+                Debug.Log("CurrentMove: " + CurrentMove);
+                Debug.Log("characterStateMachine.ComboMoveIndex: " + characterStateMachine.ComboMoveIndex);
+                Debug.Log("comboIndex: " + comboIndex);
+                Debug.Log("moveIndex: " + moveIndex);
+                // Combos deu null, investigar e arrumar
+                Debug.Log("Combos is Null: " + (combos == null)); 
+                Debug.Log("Combo: " + combos[comboIndex]);
+                if (combos[comboIndex] != null) Debug.Log("Move: " + combos[comboIndex].Moves[moveIndex]);
+                
+            }
+
+            if (time >= duration - currentMoveExitEarlier)
             {
                 if (shouldCombo && (moveIndex + 1 < combos[comboIndex].Moves.Length))
                 {

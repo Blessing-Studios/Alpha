@@ -3,7 +3,6 @@ using Blessing.HealthAndDamage;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.VFX;
-using UnityEngine.Rendering.PostProcessing;
 using System.Collections.Generic;
 using Blessing.Audio;
 
@@ -42,11 +41,15 @@ namespace Blessing.Gameplay.SkillsAndMagic
 
             foreach (Collider collider in orderedColliders)
             {
+                // Handle Max Targets hit
+                if (numberOfHits >= areaSkill.MaxTargets) break;
+
                 if (collider.gameObject.TryGetComponent(out HurtBox hurtBox))
                 {
                     // Handle interact with itself
                     if (hurtBox.Owner.transform == owner.transform && !areaSkill.CanSelfHit) continue;
 
+                    // Check if already hit target
                     if (targets.Contains(hurtBox.Owner)) continue;
 
                     Debug.Log("Teste Hit " + hurtBox.Owner.transform.gameObject.name + ": Distance - " + (collider.transform.position - transform.position).sqrMagnitude);
@@ -60,8 +63,6 @@ namespace Blessing.Gameplay.SkillsAndMagic
                         numberOfHits++;
                     }
                 }
-
-                if (numberOfHits >= areaSkill.MaxTargets) break;
             }
 
 
@@ -93,7 +94,7 @@ namespace Blessing.Gameplay.SkillsAndMagic
 
             target.GetOwnership();
 
-            HitInfo = new HitInfo(areaSkill.GetSkillDamage(owner.ValueByStat), areaSkill.DamageClass, 0f, hitPosition, areaSkill.Buffs, areaSkill.HitType);
+            HitInfo = new HitInfo(areaSkill.GetSkillDamage(owner.ValueByStat), areaSkill.DamageClass, areaSkill.GetSkillImpact(owner.ValueByStat), hitPosition, areaSkill.Buffs, areaSkill.HitType);
             return true;
         }
 

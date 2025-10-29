@@ -190,7 +190,8 @@ namespace Blessing.Gameplay.Characters
         public void UpdateCurrentMove()
         {
             // ComboIndex = -1 means no CurrentMove
-            if (ComboMoveIndex.x < 0)
+            // Talvez precise checar se o os index estão no vetor, mas provavelmente não
+            if (ComboMoveIndex.x < 0 || ComboMoveIndex.y < 0)
             {
                 CurrentMove = null;
                 return;
@@ -201,8 +202,10 @@ namespace Blessing.Gameplay.Characters
 
         public float GetCurrentMoveDuration()
         {
-            if (CurrentMove == null)
+            if (CurrentMove.AnimationParamRef == null || CurrentMove.AnimationParamRef.value == null)
+            {
                 return 0.0f;
+            }
 
             return AnimationsDuration.First(e => e.Name == CurrentMove.AnimationParam).Duration;
         }
@@ -222,7 +225,7 @@ namespace Blessing.Gameplay.Characters
             {
                 foreach (AnimationClip animationClip in animator.runtimeAnimatorController.animationClips)
                 {
-                    Debug.Log(gameObject.name + ": AnimationClip name - " + animationClip.name);
+                    if (ShowDebug) Debug.Log(gameObject.name + ": AnimationClip name - " + animationClip.name);
                     if (animationClip.name.Contains(param.name))
                     {
                         AnimationsDuration.Add(new AnimationDuration(param.name, animationClip.length));

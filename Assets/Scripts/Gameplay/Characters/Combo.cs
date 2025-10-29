@@ -24,6 +24,8 @@ namespace Blessing.Gameplay.Characters
         [SerializeField] public float ImpactMultiplier = 1.0f;
         [Tooltip("Let hit the same target multiple times with the same attack")][SerializeField] public bool CanMultiHit = false;
         [SerializeField] public bool CanUseSkill = false; // Teste
+        [SerializeField] public bool CanMove = false;
+        [SerializeField][Range(0, 1)] public float SpeedMultiplayer = 0.5f;
         [SerializeField] public CameraShakeEffect ShakeEffect;
 
     }

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89a269d3d5b4bf24eb9ed815c7229ca1, type: 3}
+  m_Name: CoinBag
+  m_EditorClassIdentifier: 
+  Label: Coin Bag
+  Description: 
+  Value: 10
+  Width: 2
+  Height: 2
+  MaxStack: 1
+  Weight: 1
+  Sprite: {fileID: 1069227732, guid: f36c5eff8d344354dab3e106d163172e, type: 3}
+  Id: 32
+  itemType:
+    value: {fileID: 11400000, guid: ad63d46b12978c4449216d86c607cd83, type: 2}
+  equipmentType:
+    value: {fileID: 11400000, guid: 651669212bcb079449ee47829bd5d45e, type: 2}
+  Traits: []
+  containerType:
+    value: {fileID: 11400000, guid: afa35bbcce12d634fb74b4f6151ed8ba, type: 2}
+  ItemsMaxStack: 100
+  GridSizeWidth: 2
+  GridSizeHeight: 3

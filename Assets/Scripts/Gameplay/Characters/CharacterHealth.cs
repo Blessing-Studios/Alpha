@@ -18,13 +18,19 @@ namespace Blessing.Gameplay.Characters
         [Header("Health Settings")]
         [Tooltip("Current health points of the character.")]
         // [SerializeField] protected int health;
-        [SerializeField] protected NetworkVariable<int> health = new NetworkVariable<int>(100,
+
+        public int Health { get { return health.Value; } protected set { health.Value = value; } }
+        [SerializeField]
+        protected NetworkVariable<int> health = new NetworkVariable<int>(100,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        
+
         [SerializeField] protected int constitution;
         // [Tooltip("Maximum health points of the character.")]
-        [SerializeField] protected int maxHealth;
-        public int CurrentHealth { get { return health.Value; }}
+        public int MaxHealth { get { return maxHealth.Value; } protected set { maxHealth.Value = value; } }
+        [SerializeField]
+        protected NetworkVariable<int> maxHealth = new NetworkVariable<int>(100,
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public int CurrentHealth { get { return health.Value; } }
         [SerializeField] public int OriginalMaxHealth { get; private set; }
 
         [Tooltip("Base Life Regeneration by time")] // TODO: Fazer life regen depender da mana verde
@@ -37,14 +43,19 @@ namespace Blessing.Gameplay.Characters
         [Tooltip("Time to wait for health change ove time")]
         [SerializeField] protected float waitTime = 0.5f;
         [field: SerializeField] public List<HurtBox> HurtBoxes { get; protected set; }
-        [SerializeField] protected NetworkVariable<bool> isAlive = new NetworkVariable<bool>(true,
+        [SerializeField]
+        protected NetworkVariable<bool> isAlive = new NetworkVariable<bool>(true,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        public bool IsAlive { get { return isAlive.Value;}}
-        public bool IsDead { get { return !isAlive.Value;}}
+        public bool IsAlive { get { return isAlive.Value; } }
+        public bool IsDead { get { return !isAlive.Value; } }
         // [SerializeField] protected int _maxWounds = 4;
-        [field: SerializeField] public int MaxWounds { get; private set; }
+        [field: SerializeField] public int MaxWounds { get; protected set; }
         [SerializeField] protected int woundHealth = 25;
-        [SerializeField] protected int wounds;
+        [SerializeField] protected int Wounds { get { return wounds.Value; } set { wounds.Value = value; } }
+        [SerializeField]
+        protected NetworkVariable<int> wounds = new NetworkVariable<int>(100,
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
 
         [Header("Events")]
         public GameEvent OnReceiveDamage;
@@ -58,11 +69,11 @@ namespace Blessing.Gameplay.Characters
         // Start is called before the first frame update
         void Awake()
         {
-            
+
         }
         void Start()
         {
-        
+
         }
 
         void Update()
@@ -86,7 +97,7 @@ namespace Blessing.Gameplay.Characters
             isAlive.OnValueChanged += OnNetworkIsAliveChanged;
         }
 
-        
+
 
         public override void OnNetworkDespawn()
         {
@@ -106,21 +117,39 @@ namespace Blessing.Gameplay.Characters
                 OnIsAliveChanged.Raise(this, newValue);
         }
 
+        public void ApplyPermanentEffects(PermanentEffect[] permanentEffects)
+        {
+            Debug.Log("ApplyPermanentEffects");
+            foreach (PermanentEffect permEffect in permanentEffects)
+            {
+                foreach (HealthPermanentChange healthChange in permEffect.HealthChanges)
+                {
+                    if (healthChange.Health < 0) ReceiveDamage(-1 * healthChange.Health);
+
+                    ChangeWound(healthChange.Wound);
+
+                    if (healthChange.Health > 0) ReceiveHeal(healthChange.Health);
+                }
+            }
+        }
+
         public void SetHealthParameters(int constitution, List<CharacterTrait> traits)
         {
+            if (!HasAuthority) return;
+            
             this.constitution = constitution;
             OriginalMaxHealth = woundHealth * constitution;
-
-            if (maxHealth > OriginalMaxHealth)
-            {
-                maxHealth = OriginalMaxHealth;
-            }
-
             MaxWounds = constitution;
 
-            if (wounds > MaxWounds)
+
+            if (MaxHealth > OriginalMaxHealth)
             {
-                 wounds = MaxWounds;
+                MaxHealth = OriginalMaxHealth;
+            }
+
+            if (Wounds > MaxWounds)
+            {
+                Wounds = MaxWounds;
             }
 
             if (!isHealthInitialized)
@@ -138,15 +167,15 @@ namespace Blessing.Gameplay.Characters
                 regen += characterTrait.Trait.GetHealthRegenChange();
                 decay += characterTrait.Trait.GetHealthDecayChange();
             }
-            
         }
         public void Initialize()
         {
-            maxHealth = OriginalMaxHealth;
-            wounds = MaxWounds;
+
             if (HasAuthority)
             {
-                health.Value = maxHealth;
+                MaxHealth = OriginalMaxHealth;
+                Wounds = MaxWounds;
+                health.Value = MaxHealth;
             }
         }
         public int GetHealth()
@@ -156,7 +185,32 @@ namespace Blessing.Gameplay.Characters
 
         public int GetWounds()
         {
-            return wounds;
+            return Wounds;
+        }
+
+        protected void ChangeWound(int value)
+        {
+            if (!HasAuthority) return;
+            if (value == 0) return;
+
+            Debug.Log("ChangeWound: " + value);
+
+            int newValue = Wounds + value;
+
+            if (newValue < 1)
+            {
+                Wounds = 1;
+                return;
+            }
+
+            if (newValue > MaxWounds)
+            {
+                Wounds = MaxWounds;
+                return;
+            }
+
+            Wounds = newValue;
+            MaxHealth = woundHealth * Wounds;
         }
 
         public int GetWoundHealth()
@@ -177,7 +231,7 @@ namespace Blessing.Gameplay.Characters
 
         public void SetCharacterAsDead()
         {
-            if (HasAuthority) 
+            if (HasAuthority)
             {
                 health.Value = 0;
                 isAlive.Value = false;
@@ -200,24 +254,25 @@ namespace Blessing.Gameplay.Characters
             // arrumar essa parte para considerar o netcode
             // TODO
 
-            
-            
-            // if (healthValue < (wounds - 1) * woundHealth)
+
+
+            // if (healthValue < (Wounds - 1) * woundHealth)
             // {
-            //     wounds--;
-            //     maxHealth -= woundHealth;
+            //     Wounds--;
+            //     MaxHealth -= woundHealth;
             // }
 
             // Don't let health be negative
             if (healthValue < 0) healthValue = 0;
 
-            wounds = Mathf.CeilToInt((float) healthValue / woundHealth);
-            maxHealth = woundHealth * wounds;
+            // Set new value for Wounds and MaxHealth
+            Wounds = Mathf.CeilToInt((float)healthValue / woundHealth);
+            MaxHealth = woundHealth * Wounds;
 
             health.Value = healthValue;
             if (ShowDebug) Debug.Log(gameObject.name + " damageAmount: " + damageAmount);
             if (ShowDebug) Debug.Log(gameObject.name + " healthValue: " + healthValue);
-            
+
             if (health.Value == 0) SetCharacterAsDead();
 
             // Raise Events
@@ -229,7 +284,7 @@ namespace Blessing.Gameplay.Characters
         {
             if (healAmount <= 0) return;
 
-            if (health.Value == maxHealth) return;
+            if (health.Value == MaxHealth) return;
 
             if (!HasAuthority) return;
 
@@ -237,9 +292,9 @@ namespace Blessing.Gameplay.Characters
 
             healthValue += healAmount;
 
-            if (healthValue > maxHealth)
+            if (healthValue > MaxHealth)
             {
-                healthValue = maxHealth;
+                healthValue = MaxHealth;
             }
 
             health.Value = healthValue;

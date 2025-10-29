@@ -18,7 +18,10 @@ MonoBehaviour:
   StatChanges: []
   HealthChanges:
   - Regen: 0
-    Decay: -5
-  ManaChanges: []
+    Decay: 5
+  ManaChanges:
+  - ManaColor: 0
+    Regen: 0
+    Decay: 0
   AttackChanges: []
   DefenseChanges: []

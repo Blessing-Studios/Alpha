@@ -84,8 +84,7 @@ namespace Blessing.Gameplay.Guild.Quests
             {
                 for (int i = 0; i < reward.Quantity; i++)
                 {
-                    InventoryItem inventoryItem = GameManager.Singleton.GetInventoryItem();
-                    inventoryItem.Set(reward.Item);
+                    InventoryItem inventoryItem = UIController.Singleton.CreateItem(reward.Item);
 
                     lootInventory.AddItem(inventoryItem);
                     inventoryItem.transform.SetParent(adventurer.transform, false);

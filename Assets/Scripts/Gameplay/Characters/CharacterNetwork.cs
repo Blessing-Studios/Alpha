@@ -258,10 +258,10 @@ namespace Blessing.Gameplay.Characters
             if (trait.SpawnVFXOnGround)
             {
                 /*
-            * Create the hit object
-            * This will later hold the data for the hit
-            * (location, collided collider etc.)
-            */
+                * Create the hit object
+                * This will later hold the data for the hit
+                * (location, collided collider etc.)
+                */
                 RaycastHit hit;
 
                 /*
